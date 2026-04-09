@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Египет 2026 — Макс и Луиза</title>
-  <meta name="description" content="Семейный гид по первой поездке в Египет: Хургада, Луксор, Каир, карта, деньги, советы и всё, в чём мы сами разбирались перед путешествием.">
+  <title>Египет 2026 — семейный гид</title>
+  <meta name="description" content="Семейный гид по первой поездке в Египет: Хургада, Луксор, Каир, карта, деньги, советы и всё, что помогает спокойно подготовиться к путешествию.">
   <link rel="stylesheet" href="css/style.css">
   <style>
     .info-grid {
@@ -137,6 +137,79 @@
       transform: translateY(-2px);
       box-shadow: 0 10px 30px rgba(27,58,92,0.14);
       border-color: rgba(212,175,55,0.35);
+    }
+
+    /* Блок "Куда дальше" */
+    .sitenav-row { display: flex; flex-direction: column; gap: 0.6rem; }
+    .sitenav-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.9rem 1.1rem;
+      background: var(--white);
+      border: 1px solid rgba(212,175,55,0.2);
+      border-radius: 12px;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.18s, border-color 0.18s, transform 0.18s;
+    }
+    .sitenav-item:hover {
+      background: #fffbf0;
+      border-color: rgba(212,175,55,0.5);
+      transform: translateX(4px);
+    }
+    .sitenav-icon { font-size: 1.5rem; flex-shrink: 0; width: 2rem; text-align: center; }
+    .sitenav-body { flex: 1; min-width: 0; }
+    .sitenav-title { font-weight: 700; font-size: 0.95rem; color: var(--navy); }
+    .sitenav-sub { font-size: 0.83rem; color: var(--text-lt); margin-top: 0.1rem; }
+    .sitenav-arrow { font-size: 1.1rem; color: var(--gold); font-weight: 700; flex-shrink: 0; }
+
+    /* Денежная рамка для карточки курса */
+    #live-rate-card {
+      background: linear-gradient(160deg, #1a3654 0%, #243f62 60%, #1a3040 100%);
+      border: 2px solid #D4AF37;
+      box-shadow: 0 0 0 1px rgba(212,175,55,0.15), 0 8px 32px rgba(27,58,92,0.35);
+      position: relative;
+      overflow: visible;
+    }
+    #live-rate-card::before {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border: 1px solid rgba(212,175,55,0.22);
+      border-radius: 8px;
+      pointer-events: none;
+    }
+    /* Угловые монетки */
+    #live-rate-card::after {
+      content: '✦';
+      position: absolute;
+      top: -11px;
+      right: -11px;
+      width: 22px;
+      height: 22px;
+      background: #D4AF37;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: #1B3A5C;
+      line-height: 22px;
+      text-align: center;
+    }
+    #live-rate-card .live-city { color: rgba(212,175,55,0.7); }
+    #live-rate-card .live-value { color: #D4AF37; text-shadow: 0 0 20px rgba(212,175,55,0.3); }
+    #live-rate-card .live-desc { color: rgba(255,255,255,0.6); }
+    #live-rate-card .live-tap {
+      background: rgba(212,175,55,0.15);
+      color: #D4AF37;
+      border: 1px solid rgba(212,175,55,0.3);
+    }
+    #live-rate-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 0 1px rgba(212,175,55,0.3), 0 12px 40px rgba(27,58,92,0.45);
+      border-color: #D4AF37;
     }
     .live-top {
       display: flex;
@@ -487,6 +560,160 @@
       }
     }
   </style>
+  <style>
+    /* History expand */
+    .history-toggle {
+      margin-top: 0.75rem;
+      background: none;
+      border: 1px solid rgba(212,175,55,0.5);
+      color: var(--gold);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 0.35rem 0.85rem;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .history-toggle:hover { background: var(--gold); color: var(--navy); }
+    .history-full { margin-top: 0; }
+    .history-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; }
+    @media(max-width:900px){ .history-grid { grid-template-columns: repeat(2,1fr); } }
+    @media(max-width:600px){ .history-grid { grid-template-columns: 1fr; } }
+
+    .history-era {
+      border-radius: 12px;
+      padding: 1.15rem 1.2rem 1.1rem;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid transparent;
+      transition: transform 0.18s, box-shadow 0.18s;
+    }
+    .history-era:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.13); }
+
+    /* Декоративный треугольник в правом верхнем углу */
+    .history-era::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 48px; height: 48px;
+      clip-path: polygon(100% 0, 0 0, 100% 100%);
+      opacity: 0.18;
+    }
+
+    /* Эпохи — цвета по древности */
+    .era-ancient  { background: linear-gradient(135deg, #fffbf0 0%, #fff5d6 100%); border-color: rgba(212,175,55,0.35); }
+    .era-ancient::after  { background: #D4AF37; }
+
+    .era-classic  { background: linear-gradient(135deg, #fff8ee 0%, #ffeecf 100%); border-color: rgba(200,140,60,0.3); }
+    .era-classic::after  { background: #c88c3c; }
+
+    .era-medieval { background: linear-gradient(135deg, #f5f0e8 0%, #e8dfc8 100%); border-color: rgba(160,130,80,0.3); }
+    .era-medieval::after { background: #a08250; }
+
+    .era-modern   { background: linear-gradient(135deg, #eef2f8 0%, #d8e4f0 100%); border-color: rgba(27,58,92,0.2); }
+    .era-modern::after   { background: #1B3A5C; }
+
+    .era-now      { background: linear-gradient(135deg, #1B3A5C 0%, #243f62 100%); border-color: rgba(212,175,55,0.4); }
+    .era-now::after      { background: #D4AF37; opacity: 0.25; }
+
+    .history-era-icon {
+      font-size: 1.5rem;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+    .history-era-date {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.2rem;
+      opacity: 0.6;
+    }
+    .era-now .history-era-date { color: rgba(255,255,255,0.6); }
+
+    .history-era-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+      color: #1B3A5C;
+    }
+    .era-ancient .history-era-title  { color: #7a5a00; }
+    .era-classic .history-era-title  { color: #7a4a00; }
+    .era-medieval .history-era-title { color: #5a4020; }
+    .era-modern .history-era-title   { color: #1B3A5C; }
+    .era-now .history-era-title      { color: #D4AF37; }
+
+    .history-era p { font-size: 0.86rem; margin: 0; line-height: 1.58; color: #555; }
+    .era-now p { color: rgba(255,255,255,0.8); }
+  </style>
+  <style>
+    /* Egyptian Must-Know Frame — inline to bypass cache */
+    .must-know-block {
+      background: linear-gradient(135deg, #1B3A5C 0%, #243f62 100%);
+      border-radius: 4px;
+      padding: 2.25rem 2rem 1.75rem;
+      margin-top: 0;
+      position: relative;
+      overflow: visible;
+      box-shadow: 0 6px 28px rgba(27,58,92,0.28);
+      border: 3px solid #D4AF37;
+    }
+    .must-know-block::before {
+      content: '';
+      position: absolute;
+      inset: 7px;
+      border: 1px solid rgba(212,175,55,0.38);
+      border-radius: 1px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .must-know-block > * { position: relative; z-index: 1; }
+    .must-know-block .section-title h2 { color: #fff; }
+    .must-know-block .section-title p   { color: rgba(255,255,255,0.65); }
+    .must-know-block .must-know-label {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      background: #D4AF37;
+      color: #1B3A5C;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: .25rem .8rem;
+      border-radius: 20px;
+      margin-bottom: 1rem;
+    }
+    .egp-corner {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      z-index: 10;
+    }
+    .egp-tl { top: -11px;    left: -11px;  }
+    .egp-tr { top: -11px;    right: -11px; }
+    .egp-bl { bottom: -11px; left: -11px;  }
+    .egp-br { bottom: -11px; right: -11px; }
+    .egp-corner::before {
+      content: '';
+      position: absolute;
+      width: 16px; height: 16px;
+      top: 3px; left: 3px;
+      background: #D4AF37;
+      transform: rotate(45deg);
+      border-radius: 1px;
+    }
+    .egp-corner::after {
+      content: '';
+      position: absolute;
+      width: 7px; height: 7px;
+      top: 7.5px; left: 7.5px;
+      background: #1a3755;
+      transform: rotate(45deg);
+    }
+  </style>
 </head>
 <body>
 
@@ -540,19 +767,276 @@
   </div>
 </section>
 
-<!-- WHY THIS SITE -->
-<section class="section" style="background:#FFF8E8; padding-top:2.75rem; padding-bottom:2.75rem;">
+<!-- FIRST TIME -->
+<section id="first-time" class="section" style="background: linear-gradient(180deg, #F8F0DD 0%, #FFFFFF 100%);">
   <div class="container">
-    <div class="card story-card" style="border:1px solid rgba(212,175,55,0.2);">
-      <img class="story-icon" src="images/papyrus-scroll.png" alt="">
-      <div class="card-body story-copy" style="padding:1.8rem 2rem;">
-        <h3 style="margin-bottom:0.7rem;">Почему мы вообще сделали этот сайт</h3>
-        <p style="font-size:0.98rem;color:var(--text-lt);">Когда мы начали собираться в Египет, быстро стало ясно: информация везде разбросана. Где-то про деньги, где-то про транспорт, где-то про города, где-то про “что реально нужно взять”. Поэтому мы решили собрать всё в одном месте и оформить это как нормальный живой сайт, а не как хаотичные заметки в телефоне.</p>
-        <p style="font-size:0.98rem;color:var(--text-lt); margin-bottom:0;">Сейчас это наш личный семейный гид и штаб подготовки. А дальше нам хочется, чтобы он остался полезным и другим: тем, кто тоже едет в Египет впервые и хочет спокойно понять страну без лишней суеты.</p>
+    <div class="section-title">
+      <img class="divider-art" src="images/pyramids-panorama.png" alt="Пирамиды Египта">
+      <h2>Египет в двух словах</h2>
+      <div class="gold-line"></div>
+    </div>
+
+    <div class="primer-grid">
+      <div class="primer-copy">
+        <span class="primer-kicker">Первое знакомство</span>
+        <p>Египет — это не только море у бассейна. За одну поездку здесь можно поймать и кораллы Красного моря, и древние храмы, и пирамиды, и шумный живой Каир. Где-то расслабленно, где-то хаотично — и именно это запоминается.</p>
+      </div>
+
+      <div class="primer-side">
+        <div class="card">
+          <div class="card-body">
+            <h4>Когда лучше ехать</h4>
+            <p style="font-size:0.92rem;color:var(--text-lt);">Для первого раза самые комфортные сезоны — весна и осень. В апреле уже очень тепло, море приятное, а по храмам и городам ещё можно гулять без экстремальной жары.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <h4>Куда ехать в первый раз</h4>
+            <p style="font-size:0.92rem;color:var(--text-lt);"><strong>Хургада</strong> — море и рифы. <strong>Луксор</strong> — древности и храмы. <strong>Каир</strong> — пирамиды, музей и городской драйв. Вместе они дают очень цельную картину Египта.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <h4>Что важно знать <img src="images/scarab-sun.png" alt="" style="width:28px;vertical-align:middle;margin-left:0.35rem;"></h4>
+            <p style="font-size:0.92rem;color:var(--text-lt);">Тут стоит заранее принять местный ритм: торг, наличные, офлайн-карты, вода в бутылках, такси и немного гибкости. Если ехать с таким настроем, Египет раскрывается гораздо приятнее.</p>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
 </section>
+
+<!-- WHY EGYPT -->
+<section class="section" style="background: var(--white);">
+  <div class="container">
+    <div class="section-title">
+      <h2>Почему стоит ехать</h2>
+      <div class="gold-line"></div>
+    </div>
+    <div class="grid-4">
+      <div class="card">
+        <div class="card-body" style="text-align:center;">
+          <img class="reason-icon" src="images/history-emblem.png" alt="5000 лет истории">
+          <h4>5000 лет истории</h4>
+          <p style="font-size:0.88rem;color:var(--text-lt);">Храмы, гробницы и артефакты, которые не найти больше нигде в мире</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body" style="text-align:center;">
+          <img class="reason-icon" src="images/reef-emblem.png" alt="Лучшие рифы мира">
+          <h4>Лучшие рифы мира</h4>
+          <p style="font-size:0.88rem;color:var(--text-lt);">Красное море — топ-5 мест для снорклинга и дайвинга на планете</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body" style="text-align:center;">
+          <img class="reason-icon" src="images/wonder-emblem.png" alt="Чудо света">
+          <h4>Чудо света</h4>
+          <p style="font-size:0.88rem;color:var(--text-lt);">Единственное сохранившееся чудо древнего мира — пирамиды Гизы</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body" style="text-align:center;">
+          <img class="reason-icon" src="images/bazaar-emblem.png" alt="Шоппинг мечты">
+          <h4>Шоппинг мечты</h4>
+          <p style="font-size:0.88rem;color:var(--text-lt);">Хлопок, кожа, специи — качество по смешным ценам</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section class="section" style="background:#FFF8E8; padding-top:2.5rem; padding-bottom:2.5rem;">
+  <div class="container">
+    <div class="section-title" style="margin-bottom:1.5rem;">
+      <h2>История Египта</h2>
+      <div class="gold-line"></div>
+      <p style="color:var(--text-lt);max-width:560px;margin:0.75rem auto 0;">Египет — одна из древнейших цивилизаций мира. Пирамиды, гробницы и храмы здесь не "музейная декорация", а реальное наследие страны, которому тысячи лет. Поэтому даже обычная поездка сюда ощущается чуть глубже, чем просто пляжный отпуск.</p>
+    </div>
+    <div style="text-align:center; margin-bottom:1.5rem;">
+      <button class="history-toggle" onclick="toggleHistory(this)" aria-expanded="false">Читать всю историю Египта ↓</button>
+    </div>
+    <div class="history-full" hidden>
+      <div class="history-grid">
+
+        <div class="history-era era-ancient">
+          <span class="history-era-icon">𓂀</span>
+          <div class="history-era-date">~ 3100 до н.э.</div>
+          <div class="history-era-title">Объединение Египта</div>
+          <p>До этого на берегах Нила существовали два отдельных царства — Верхний и Нижний Египет. Фараон Нармер объединил их. Нил давал воду и плодородные почвы — всё остальное выросло вокруг него.</p>
+        </div>
+
+        <div class="history-era era-ancient">
+          <span class="history-era-icon">△</span>
+          <div class="history-era-date">2700–2200 до н.э.</div>
+          <div class="history-era-title">Эпоха пирамид</div>
+          <p>Древнее царство — время великих пирамид. Хеопс, Хефрен, Микерин в Гизе. Фараон считался живым богом. Рабочие получали еду, жильё и медицинскую помощь — это были не рабы.</p>
+        </div>
+
+        <div class="history-era era-ancient">
+          <span class="history-era-icon">⚡</span>
+          <div class="history-era-date">2000–1500 до н.э.</div>
+          <div class="history-era-title">Среднее и Новое царство</div>
+          <p>Период расцвета. Тутмос III, Хатшепсут (женщина-фараон), Рамзес II. Карнакский храм, Долина царей в Луксоре — всё оттуда.</p>
+        </div>
+
+        <div class="history-era era-ancient">
+          <span class="history-era-icon">☥</span>
+          <div class="history-era-date">1350 до н.э.</div>
+          <div class="history-era-title">Тутанхамон и религиозный переворот</div>
+          <p>Эхнатон попытался ввести единого бога. Жрецы ненавидели это. После его смерти юный Тутанхамон вернул старую религию. Умер в 19 лет — гробницу нашли нетронутой в 1922 году.</p>
+        </div>
+
+        <div class="history-era era-classic">
+          <span class="history-era-icon">🏛</span>
+          <div class="history-era-date">332 до н.э.</div>
+          <div class="history-era-title">Александр Македонский</div>
+          <p>Завоевал Египет без боя — египтяне встретили его как освободителя. Основал Александрию. После — греческая династия Птолемеев. Последняя из них — Клеопатра VII.</p>
+        </div>
+
+        <div class="history-era era-classic">
+          <span class="history-era-icon">🦅</span>
+          <div class="history-era-date">30 до н.э.</div>
+          <div class="history-era-title">Римская провинция</div>
+          <p>После смерти Клеопатры — часть Римской империи. Почти 700 лет — Рим, потом Византия. В это время египтяне массово приняли христианство. Коптская церковь существует до сих пор.</p>
+        </div>
+
+        <div class="history-era era-medieval">
+          <span class="history-era-icon">☪️</span>
+          <div class="history-era-date">641 н.э.</div>
+          <div class="history-era-title">Арабское завоевание</div>
+          <p>Страна стала мусульманской. Арабский язык вытеснил коптский. Каир основан в 969 году как новая столица. С этого момента Египет — часть арабского мира.</p>
+        </div>
+
+        <div class="history-era era-medieval">
+          <span class="history-era-icon">🗺</span>
+          <div class="history-era-date">1517–1798</div>
+          <div class="history-era-title">Османская империя</div>
+          <p>Провинция Османов почти 300 лет. В 1798-м пришёл Наполеон с армией и учёными. Французы описали все древности — так началась египтология. Розеттский камень нашли именно тогда.</p>
+        </div>
+
+        <div class="history-era era-modern">
+          <span class="history-era-icon">⚙️</span>
+          <div class="history-era-date">XIX — нач. XX в.</div>
+          <div class="history-era-title">Модернизация и колонии</div>
+          <p>Мухаммад Али строил современное государство. Его внук открыл Суэцкий канал (1869) — и Египет попал в долговую зависимость от Британии. С 1882-го — фактически под британским контролем.</p>
+        </div>
+
+        <div class="history-era era-modern">
+          <span class="history-era-icon">✊</span>
+          <div class="history-era-date">1952</div>
+          <div class="history-era-title">Революция и Насер</div>
+          <p>Военные свергли короля, Египет стал республикой. Насер национализировал Суэцкий канал, строил Асуанскую плотину. Символ арабского национализма для всего региона.</p>
+        </div>
+
+        <div class="history-era era-modern">
+          <span class="history-era-icon">🕊</span>
+          <div class="history-era-date">1978–2011</div>
+          <div class="history-era-title">Мир с Израилем. Мубарак</div>
+          <p>Садат подписал мир с Израилем — первый в арабском мире. Был убит в 1981-м. Его преемник Мубарак правил 30 лет, пока протесты на Тахрире не положили этому конец.</p>
+        </div>
+
+        <div class="history-era era-now">
+          <span class="history-era-icon">🌍</span>
+          <div class="history-era-date">Сегодня</div>
+          <div class="history-era-title">Современный Египет</div>
+          <p>105 млн человек, арабская и мусульманская культура с огромным коптским меньшинством. Туризм — главный источник дохода. Каждый год учёные находят что-то новое.</p>
+        </div>
+
+      </div>
+      <div style="text-align:center; margin-top:1.5rem;">
+        <button class="history-toggle" onclick="toggleHistory(this)" aria-expanded="true">Свернуть ↑</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NO SURPRISES -->
+<section class="section" style="background:#FFF8E8; padding-top:2.8rem; padding-bottom:2.8rem;">
+  <div class="container">
+    <div class="must-know-block" style="background:linear-gradient(135deg,#1B3A5C 0%,#243f62 100%);border:3px solid #D4AF37;border-radius:4px;padding:2.25rem 2rem 1.75rem;position:relative;overflow:visible;box-shadow:0 6px 28px rgba(27,58,92,0.28);">
+      <span class="egp-corner egp-tl" style="position:absolute;width:22px;height:22px;z-index:10;top:-11px;left:-11px;"></span>
+      <span class="egp-corner egp-tr" style="position:absolute;width:22px;height:22px;z-index:10;top:-11px;right:-11px;"></span>
+      <span class="egp-corner egp-bl" style="position:absolute;width:22px;height:22px;z-index:10;bottom:-11px;left:-11px;"></span>
+      <span class="egp-corner egp-br" style="position:absolute;width:22px;height:22px;z-index:10;bottom:-11px;right:-11px;"></span>
+      <div class="section-title" style="margin-bottom:1.5rem;position:relative;z-index:1;">
+        <div class="must-know-label" style="margin:0 auto 0.75rem;display:inline-flex;align-items:center;background:#D4AF37;color:#1B3A5C;font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .8rem;border-radius:20px;">⚑ Самое важное</div>
+        <h2 style="color:#fff;">Что лучше знать до вылета</h2>
+        <div class="gold-line"></div>
+        <p class="mt-2" style="color:rgba(255,255,255,0.65);">Короткая база, которая реально помогает уже в первый день.</p>
+      </div>
+      <div class="grid-4">
+        <div class="card">
+          <div class="card-body">
+            <h4>💵 Деньги</h4>
+            <p style="font-size:0.92rem;color:var(--text-lt);">Лучше рассчитывать на наличные доллары и фунты. Мелкие купюры очень пригодятся для такси и чаевых.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <h4>🚕 Транспорт</h4>
+            <p style="font-size:0.92rem;color:var(--text-lt);">Там где есть Uber — это лучший вариант. Где нет — цену называть до посадки, иначе почти наверняка переплатишь.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <h4>💧 Вода и еда</h4>
+            <p style="font-size:0.92rem;color:var(--text-lt);">Вода только бутилированная. Безопаснее горячая еда при тебе. С сырыми салатами и льдом лучше осторожнее.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <h4>🧿 Торг и навязчивость</h4>
+            <p style="font-size:0.92rem;color:var(--text-lt);">Ничего не брать «в подарок», цену обсуждать сразу. «Ля, шукран» — главная фраза на любой базар.</p>
+          </div>
+        </div>
+      </div>
+      <div class="text-center mt-3">
+        <a href="tips.html" class="btn btn-primary">Все советы подробно →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="calc-overlay" id="calc-overlay" aria-hidden="true">
+  <div class="calc-modal" role="dialog" aria-modal="true" aria-labelledby="calc-title">
+    <div class="calc-head">
+      <h3 id="calc-title">Калькулятор для торга</h3>
+      <button class="calc-close" id="calc-close" type="button" aria-label="Закрыть">×</button>
+    </div>
+    <div class="calc-body">
+      <p class="calc-hint">Вбей сумму в удобной валюте, а остальные пересчитаются сами. Удобно быстро понять, что тебе называют на рынке или в такси.</p>
+
+      <div class="calc-grid">
+        <div class="calc-field">
+          <label for="calc-egp">Египетские фунты</label>
+          <input id="calc-egp" type="number" min="0" step="0.01" placeholder="Например, 500">
+        </div>
+        <div class="calc-field">
+          <label for="calc-usd">Доллары</label>
+          <input id="calc-usd" type="number" min="0" step="0.01" placeholder="Например, 10">
+        </div>
+        <div class="calc-field">
+          <label for="calc-rub">Рубли</label>
+          <input id="calc-rub" type="number" min="0" step="0.01" placeholder="Например, 1000">
+        </div>
+      </div>
+
+      <div class="calc-quick">
+        <button class="calc-chip" type="button" data-egp="100">100 EGP</button>
+        <button class="calc-chip" type="button" data-egp="250">250 EGP</button>
+        <button class="calc-chip" type="button" data-egp="500">500 EGP</button>
+        <button class="calc-chip" type="button" data-egp="1000">1000 EGP</button>
+      </div>
+
+      <div class="calc-foot" id="calc-foot">Курс подхватится автоматически, как только загрузится live-блок.</div>
+    </div>
+  </div>
+</div>
 
 <!-- LIVE DATA -->
 <section class="section" style="background: var(--white); padding-top: 3rem; padding-bottom: 3rem;">
@@ -606,15 +1090,18 @@
       </div>
 
       <div class="live-card clickable" id="live-rate-card" role="button" tabindex="0" aria-label="Открыть калькулятор валют">
+        <span class="egp-corner egp-tl" style="position:absolute;width:18px;height:18px;z-index:10;top:-9px;left:-9px;"></span>
+        <span class="egp-corner egp-bl" style="position:absolute;width:18px;height:18px;z-index:10;bottom:-9px;left:-9px;"></span>
+        <span class="egp-corner egp-br" style="position:absolute;width:18px;height:18px;z-index:10;bottom:-9px;right:-9px;"></span>
         <div class="live-top">
           <div class="live-top-left">
             <div class="live-city">Курс</div>
-            <div class="live-badge">Нажми</div>
+            <div class="live-badge" id="live-rate-badge">Обновляется</div>
           </div>
           <div class="live-icon">💱</div>
         </div>
         <div class="live-value" id="live-rate-usd">...</div>
-        <p class="live-desc" id="live-rate-desc">Покажем связку доллар → египетские фунты → рубли, чтобы проще понимать цены на месте.</p>
+        <p class="live-desc" id="live-rate-desc">Подтягиваем актуальный курс, чтобы на месте было проще понимать цены и быстро прикидывать обмен.</p>
         <div class="live-tap">🧮 Открыть калькулятор для торга</div>
       </div>
     </div>
@@ -629,183 +1116,51 @@
   </div>
 </section>
 
-<div class="calc-overlay" id="calc-overlay" aria-hidden="true">
-  <div class="calc-modal" role="dialog" aria-modal="true" aria-labelledby="calc-title">
-    <div class="calc-head">
-      <h3 id="calc-title">Калькулятор для торга</h3>
-      <button class="calc-close" id="calc-close" type="button" aria-label="Закрыть">×</button>
-    </div>
-    <div class="calc-body">
-      <p class="calc-hint">Вбей сумму в удобной валюте, а остальные пересчитаются сами. Удобно быстро понять, что тебе называют на рынке или в такси.</p>
-
-      <div class="calc-grid">
-        <div class="calc-field">
-          <label for="calc-egp">Египетские фунты</label>
-          <input id="calc-egp" type="number" min="0" step="0.01" placeholder="Например, 500">
-        </div>
-        <div class="calc-field">
-          <label for="calc-usd">Доллары</label>
-          <input id="calc-usd" type="number" min="0" step="0.01" placeholder="Например, 10">
-        </div>
-        <div class="calc-field">
-          <label for="calc-rub">Рубли</label>
-          <input id="calc-rub" type="number" min="0" step="0.01" placeholder="Например, 1000">
-        </div>
-      </div>
-
-      <div class="calc-quick">
-        <button class="calc-chip" type="button" data-egp="100">100 EGP</button>
-        <button class="calc-chip" type="button" data-egp="250">250 EGP</button>
-        <button class="calc-chip" type="button" data-egp="500">500 EGP</button>
-        <button class="calc-chip" type="button" data-egp="1000">1000 EGP</button>
-      </div>
-
-      <div class="calc-foot" id="calc-foot">Курс подхватится автоматически, как только загрузится live-блок.</div>
-    </div>
-  </div>
-</div>
-
-<!-- FIRST TIME -->
-<section id="first-time" class="section" style="background: linear-gradient(180deg, #F8F0DD 0%, #FFFFFF 100%);">
+<!-- WHY THIS SITE -->
+<section class="section" style="background:#FFF8E8; padding-top:2.75rem; padding-bottom:2.75rem;">
   <div class="container">
-    <div class="section-title">
-      <img class="divider-art" src="images/pyramids-panorama.png" alt="Пирамиды Египта">
-      <h2>Египет в двух словах</h2>
-      <div class="gold-line"></div>
-    </div>
-
-    <div class="primer-grid">
-      <div class="primer-copy">
-        <span class="primer-kicker">Первое знакомство</span>
-        <p>Египет — это не только “отель и море”. За одну поездку здесь можно поймать очень разный вайб: кораллы Красного моря, древние храмы, пустынные пейзажи, Нил и огромный шумный Каир. Поэтому страна ощущается не как один курорт, а как сразу несколько разных путешествий в одном.</p>
-        <p>Если ехать первый раз, лучше воспринимать Египет как микс отдыха и приключения. Где-то всё будет красиво и расслабленно, а где-то шумно, живо и немного хаотично. И это нормально: не “идеально по-европейски”, зато очень атмосферно и по-настоящему запоминается.</p>
-        <p>Именно поэтому наш маршрут такой: сначала море и отдых в Хургаде, потом древний Египет в Луксоре, а потом пирамиды и большой город в Каире. Получается не просто отпуск у бассейна, а ощущение полноценного первого знакомства со страной.</p>
-        <div class="primer-end">Ну вот мы и поехали в Египет первый раз: хотим взять от него и море, и историю, и пирамиды, и просто то самое ощущение большого живого путешествия.</div>
-      </div>
-
-      <div class="primer-side">
-        <div class="card">
-          <div class="card-body">
-            <h4>Когда лучше ехать</h4>
-            <p style="font-size:0.92rem;color:var(--text-lt);">Для первого раза самые комфортные сезоны — весна и осень. В апреле уже очень тепло, море приятное, а по храмам и городам ещё можно гулять без экстремальной жары.</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-body">
-            <h4>Куда ехать в первый раз</h4>
-            <p style="font-size:0.92rem;color:var(--text-lt);"><strong>Хургада</strong> — море и рифы. <strong>Луксор</strong> — древности и храмы. <strong>Каир</strong> — пирамиды, музей и городской драйв. Вместе они дают очень цельную картину Египта.</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-body">
-            <h4>Что важно знать <img src="images/scarab-sun.png" alt="" style="width:28px;vertical-align:middle;margin-left:0.35rem;"></h4>
-            <p style="font-size:0.92rem;color:var(--text-lt);">Тут стоит заранее принять местный ритм: торг, наличные, офлайн-карты, вода в бутылках, такси и немного гибкости. Если ехать с таким настроем, Египет раскрывается гораздо приятнее.</p>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-body">
-            <h4>Очень кратко про историю</h4>
-            <p style="font-size:0.92rem;color:var(--text-lt);">Египет — одна из древнейших цивилизаций мира. Пирамиды, гробницы и храмы здесь не “музейная декорация”, а реальное наследие страны, которому тысячи лет. Поэтому даже обычная поездка сюда ощущается чуть глубже, чем просто пляжный отпуск.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- WHY EGYPT -->
-<section class="section" style="background: var(--white);">
-  <div class="container">
-    <div class="section-title">
-      <h2>Почему стоит ехать</h2>
-      <div class="gold-line"></div>
-    </div>
-    <div class="grid-4">
-      <div class="card">
-        <div class="card-body" style="text-align:center;">
-          <img class="reason-icon" src="images/history-emblem.png" alt="5000 лет истории">
-          <h4>5000 лет истории</h4>
-          <p style="font-size:0.88rem;color:var(--text-lt);">Храмы, гробницы и артефакты, которые не найти больше нигде в мире</p>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-body" style="text-align:center;">
-          <img class="reason-icon" src="images/reef-emblem.png" alt="Лучшие рифы мира">
-          <h4>Лучшие рифы мира</h4>
-          <p style="font-size:0.88rem;color:var(--text-lt);">Красное море — топ-5 мест для снорклинга и дайвинга на планете</p>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-body" style="text-align:center;">
-          <img class="reason-icon" src="images/wonder-emblem.png" alt="Чудо света">
-          <h4>Чудо света</h4>
-          <p style="font-size:0.88rem;color:var(--text-lt);">Единственное сохранившееся чудо древнего мира — пирамиды Гизы</p>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-body" style="text-align:center;">
-          <img class="reason-icon" src="images/bazaar-emblem.png" alt="Шоппинг мечты">
-          <h4>Шоппинг мечты</h4>
-          <p style="font-size:0.88rem;color:var(--text-lt);">Хлопок, кожа, специи — качество по смешным ценам</p>
-        </div>
+    <div class="card story-card" style="border:1px solid rgba(212,175,55,0.2);">
+      <img class="story-icon" src="images/papyrus-scroll.png" alt="">
+      <div class="card-body story-copy" style="padding:1.8rem 2rem;">
+        <h3 style="margin-bottom:0.7rem;">Почему мы вообще сделали этот сайт</h3>
+        <p style="font-size:0.98rem;color:var(--text-lt);">Когда мы начали собираться в Египет, быстро стало ясно: информация везде разбросана. Где-то про деньги, где-то про транспорт, где-то про города, где-то про "что реально нужно взять". Поэтому мы решили собрать всё в одном месте и оформить это как нормальный живой сайт, а не как хаотичные заметки в телефоне.</p>
+        <p style="font-size:0.98rem;color:var(--text-lt); margin-bottom:0;">Сейчас это наш личный семейный гид и штаб подготовки. А дальше нам хочется, чтобы он остался полезным и другим: тем, кто тоже едет в Египет впервые и хочет спокойно понять страну без лишней суеты.</p>
       </div>
     </div>
   </div>
 </section>
 
 <!-- SITE NAV -->
-<section class="section" style="background:#FFF8E8; padding-top:2.6rem; padding-bottom:2.6rem;">
+<section class="section" style="background:#FFF8E8; padding-top:2.2rem; padding-bottom:2.2rem;">
   <div class="container">
-    <div class="section-title" style="margin-bottom:1.4rem;">
+    <div class="section-title" style="margin-bottom:1.2rem;">
       <h2>Куда дальше</h2>
       <div class="gold-line"></div>
-      <p class="mt-2">Если листаешь главную и хочешь быстро понять, где что лежит, вот короткая навигация по самому полезному.</p>
     </div>
-    <div class="site-nav-grid">
-      <a href="cities.html" class="site-nav-card">
-        <div class="site-nav-top">
-          <div class="site-nav-kicker">По городам</div>
-          <div class="site-nav-icon">🏛️</div>
+    <div class="sitenav-row">
+      <a href="cities.html" class="sitenav-item">
+        <span class="sitenav-icon">🏛️</span>
+        <div class="sitenav-body">
+          <div class="sitenav-title">Гиды по городам</div>
+          <div class="sitenav-sub">Хургада, Луксор, Каир — чем отличаются и что смотреть</div>
         </div>
-        <h4>Гиды по городам</h4>
-        <p>Если пока не очень понятно, чем вообще отличаются Хургада, Луксор и Каир, начни отсюда.</p>
-        <ul class="site-nav-list">
-          <li>Куда ехать за морем, а куда за историей</li>
-          <li>Что смотреть в каждом городе в первую очередь</li>
-          <li>Как понять вайб места ещё до поездки</li>
-        </ul>
-        <span class="site-nav-link">Открыть города →</span>
+        <span class="sitenav-arrow">→</span>
       </a>
-      <a href="map.html" class="site-nav-card">
-        <div class="site-nav-top">
-          <div class="site-nav-kicker">Логистика</div>
-          <div class="site-nav-icon">🗺️</div>
+      <a href="map.html" class="sitenav-item">
+        <span class="sitenav-icon">🗺️</span>
+        <div class="sitenav-body">
+          <div class="sitenav-title">Карта маршрута</div>
+          <div class="sitenav-sub">Все точки поездки наглядно на одном экране</div>
         </div>
-        <h4>Наш маршрут</h4>
-        <p>Это просто наглядная карта с основными точками поездки, чтобы быстро собрать общую картину маршрута.</p>
-        <ul class="site-nav-list">
-          <li>Города и ключевые места по пути</li>
-          <li>Порядок маршрута без перегруза деталями</li>
-          <li>Удобно открыть и сразу визуально сориентироваться</li>
-        </ul>
-        <span class="site-nav-link">Открыть карту →</span>
+        <span class="sitenav-arrow">→</span>
       </a>
-      <a href="tips.html" class="site-nav-card">
-        <div class="site-nav-top">
-          <div class="site-nav-kicker">Практика</div>
-          <div class="site-nav-icon">💡</div>
+      <a href="tips.html" class="sitenav-item">
+        <span class="sitenav-icon">💡</span>
+        <div class="sitenav-body">
+          <div class="sitenav-title">Советы</div>
+          <div class="sitenav-sub">Деньги, транспорт, что взять с собой</div>
         </div>
-        <h4>Что важно знать</h4>
-        <p>Здесь собрали самое полезное из того, что реально помогает перед поездкой, а не просто красиво звучит в интернете.</p>
-        <ul class="site-nav-list">
-          <li>Деньги, наличные, курс и как проще платить</li>
-          <li>Связь, вода, офлайн-карты и транспорт</li>
-          <li>Что взять с собой и на чём люди обычно тупят</li>
-        </ul>
-        <span class="site-nav-link">Перейти к советам →</span>
+        <span class="sitenav-arrow">→</span>
       </a>
     </div>
   </div>
@@ -822,14 +1177,29 @@
 
 <!-- FOOTER -->
 <footer class="footer">
-  <p><strong>Египет 2026</strong> · Макс и Луиза · 14–21 апреля</p>
-  <p style="margin-top:0.3rem;">Sochi AER → Hurghada HRG · <a href="feedback.html">Поделиться советом</a></p>
+  <p><strong>Египет 2026</strong> · семейный гид по первой поездке</p>
+  <p style="margin-top:0.3rem;"><a href="feedback.html">Поделиться советом</a> · <a href="tips.html">Что важно знать</a></p>
 </footer>
 
 <script src="js/main.js"></script>
 <script>
   updateCountdown('2026-04-14T14:30:00+03:00', 'countdown');
   initEgyptLiveData();
+
+  function toggleHistory(btn) {
+    var section = btn.closest('section');
+    var panel = section.querySelector('.history-full');
+    var open = panel.hidden === false;
+    var btns = section.querySelectorAll('.history-toggle');
+    if (open) {
+      panel.hidden = true;
+      btns.forEach(function(b){ b.setAttribute('aria-expanded','false'); b.textContent = 'Читать всю историю Египта ↓'; });
+      section.querySelector('.history-toggle').scrollIntoView({behavior:'smooth', block:'center'});
+    } else {
+      panel.hidden = false;
+      btns.forEach(function(b){ b.setAttribute('aria-expanded','true'); b.textContent = 'Свернуть ↑'; });
+    }
+  }
 </script>
 </body>
 </html>

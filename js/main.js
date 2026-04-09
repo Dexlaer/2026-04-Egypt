@@ -360,6 +360,7 @@ async function fetchRates(baseCurrency) {
 async function initEgyptLiveData() {
   const rateValue = document.getElementById('live-rate-usd');
   const rateDesc = document.getElementById('live-rate-desc');
+  const rateBadge = document.getElementById('live-rate-badge');
   const updatedEl = document.getElementById('live-updated');
 
   if (!rateValue && !updatedEl && !document.getElementById('live-hurghada-temp')) return;
@@ -397,10 +398,12 @@ async function initEgyptLiveData() {
 
     if (rateValue) rateValue.innerHTML = `1 USD ≈ ${usdToEgp.toFixed(2)} EGP ≈ ${usdToRub.toFixed(2)} RUB`;
     if (rateDesc) rateDesc.textContent = `Дополнительно: 100 RUB ≈ ${(rubToEgp * 100).toFixed(2)} EGP. Небольшой ориентир, чтобы быстрее понимать местные цены.`;
+    if (rateBadge) rateBadge.textContent = 'На сейчас';
     initCurrencyCalculator();
   } catch (error) {
     if (rateValue) rateValue.textContent = '—';
     if (rateDesc) rateDesc.textContent = 'Курс временно не загрузился, позже подтянется сам.';
+    if (rateBadge) rateBadge.textContent = 'Обновится';
   }
 
   if (updatedEl) {
