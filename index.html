@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Египет 2026 — Макс и Луиза</title>
+  <meta name="description" content="Путеводитель по Египту: Хургада, Луксор, Каир. 14–21 апреля 2026.">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    @media(max-width:700px){ .info-grid { grid-template-columns: 1fr; } }
+    .info-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(212,175,55,0.2);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      color: var(--white);
+    }
+    .info-card .ic-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .info-card .ic-label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); margin-bottom: 0.25rem; }
+    .info-card .ic-val { font-family: var(--font-h); font-size: 1.1rem; font-weight: 700; color: var(--gold); }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a class="navbar-brand" href="index.html">🇪🇬 <span>Египет</span> 2026</a>
+  <button class="nav-toggle" aria-label="Меню">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links">
+    <li><a href="index.html">Главная</a></li>
+    <li><a href="cities.html">Города</a></li>
+    <li><a href="map.html">Карта</a></li>
+    <li><a href="tips.html">Советы</a></li>
+    <li><a href="feedback.html">Рекомендации</a></li>
+    <li class="nav-private"><a href="private.html">🔐 Наш план</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-pattern"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">14 – 21 апреля 2026</p>
+    <h1>Макс и Луиза<br>едут в <em>Египет</em></h1>
+    <p class="hero-sub">Хургада · Луксор · Каир — 8 дней, три города, одно незабываемое путешествие</p>
+
+    <!-- Countdown -->
+    <div class="countdown-bar" id="countdown"></div>
+
+    <div class="hero-btns">
+      <a href="cities.html" class="btn btn-primary">🏛 Гиды по городам</a>
+      <a href="map.html" class="btn btn-white">🗺 Карта маршрута</a>
+      <a href="private.html" class="btn btn-outline" style="border-color:rgba(212,175,55,0.5);color:var(--gold);">🔐 Личный план</a>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="ic-icon">✈️</div>
+        <div class="ic-label">Авиакомпания</div>
+        <div class="ic-val">Nesma Airlines</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">🌡️</div>
+        <div class="ic-label">Температура в апреле</div>
+        <div class="ic-val">+28–35°C</div>
+      </div>
+      <div class="info-card">
+        <div class="ic-icon">💵</div>
+        <div class="ic-label">Виза на месте</div>
+        <div class="ic-val">$30 / чел</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROUTE STRIP -->
+<div class="route-strip">
+  <div class="container">
+    <div class="route-inner">
+      <div class="route-city">
+        <div class="route-city-icon">🏖️</div>
+        <span class="route-city-name">Сочи</span>
+        <span class="route-city-days">вылет</span>
+      </div>
+      <div class="route-arrow">→</div>
+      <div class="route-city">
+        <div class="route-city-icon">🤿</div>
+        <span class="route-city-name">Хургада</span>
+        <span class="route-city-days">4 ночи</span>
+      </div>
+      <div class="route-arrow">→</div>
+      <div class="route-city">
+        <div class="route-city-icon">🏛️</div>
+        <span class="route-city-name">Луксор</span>
+        <span class="route-city-days">2 ночи</span>
+      </div>
+      <div class="route-arrow">→</div>
+      <div class="route-city">
+        <div class="route-city-icon">🔺</div>
+        <span class="route-city-name">Каир</span>
+        <span class="route-city-days">1 ночь</span>
+      </div>
+      <div class="route-arrow">→</div>
+      <div class="route-city">
+        <div class="route-city-icon">🤿</div>
+        <span class="route-city-name">Хургада</span>
+        <span class="route-city-days">1 ночь</span>
+      </div>
+      <div class="route-arrow">→</div>
+      <div class="route-city">
+        <div class="route-city-icon">🏡</div>
+        <span class="route-city-name">Сочи</span>
+        <span class="route-city-days">домой</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CITY CARDS -->
+<section class="section" style="background: var(--sand);">
+  <div class="container">
+    <div class="section-title">
+      <h2>Три города — три мира</h2>
+      <div class="gold-line"></div>
+      <p class="mt-2">Каждый город Египта — отдельная вселенная. Нажми на город — узнаешь всё.</p>
+    </div>
+    <div class="grid-3">
+      <a href="cities.html#hurghada" class="city-card" style="text-decoration:none;">
+        <div class="city-card-header" style="background:linear-gradient(135deg,#006994,#00A8CC);">🤿</div>
+        <div class="city-card-body">
+          <h3>Хургада</h3>
+          <p>Красное море, коралловые рифы, острова Гифтун. База всей поездки — отдых, море, снорклинг.</p>
+          <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.75rem;">
+            <span class="badge badge-gold">Море</span>
+            <span class="badge badge-gold">Рифы</span>
+            <span class="badge badge-gold">Яхта</span>
+          </div>
+          <span class="city-card-link">Читать гид →</span>
+        </div>
+      </a>
+
+      <a href="cities.html#luxor" class="city-card" style="text-decoration:none;">
+        <div class="city-card-header" style="background:linear-gradient(135deg,#8B6914,#D4AF37);">🏛️</div>
+        <div class="city-card-body">
+          <h3>Луксор</h3>
+          <p>Открытый музей под небом: Долина Царей, Карнакский храм, Нил и фелука на закате.</p>
+          <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.75rem;">
+            <span class="badge badge-gold">Храмы</span>
+            <span class="badge badge-gold">История</span>
+            <span class="badge badge-gold">Нил</span>
+          </div>
+          <span class="city-card-link">Читать гид →</span>
+        </div>
+      </a>
+
+      <a href="cities.html#cairo" class="city-card" style="text-decoration:none;">
+        <div class="city-card-header" style="background:linear-gradient(135deg,#1B3A5C,#2A5080);">🔺</div>
+        <div class="city-card-body">
+          <h3>Каир</h3>
+          <p>Пирамиды Гизы, Сфинкс, Большой египетский музей (GEM), легендарный базар Хан-эль-Халили.</p>
+          <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.75rem;">
+            <span class="badge badge-gold">Пирамиды</span>
+            <span class="badge badge-gold">GEM</span>
+            <span class="badge badge-gold">Базар</span>
+          </div>
+          <span class="city-card-link">Читать гид →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- WHY EGYPT -->
+<section class="section" style="background: var(--white);">
+  <div class="container">
+    <div class="section-title">
+      <h2>Почему стоит ехать</h2>
+      <div class="gold-line"></div>
+    </div>
+    <div class="grid-4">
+      <div class="card">
+        <div class="card-body" style="text-align:center;">
+          <span class="card-icon">🎭</span>
+          <h4>5000 лет истории</h4>
+          <p style="font-size:0.88rem;color:var(--text-lt);">Храмы, гробницы и артефакты, которые не найти больше нигде в мире</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body" style="text-align:center;">
+          <span class="card-icon">🐠</span>
+          <h4>Лучшие рифы мира</h4>
+          <p style="font-size:0.88rem;color:var(--text-lt);">Красное море — топ-5 мест для снорклинга и дайвинга на планете</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body" style="text-align:center;">
+          <span class="card-icon">🔺</span>
+          <h4>Чудо света</h4>
+          <p style="font-size:0.88rem;color:var(--text-lt);">Единственное сохранившееся чудо древнего мира — пирамиды Гизы</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body" style="text-align:center;">
+          <span class="card-icon">🛍️</span>
+          <h4>Шоппинг мечты</h4>
+          <p style="font-size:0.88rem;color:var(--text-lt);">Хлопок, кожа, специи — качество по смешным ценам</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FEEDBACK -->
+<section class="section" style="background: var(--navy); padding: 3rem 0;">
+  <div class="container text-center">
+    <h2 style="color:var(--white);">Были в Египте? 🌟</h2>
+    <p style="color:rgba(255,255,255,0.65); margin: 0.75rem 0 2rem;">Поделитесь советом — куда сходить, что не пропустить, а что пропустить. Мы обновим гид!</p>
+    <a href="feedback.html" class="btn btn-primary" style="font-size:1rem; padding:0.8rem 2rem;">Оставить рекомендацию</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p><strong>Египет 2026</strong> · Макс и Луиза · 14–21 апреля</p>
+  <p style="margin-top:0.3rem;">Sochi AER → Hurghada HRG · <a href="feedback.html">Поделиться советом</a></p>
+</footer>
+
+<!-- MUSIC PLAYER -->
+<div class="music-player" id="music-player">
+  <audio id="bg-audio" loop src="Kadir Demir - Desert Queen.mp3" preload="none"></audio>
+  <button class="music-btn" id="music-btn" onclick="toggleMusic()" title="Kadir Demir — Desert Queen">
+    <span class="music-note">♪</span>
+    <div class="music-bars"><span></span><span></span><span></span><span></span></div>
+  </button>
+  <div class="music-label">Desert Queen</div>
+</div>
+
+<script src="js/main.js"></script>
+<script>
+  updateCountdown('2026-04-14T14:30:00+03:00', 'countdown');
+</script>
+</body>
+</html>

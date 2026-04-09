@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Карта маршрута — Египет 2026</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    body { display: flex; flex-direction: column; height: 100vh; }
+    #map { flex: 1; }
+    .map-legend {
+      position: absolute;
+      bottom: 30px;
+      right: 12px;
+      z-index: 1000;
+      background: white;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      font-size: 0.82rem;
+      min-width: 140px;
+    }
+    .map-legend h4 { font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--navy); }
+    .legend-item { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; border: 2px solid rgba(0,0,0,0.2); }
+    .map-filter-bar {
+      background: var(--navy);
+      padding: 0.5rem 1rem;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .map-filter-bar span { color: rgba(255,255,255,0.6); font-size: 0.82rem; margin-right: 0.25rem; }
+    .filter-btn {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      border: 1.5px solid rgba(255,255,255,0.25);
+      background: transparent;
+      color: rgba(255,255,255,0.8);
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: var(--font-b);
+      transition: all 0.2s;
+    }
+    .filter-btn.active { background: var(--gold); border-color: var(--gold); color: var(--navy); font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a class="navbar-brand" href="index.html">🇪🇬 <span>Египет</span> 2026</a>
+  <button class="nav-toggle" aria-label="Меню"><span></span><span></span><span></span></button>
+  <ul class="nav-links">
+    <li><a href="index.html">Главная</a></li>
+    <li><a href="cities.html">Города</a></li>
+    <li><a href="map.html">Карта</a></li>
+    <li><a href="tips.html">Советы</a></li>
+    <li><a href="feedback.html">Рекомендации</a></li>
+    <li class="nav-private"><a href="private.html">🔐 Наш план</a></li>
+  </ul>
+</nav>
+
+<!-- FILTER BAR -->
+<div class="map-filter-bar">
+  <span>Показать:</span>
+  <button class="filter-btn active" data-city="all">Все</button>
+  <button class="filter-btn" data-city="hurghada">🤿 Хургада</button>
+  <button class="filter-btn" data-city="luxor">🏛 Луксор</button>
+  <button class="filter-btn" data-city="cairo">🔺 Каир</button>
+</div>
+
+<!-- MAP -->
+<div id="map"></div>
+
+<!-- LEGEND -->
+<div class="map-legend">
+  <h4>🗺 Легенда</h4>
+  <div class="legend-item"><div class="legend-dot" style="background:#0077B6;"></div> Хургада</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#D4AF37;"></div> Луксор</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#1B3A5C;"></div> Каир</div>
+</div>
+
+<!-- MUSIC PLAYER -->
+<div class="music-player" id="music-player">
+  <audio id="bg-audio" loop src="Kadir Demir - Desert Queen.mp3" preload="none"></audio>
+  <button class="music-btn" id="music-btn" onclick="toggleMusic()" title="Kadir Demir — Desert Queen">
+    <span class="music-note">♪</span>
+    <div class="music-bars"><span></span><span></span><span></span><span></span></div>
+  </button>
+  <div class="music-label">Desert Queen</div>
+</div>
+
+<script src="js/main.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const map = L.map('map', { zoomControl: true }).setView([27.5, 31.5], 6);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  maxZoom: 19
+}).addTo(map);
+
+function makeIcon(color) {
+  return L.divIcon({
+    className: '',
+    html: `<div style="
+      width:28px;height:28px;border-radius:50% 50% 50% 0;
+      background:${color};border:3px solid white;
+      box-shadow:0 3px 10px rgba(0,0,0,0.35);
+      transform:rotate(-45deg);
+    "></div>`,
+    iconSize: [28, 28],
+    iconAnchor: [14, 28],
+    popupAnchor: [0, -30]
+  });
+}
+
+function popupHTML(icon, title, desc, tag) {
+  return `
+    <div style="min-width:180px">
+      <div class="map-popup-title">${icon} ${title}</div>
+      <p class="map-popup-desc">${desc}</p>
+      <span class="map-popup-tag">${tag}</span>
+    </div>`;
+}
+
+const HURGHADA  = { color: '#0077B6', city: 'hurghada' };
+const LUXOR     = { color: '#D4AF37', city: 'luxor' };
+const CAIRO     = { color: '#1B3A5C', city: 'cairo' };
+
+const places = [
+  // Hurghada
+  { lat:27.2578, lng:33.8116, ...HURGHADA, icon:'🏨', title:'Хургада — центр',       desc:'База поездки: 4 ночи (14–17 апр) + 1 ночь (20–21 апр). Всё включено.',  tag:'Отель' },
+  { lat:27.1667, lng:33.9167, ...HURGHADA, icon:'🐠', title:'Острова Гифтун',        desc:'Лучшие рифы Красного моря. Яхта 09:00–15:00, $25–40/чел.',              tag:'Снорклинг' },
+  { lat:27.1843, lng:33.8357, ...HURGHADA, icon:'🌊', title:'Набережная Мамша',      desc:'Главный вечерний променад 4 км. Рестораны, кальян, атмосфера.',         tag:'Прогулка' },
+  { lat:27.2396, lng:33.8296, ...HURGHADA, icon:'🕌', title:'Эль-Дахар',            desc:'Старый город: базар, мечеть, рыбный рынок. Настоящий египетский быт.',  tag:'Аутентика' },
+  { lat:27.1934, lng:33.8310, ...HURGHADA, icon:'🛍️', title:'Senzo Mall',            desc:'Крупнейший ТЦ: 150+ магазинов, Carrefour, кино. Открыт до 23:00.',      tag:'Шоппинг' },
+
+  // Luxor
+  { lat:25.6872, lng:32.6396, ...LUXOR,    icon:'🏛️', title:'Луксор — центр',       desc:'2 ночи (17–19 апр). Берег Нила, отправная точка для всех экскурсий.',   tag:'Ночлег' },
+  { lat:25.7188, lng:32.6573, ...LUXOR,    icon:'🏛️', title:'Карнакский храм',      desc:'134 колонны, 100 га, строился 1500 лет. Главное в Луксоре. ~$5.',       tag:'Must see ⭐' },
+  { lat:25.7402, lng:32.6014, ...LUXOR,    icon:'⚰️', title:'Долина Царей',         desc:'63 гробницы фараонов с тысячелетними росписями. ~$10 (3 гробницы).',    tag:'Must see ⭐' },
+  { lat:25.7380, lng:32.6066, ...LUXOR,    icon:'🏔️', title:'Храм Хатшепсут',       desc:'Три террасы в скале. Женщина-фараон. ~$7.',                             tag:'Западный берег' },
+  { lat:25.7206, lng:32.6097, ...LUXOR,    icon:'🗿', title:'Колоссы Мемнона',      desc:'Две статуи 18 метров. Бесплатно. Фотостоп по дороге в Долину Царей.',   tag:'Бесплатно' },
+  { lat:25.6992, lng:32.6390, ...LUXOR,    icon:'🌙', title:'Луксорский храм',      desc:'В центре города. Обелиск Рамсеса II. Красив вечером с подсветкой. ~$5.', tag:'Вечером' },
+  { lat:25.6940, lng:32.6060, ...LUXOR,    icon:'⛵', title:'Фелука на Ниле',       desc:'Закатная прогулка под парусом. 150–200 EGP (~$4) за лодку. Must do!',   tag:'Романтика ⭐' },
+
+  // Cairo
+  { lat:30.0444, lng:31.2357, ...CAIRO,    icon:'🏙️', title:'Каир — центр',         desc:'1 ночь (19–20 апр). Огромный мегаполис, 21 млн человек.',               tag:'Ночлег' },
+  { lat:29.9792, lng:31.1342, ...CAIRO,    icon:'🔺', title:'Пирамиды Гизы',        desc:'Единственное сохранившееся чудо древнего мира. Вход ~$10.',             tag:'Must see ⭐' },
+  { lat:29.9753, lng:31.1376, ...CAIRO,    icon:'🦁', title:'Сфинкс',              desc:'73 метра в длину, высечен из одного блока известняка. XIV–XV вв. до н.э.', tag:'Рядом с пирамидами' },
+  { lat:29.9887, lng:31.1177, ...CAIRO,    icon:'🏺', title:'Grand Egyptian Museum',desc:'Крупнейший археологический музей. 5000+ предметов Тутанхамона. ~$20.',  tag:'Must see ⭐' },
+  { lat:30.0477, lng:31.2622, ...CAIRO,    icon:'🏪', title:'Хан-эль-Халили',      desc:'Базар с 1382 года. Специи, кожа, медь, ювелирка. Торгуйся!',           tag:'Шоппинг ⭐' },
+  { lat:30.0286, lng:31.2598, ...CAIRO,    icon:'🏰', title:'Цитадель Саладина',   desc:'XII век, мечеть Мухаммеда Али. Панорамный вид на весь Каир. ~$7.',      tag:'Панорама' },
+  { lat:30.0597, lng:31.2421, ...CAIRO,    icon:'🕌', title:'Улица Муиз',          desc:'Пешеходная. Высшая концентрация исламских памятников. Бесплатно.',      tag:'Вечером' },
+];
+
+let markers = [];
+let layerGroup = L.layerGroup().addTo(map);
+
+function renderMarkers(filter) {
+  layerGroup.clearLayers();
+  markers = [];
+  places
+    .filter(p => filter === 'all' || p.city === filter)
+    .forEach(p => {
+      const m = L.marker([p.lat, p.lng], { icon: makeIcon(p.color) })
+        .bindPopup(popupHTML(p.icon, p.title, p.desc, p.tag), { maxWidth: 240 });
+      layerGroup.addLayer(m);
+      markers.push(m);
+    });
+
+  // Fit bounds
+  if (markers.length > 0) {
+    const group = L.featureGroup(markers);
+    map.fitBounds(group.getBounds().pad(0.15));
+  }
+}
+
+// Draw route line
+const routeCoords = [
+  [27.4348, 33.9931], // Sochi (approximate AER)
+  [27.1833, 33.8000], // Hurghada HRG
+  [25.6700, 32.7060], // Luxor LXR
+  [30.1219, 31.4056], // Cairo CAI
+  [27.1833, 33.8000], // Hurghada HRG (back)
+];
+L.polyline(routeCoords, {
+  color: '#D4AF37',
+  weight: 2.5,
+  dashArray: '8, 8',
+  opacity: 0.6
+}).addTo(map);
+
+renderMarkers('all');
+
+// Filter buttons
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderMarkers(btn.dataset.city);
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Наш план — Египет 2026</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .private-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; }
+    .priv-section { display: none; }
+    .priv-section.active { display: block; }
+
+    /* Budget */
+    .budget-total-row td { font-weight: 700; background: var(--sand); color: var(--navy); font-size: 1.05rem; }
+
+    /* Day cards in private — compact */
+    .priv-day { background: var(--white); border-radius: var(--radius); margin-bottom: 1.25rem; box-shadow: var(--shadow); overflow: hidden; }
+    .priv-day-hdr {
+      background: var(--navy);
+      color: var(--white);
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .priv-day-num {
+      background: var(--gold);
+      color: var(--navy);
+      font-weight: 700;
+      font-family: var(--font-h);
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 1rem;
+    }
+    .priv-day-title { font-family: var(--font-h); font-size: 1.1rem; }
+    .priv-day-date { color: rgba(255,255,255,0.55); font-size: 0.82rem; margin-left: auto; }
+    .priv-day-body { padding: 0.75rem 1.25rem; }
+    .priv-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--sand-dk);
+    }
+    .priv-row:last-child { border-bottom: none; }
+    .priv-time {
+      min-width: 65px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--navy);
+      padding-top: 2px;
+    }
+    .priv-event { flex: 1; font-size: 0.9rem; }
+    .priv-cb { flex-shrink: 0; margin-top: 3px; }
+    .priv-cb input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--gold); cursor: pointer; }
+    .priv-row.done .priv-event { text-decoration: line-through; color: var(--text-lt); }
+
+    .section-badge {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--navy);
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 0.15rem 0.6rem;
+      border-radius: 20px;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+    }
+    .logout-btn {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.7);
+      padding: 0.3rem 0.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-family: var(--font-b);
+      transition: all 0.2s;
+    }
+    .logout-btn:hover { background: rgba(255,255,255,0.15); color: white; }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a class="navbar-brand" href="index.html">🇪🇬 <span>Египет</span> 2026</a>
+  <button class="nav-toggle" aria-label="Меню"><span></span><span></span><span></span></button>
+  <ul class="nav-links">
+    <li><a href="index.html">Главная</a></li>
+    <li><a href="cities.html">Города</a></li>
+    <li><a href="map.html">Карта</a></li>
+    <li><a href="tips.html">Советы</a></li>
+    <li><a href="feedback.html">Рекомендации</a></li>
+    <li class="nav-private"><a href="private.html">🔐 Наш план</a></li>
+  </ul>
+</nav>
+
+<!-- PASSWORD OVERLAY -->
+<div id="password-overlay" class="password-overlay">
+  <div class="password-box">
+    <h2>🔐 Личный кабинет</h2>
+    <p>Только для Макса и Луизы.<br>Введите пароль для доступа.</p>
+    <form id="pass-form">
+      <input class="password-input" type="password" id="pass-input"
+             placeholder="Пароль" autocomplete="current-password">
+      <div class="password-error" id="pass-error"></div>
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:0.5rem;">
+        Войти
+      </button>
+    </form>
+  </div>
+  <p style="color:rgba(255,255,255,0.3);font-size:0.78rem;">Пароль: egypt2026</p>
+</div>
+
+<!-- PRIVATE CONTENT -->
+<div id="private-content" style="display:none;">
+
+  <!-- Private header bar -->
+  <div style="background:linear-gradient(135deg,#1B3A5C,#2A5080);padding:2rem 1.5rem 1.5rem;">
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+      <div>
+        <h1 style="color:var(--white);font-size:1.8rem;margin-bottom:0.25rem;">🗓 Наш план, Луиза и Макс</h1>
+        <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;">14–21 апреля 2026 · Nesma Airlines NE-681 / NE-680 · Сочи ↔ Хургада</p>
+      </div>
+      <button class="logout-btn" onclick="sessionStorage.removeItem('egypt_auth');location.reload();">Выйти</button>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+
+      <!-- Section tabs -->
+      <div class="private-tabs">
+        <button class="tab-btn active" data-ptab="itinerary">📅 Расписание</button>
+        <button class="tab-btn" data-ptab="budget">💰 Бюджет</button>
+        <button class="tab-btn" data-ptab="booking">✅ Бронирования</button>
+        <button class="tab-btn" data-ptab="packing">🎒 Упаковка</button>
+      </div>
+
+      <!-- ══ ITINERARY ══ -->
+      <div id="priv-itinerary" class="priv-section active">
+        <p class="text-muted mb-3" style="font-size:0.88rem;">Чекбоксы сохраняются автоматически — можно отмечать прямо в поездке с телефона.</p>
+
+        <!-- Day 1 -->
+        <div class="priv-day">
+          <div class="priv-day-hdr">
+            <div class="priv-day-num">1</div>
+            <div class="priv-day-title">Прилёт в Хургаду ✈️</div>
+            <div class="priv-day-date">Вт, 14 апреля</div>
+          </div>
+          <div class="priv-day-body">
+            <div class="priv-row" id="r_d1_1">
+              <div class="priv-cb"><input type="checkbox" id="it_d1_1" data-cb="itinerary"></div>
+              <div class="priv-time">14:30</div>
+              <div class="priv-event"><strong>Вылет из Сочи (AER)</strong>, рейс NE-681</div>
+            </div>
+            <div class="priv-row" id="r_d1_2">
+              <div class="priv-cb"><input type="checkbox" id="it_d1_2" data-cb="itinerary"></div>
+              <div class="priv-time">16:50</div>
+              <div class="priv-event"><strong>Прилёт в Хургаду (HRG)</strong></div>
+            </div>
+            <div class="priv-row" id="r_d1_3">
+              <div class="priv-cb"><input type="checkbox" id="it_d1_3" data-cb="itinerary"></div>
+              <div class="priv-time">~17:30</div>
+              <div class="priv-event">Виза на месте — <strong>$30 × 2 = $60</strong> наличными</div>
+            </div>
+            <div class="priv-row" id="r_d1_4">
+              <div class="priv-cb"><input type="checkbox" id="it_d1_4" data-cb="itinerary"></div>
+              <div class="priv-time">~18:30</div>
+              <div class="priv-event">Трансфер в отель, заселение</div>
+            </div>
+            <div class="priv-row" id="r_d1_5">
+              <div class="priv-cb"><input type="checkbox" id="it_d1_5" data-cb="itinerary"></div>
+              <div class="priv-time">Вечер</div>
+              <div class="priv-event">Ужин, разведка территории, купить SIM-карту Vodafone</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Day 2 -->
+        <div class="priv-day">
+          <div class="priv-day-hdr">
+            <div class="priv-day-num">2</div>
+            <div class="priv-day-title">Море и Хургада 🌊</div>
+            <div class="priv-day-date">Ср, 15 апреля</div>
+          </div>
+          <div class="priv-day-body">
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d2_1" data-cb="itinerary"></div><div class="priv-time">Утро</div><div class="priv-event">Пляж, первый заход в Красное море, снорклинг</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d2_2" data-cb="itinerary"></div><div class="priv-time">Обед</div><div class="priv-event">В отеле (всё включено)</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d2_3" data-cb="itinerary"></div><div class="priv-time">~15:00</div><div class="priv-event">Прогулка по городу: Эль-Дахар, мечеть, рыбный рынок</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d2_4" data-cb="itinerary"></div><div class="priv-time">Вечер</div><div class="priv-event"><strong>Набережная Мамша</strong> — ужин, кальян, забронировать яхту на 16-е</div></div>
+          </div>
+        </div>
+
+        <!-- Day 3 -->
+        <div class="priv-day">
+          <div class="priv-day-hdr">
+            <div class="priv-day-num">3</div>
+            <div class="priv-day-title">Яхта на острова Гифтун 🐠</div>
+            <div class="priv-day-date">Чт, 16 апреля</div>
+          </div>
+          <div class="priv-day-body">
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d3_1" data-cb="itinerary"></div><div class="priv-time">09:00</div><div class="priv-event"><strong>Яхта на острова Гифтун</strong> — снорклинг, рыбки, кораллы</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d3_2" data-cb="itinerary"></div><div class="priv-time">13:00</div><div class="priv-event">Обед на борту яхты</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d3_3" data-cb="itinerary"></div><div class="priv-time">~16:00</div><div class="priv-event">Возврат в порт, отдых, бассейн</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d3_4" data-cb="itinerary"></div><div class="priv-time">Вечер</div><div class="priv-event">Свободно. Шоппинг: ул. Sheraton / Senzo Mall</div></div>
+          </div>
+        </div>
+
+        <!-- Day 4 -->
+        <div class="priv-day">
+          <div class="priv-day-hdr">
+            <div class="priv-day-num">4</div>
+            <div class="priv-day-title">Хургада → Луксор 🚌</div>
+            <div class="priv-day-date">Пт, 17 апреля</div>
+          </div>
+          <div class="priv-day-body">
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d4_1" data-cb="itinerary"></div><div class="priv-time">Утро</div><div class="priv-event">Пляж, море, шоппинг в Senzo Mall или ул. Sheraton</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d4_2" data-cb="itinerary"></div><div class="priv-time">~15:00</div><div class="priv-event">Чекаут из отеля, вещи с собой</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d4_3" data-cb="itinerary"></div><div class="priv-time">~19:30</div><div class="priv-event"><strong>Автобус GoBus Elite: Хургада → Луксор</strong> (~4 ч, $15/чел)</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d4_4" data-cb="itinerary"></div><div class="priv-time">~23:30</div><div class="priv-event">Луксор, такси, заселение в Airbnb</div></div>
+          </div>
+        </div>
+
+        <!-- Day 5 -->
+        <div class="priv-day">
+          <div class="priv-day-hdr">
+            <div class="priv-day-num">5</div>
+            <div class="priv-day-title">Луксор — Западный + Восточный берег 🏛️</div>
+            <div class="priv-day-date">Сб, 18 апреля</div>
+          </div>
+          <div class="priv-day-body">
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d5_1" data-cb="itinerary"></div><div class="priv-time">07:00</div><div class="priv-event">Ранний выход, такси/тук-тук на западный берег (~$25 за машину)</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d5_2" data-cb="itinerary"></div><div class="priv-time">07:30</div><div class="priv-event"><strong>Долина Царей</strong> — 3 гробницы (билет ~$10)</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d5_3" data-cb="itinerary"></div><div class="priv-time">09:30</div><div class="priv-event"><strong>Храм Хатшепсут</strong> (~$7)</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d5_4" data-cb="itinerary"></div><div class="priv-time">11:00</div><div class="priv-event"><strong>Колоссы Мемнона</strong> — бесплатно, фотостоп</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d5_5" data-cb="itinerary"></div><div class="priv-time">14:00</div><div class="priv-event"><strong>Карнакский храм</strong> — главное в Луксоре (~$5)</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d5_6" data-cb="itinerary"></div><div class="priv-time">16:30</div><div class="priv-event"><strong>Луксорский храм</strong> (по желанию, ~$5)</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d5_7" data-cb="itinerary"></div><div class="priv-time">~17:00</div><div class="priv-event"><strong>Фелука на Ниле</strong> — закат (~$4 за лодку, торговаться!)</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d5_8" data-cb="itinerary"></div><div class="priv-time">~19:00</div><div class="priv-event">Ужин на набережной</div></div>
+          </div>
+        </div>
+
+        <!-- Day 6 -->
+        <div class="priv-day">
+          <div class="priv-day-hdr">
+            <div class="priv-day-num">6</div>
+            <div class="priv-day-title">Луксор → Каир ✈️</div>
+            <div class="priv-day-date">Вс, 19 апреля</div>
+          </div>
+          <div class="priv-day-body">
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d6_1" data-cb="itinerary"></div><div class="priv-time">Утро</div><div class="priv-event">Досмотреть Луксор: Аллея Сфинксов, базар у храма</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d6_2" data-cb="itinerary"></div><div class="priv-time">~12:00</div><div class="priv-event">Чекаут Airbnb, такси в аэропорт Луксора</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d6_3" data-cb="itinerary"></div><div class="priv-time">~14:00</div><div class="priv-event"><strong>Самолёт Луксор → Каир</strong> (1 ч, Nile Air / Air Cairo)</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d6_4" data-cb="itinerary"></div><div class="priv-time">~15:30</div><div class="priv-event">Каир, Uber в Airbnb, заселение</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d6_5" data-cb="itinerary"></div><div class="priv-time">17:00</div><div class="priv-event"><strong>Хан-эль-Халили</strong> — базар, шоппинг, кафе Эль-Фишави</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d6_6" data-cb="itinerary"></div><div class="priv-time">Вечер</div><div class="priv-event">Прогулка по старому Каиру, ул. Муиз, ужин</div></div>
+          </div>
+        </div>
+
+        <!-- Day 7 -->
+        <div class="priv-day">
+          <div class="priv-day-hdr">
+            <div class="priv-day-num">7</div>
+            <div class="priv-day-title">Каир — Пирамиды + GEM 🔺</div>
+            <div class="priv-day-date">Пн, 20 апреля</div>
+          </div>
+          <div class="priv-day-body">
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d7_1" data-cb="itinerary"></div><div class="priv-time">09:00</div><div class="priv-event">Uber к пирамидам (~$5–10)</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d7_2" data-cb="itinerary"></div><div class="priv-time">09:30</div><div class="priv-event"><strong>Пирамиды Гизы + Сфинкс</strong> (вход ~$10)</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d7_3" data-cb="itinerary"></div><div class="priv-time">13:00</div><div class="priv-event"><strong>Grand Egyptian Museum (GEM)</strong> — 3–4 часа (~$20). Тутанхамон!</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d7_4" data-cb="itinerary"></div><div class="priv-time">17:00</div><div class="priv-event">Обед, сувениры у пирамид</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d7_5" data-cb="itinerary"></div><div class="priv-time">Вечер</div><div class="priv-event"><strong>Автобус GoBus Каир → Хургада</strong> (~6–7 ч, $15–22/чел)<br><em>ИЛИ</em> самолёт Air Cairo ~21:25 (1 ч, от $28/чел)</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d7_6" data-cb="itinerary"></div><div class="priv-time">~23:00</div><div class="priv-event">Хургада, такси, заселение в отель (последняя ночь)</div></div>
+          </div>
+        </div>
+
+        <!-- Day 8 -->
+        <div class="priv-day">
+          <div class="priv-day-hdr">
+            <div class="priv-day-num">8</div>
+            <div class="priv-day-title">Домой 🏠</div>
+            <div class="priv-day-date">Вт, 21 апреля</div>
+          </div>
+          <div class="priv-day-body">
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d8_1" data-cb="itinerary"></div><div class="priv-time">06:00</div><div class="priv-event">Выезд в аэропорт Хургады</div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d8_2" data-cb="itinerary"></div><div class="priv-time">09:15</div><div class="priv-event"><strong>Вылет NE-680: Хургада → Сочи</strong></div></div>
+            <div class="priv-row"><div class="priv-cb"><input type="checkbox" id="it_d8_3" data-cb="itinerary"></div><div class="priv-time">13:30</div><div class="priv-event">🏡 Дома! Разобрать чемоданы, вспоминать</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ BUDGET ══ -->
+      <div id="priv-budget" class="priv-section">
+        <p class="text-muted mb-3" style="font-size:0.88rem;">Отмечай ✅ статьи, которые уже оплачены. Галочки сохраняются.</p>
+        <div style="overflow-x:auto;">
+          <table class="styled-table">
+            <thead>
+              <tr>
+                <th>Оплачено</th>
+                <th>Статья</th>
+                <th class="budget-amount">Сумма</th>
+                <th>Где</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="budget-paid"><input type="checkbox" id="bud_1" data-cb="budget"></td>
+                <td>✈️ Билеты Сочи ↔ Хургада (NE-681/680)</td>
+                <td class="budget-amount">~13 000 ₽</td>
+                <td>Куплены</td>
+              </tr>
+              <tr>
+                <td class="budget-paid"><input type="checkbox" id="bud_2" data-cb="budget"></td>
+                <td>🛂 Визы × 2</td>
+                <td class="budget-amount">$60 (~5 500 ₽)</td>
+                <td>На месте наличными</td>
+              </tr>
+              <tr>
+                <td class="budget-paid"><input type="checkbox" id="bud_3" data-cb="budget"></td>
+                <td>🏨 Отель Хургада AI (4+1 ночей)</td>
+                <td class="budget-amount">25 000–40 000 ₽</td>
+                <td>Островок / Яндекс</td>
+              </tr>
+              <tr>
+                <td class="budget-paid"><input type="checkbox" id="bud_4" data-cb="budget"></td>
+                <td>🏠 Airbnb Луксор (2 ночи)</td>
+                <td class="budget-amount">4 000–8 000 ₽</td>
+                <td>Airbnb / Booking</td>
+              </tr>
+              <tr>
+                <td class="budget-paid"><input type="checkbox" id="bud_5" data-cb="budget"></td>
+                <td>🏠 Airbnb Каир (1 ночь)</td>
+                <td class="budget-amount">2 500–5 000 ₽</td>
+                <td>Airbnb / Booking</td>
+              </tr>
+              <tr>
+                <td class="budget-paid"><input type="checkbox" id="bud_6" data-cb="budget"></td>
+                <td>🚌 Автобус Хургада → Луксор</td>
+                <td class="budget-amount">~$30 (2 700 ₽)</td>
+                <td>go-bus.com</td>
+              </tr>
+              <tr>
+                <td class="budget-paid"><input type="checkbox" id="bud_7" data-cb="budget"></td>
+                <td>✈️ Самолёт Луксор → Каир</td>
+                <td class="budget-amount">$100–170 за двоих</td>
+                <td>Авиасейлс</td>
+              </tr>
+              <tr>
+                <td class="budget-paid"><input type="checkbox" id="bud_8" data-cb="budget"></td>
+                <td>🚌 Автобус/самолёт Каир → Хургада</td>
+                <td class="budget-amount">$30–100 за двоих</td>
+                <td>go-bus.com / Авиасейлс</td>
+              </tr>
+              <tr>
+                <td class="budget-paid"><input type="checkbox" id="bud_9" data-cb="budget"></td>
+                <td>🚤 Яхта на острова Гифтун</td>
+                <td class="budget-amount">~$60–80</td>
+                <td>На месте / Sputnik8</td>
+              </tr>
+              <tr>
+                <td class="budget-paid"><input type="checkbox" id="bud_10" data-cb="budget"></td>
+                <td>⛵ Фелука на Ниле</td>
+                <td class="budget-amount">~$5</td>
+                <td>Торг с набережной</td>
+              </tr>
+              <tr>
+                <td class="budget-paid"><input type="checkbox" id="bud_11" data-cb="budget"></td>
+                <td>🎫 Входные (пирамиды, GEM, храмы)</td>
+                <td class="budget-amount">~$60–80</td>
+                <td>На месте</td>
+              </tr>
+              <tr>
+                <td class="budget-paid"><input type="checkbox" id="bud_12" data-cb="budget"></td>
+                <td>🚕 Такси, Uber, тук-туки</td>
+                <td class="budget-amount">~$50</td>
+                <td>Uber / на месте</td>
+              </tr>
+              <tr>
+                <td class="budget-paid"><input type="checkbox" id="bud_13" data-cb="budget"></td>
+                <td>🍽 Еда вне отеля (~3–4 дня)</td>
+                <td class="budget-amount">~$80–120</td>
+                <td>Рестораны / кафе</td>
+              </tr>
+              <tr>
+                <td class="budget-paid"><input type="checkbox" id="bud_14" data-cb="budget"></td>
+                <td>🛍️ Шоппинг</td>
+                <td class="budget-amount">$50–150</td>
+                <td>Базары, ТЦ</td>
+              </tr>
+              <tr>
+                <td class="budget-paid"><input type="checkbox" id="bud_15" data-cb="budget"></td>
+                <td>💵 Чаевые, мелочи, непредвиденное</td>
+                <td class="budget-amount">~$30</td>
+                <td>—</td>
+              </tr>
+              <tr class="budget-total-row">
+                <td colspan="2"><strong>ИТОГО</strong></td>
+                <td class="budget-amount"><strong>~90 000–120 000 ₽</strong></td>
+                <td>на двоих</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ══ BOOKING ══ -->
+      <div id="priv-booking" class="priv-section">
+        <p class="text-muted mb-3" style="font-size:0.88rem;">Что нужно забронировать заранее. Отмечай когда сделано.</p>
+        <div class="card">
+          <div class="card-body">
+            <ul class="checklist">
+              <li>
+                <input type="checkbox" id="book_1" data-cb="book">
+                <label for="book_1"><strong>Отель Хургада</strong> — 4 ночи (14–17 апр) + 1 ночь (20 апр) · Островок / Яндекс Путешествия · <em>Бронировать сейчас</em></label>
+              </li>
+              <li>
+                <input type="checkbox" id="book_2" data-cb="book">
+                <label for="book_2"><strong>Airbnb Луксор</strong> — 2 ночи (17–19 апр) · East Bank, рядом с набережной · <em>Бронировать сейчас</em></label>
+              </li>
+              <li>
+                <input type="checkbox" id="book_3" data-cb="book">
+                <label for="book_3"><strong>Airbnb Каир</strong> — 1 ночь (19–20 апр) · Замалек или Downtown · <em>Бронировать сейчас</em></label>
+              </li>
+              <li>
+                <input type="checkbox" id="book_4" data-cb="book">
+                <label for="book_4"><strong>Самолёт Луксор → Каир</strong> (19 апр) · Nile Air / Air Cairo / EgyptAir · Авиасейлс · <em>Бронировать сейчас</em></label>
+              </li>
+              <li>
+                <input type="checkbox" id="book_5" data-cb="book">
+                <label for="book_5"><strong>Автобус/самолёт Каир → Хургада</strong> (20 апр) · go-bus.com или Авиасейлс · <em>Бронировать сейчас</em></label>
+              </li>
+              <li>
+                <input type="checkbox" id="book_6" data-cb="book">
+                <label for="book_6"><strong>Автобус Хургада → Луксор</strong> (17 апр, ~19:30) · go-bus.com или 12go.asia · <em>За неделю до поездки</em></label>
+              </li>
+              <li>
+                <input type="checkbox" id="book_7" data-cb="book">
+                <label for="book_7"><strong>Яхта на острова Гифтун</strong> (16 апр) · Sputnik8 или в отеле · <em>Можно на месте</em></label>
+              </li>
+              <li>
+                <input type="checkbox" id="book_8" data-cb="book">
+                <label for="book_8"><strong>Страховка</strong> — оформить до вылета</label>
+              </li>
+              <li>
+                <input type="checkbox" id="book_9" data-cb="book">
+                <label for="book_9"><strong>Скачать Google Maps офлайн</strong> — Египет, Хургада, Луксор, Каир</label>
+              </li>
+              <li>
+                <input type="checkbox" id="book_10" data-cb="book">
+                <label for="book_10"><strong>Обменять доллары</strong> — взять $300–400 наличными</label>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PACKING ══ -->
+      <div id="priv-packing" class="priv-section">
+        <p class="text-muted mb-3" style="font-size:0.88rem;">Список вещей. Отмечай когда положил в чемодан.</p>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-body">
+              <h4 style="margin-bottom:0.75rem;">📄 Документы и деньги</h4>
+              <ul class="checklist">
+                <li><input type="checkbox" id="pack_1" data-cb="pack"><label for="pack_1">Паспорт (действие 6+ месяцев)</label></li>
+                <li><input type="checkbox" id="pack_2" data-cb="pack"><label for="pack_2">💵 Наличные доллары $300–400</label></li>
+                <li><input type="checkbox" id="pack_3" data-cb="pack"><label for="pack_3">💳 Карта Visa/Mastercard</label></li>
+                <li><input type="checkbox" id="pack_4" data-cb="pack"><label for="pack_4">📄 Страховка распечатана</label></li>
+                <li><input type="checkbox" id="pack_5" data-cb="pack"><label for="pack_5">✈️ Билеты скачаны / распечатаны</label></li>
+                <li><input type="checkbox" id="pack_6" data-cb="pack"><label for="pack_6">📱 Офлайн-карты скачаны</label></li>
+              </ul>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <h4 style="margin-bottom:0.75rem;">👙 Море и пляж</h4>
+              <ul class="checklist">
+                <li><input type="checkbox" id="pack_7" data-cb="pack"><label for="pack_7">🤿 Маска + трубка</label></li>
+                <li><input type="checkbox" id="pack_8" data-cb="pack"><label for="pack_8">🩴 Аквашузы</label></li>
+                <li><input type="checkbox" id="pack_9" data-cb="pack"><label for="pack_9">🧴 Крем SPF 50</label></li>
+                <li><input type="checkbox" id="pack_10" data-cb="pack"><label for="pack_10">🧢 Кепка</label></li>
+                <li><input type="checkbox" id="pack_11" data-cb="pack"><label for="pack_11">🕶️ Солнечные очки</label></li>
+                <li><input type="checkbox" id="pack_12" data-cb="pack"><label for="pack_12">👙 Купальник / плавки</label></li>
+              </ul>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <h4 style="margin-bottom:0.75rem;">👗 Одежда</h4>
+              <ul class="checklist">
+                <li><input type="checkbox" id="pack_13" data-cb="pack"><label for="pack_13">👟 Удобная обувь для храмов</label></li>
+                <li><input type="checkbox" id="pack_14" data-cb="pack"><label for="pack_14">🧥 Кофта (автобус — кондей ледяной!)</label></li>
+                <li><input type="checkbox" id="pack_15" data-cb="pack"><label for="pack_15">👗 Одежда с рукавами (для мечетей)</label></li>
+                <li><input type="checkbox" id="pack_16" data-cb="pack"><label for="pack_16">🧣 Лёгкий платок (Луизе в мечети)</label></li>
+                <li><input type="checkbox" id="pack_17" data-cb="pack"><label for="pack_17">🩲 Бельё и носки на 8 дней</label></li>
+              </ul>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <h4 style="margin-bottom:0.75rem;">💊 Аптечка и техника</h4>
+              <ul class="checklist">
+                <li><input type="checkbox" id="pack_18" data-cb="pack"><label for="pack_18">💊 Таблетки от расстройства желудка</label></li>
+                <li><input type="checkbox" id="pack_19" data-cb="pack"><label for="pack_19">💊 Болеутоляющее, антигистаминные</label></li>
+                <li><input type="checkbox" id="pack_20" data-cb="pack"><label for="pack_20">🦟 Репеллент от комаров</label></li>
+                <li><input type="checkbox" id="pack_21" data-cb="pack"><label for="pack_21">🔋 Повербанк</label></li>
+                <li><input type="checkbox" id="pack_22" data-cb="pack"><label for="pack_22">📸 Телефон / камера + зарядки</label></li>
+                <li><input type="checkbox" id="pack_23" data-cb="pack"><label for="pack_23">🔌 Переходник не нужен (евророзетки)</label></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div><!-- /private-content -->
+
+<!-- MUSIC PLAYER -->
+<div class="music-player" id="music-player">
+  <audio id="bg-audio" loop src="Kadir Demir - Desert Queen.mp3" preload="none"></audio>
+  <button class="music-btn" id="music-btn" onclick="toggleMusic()" title="Kadir Demir — Desert Queen">
+    <span class="music-note">♪</span>
+    <div class="music-bars"><span></span><span></span><span></span><span></span></div>
+  </button>
+  <div class="music-label">Desert Queen</div>
+</div>
+
+<script src="js/main.js"></script>
+<script>
+// Init password gate
+initPasswordGate();
+
+// Private section tabs
+document.querySelectorAll('[data-ptab]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-ptab]').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.priv-section').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('priv-' + btn.dataset.ptab).classList.add('active');
+  });
+});
+
+// Checkbox row style
+function applyRowDone(cb) {
+  const row = cb.closest('.priv-row');
+  if (row) row.classList.toggle('done', cb.checked);
+}
+
+// Override applyCheckedStyle for priv-row
+const origApply = window.applyCheckedStyle;
+window.applyCheckedStyle = function(cb) {
+  origApply(cb);
+  applyRowDone(cb);
+};
+
+// If already authenticated, init checkboxes immediately
+if (sessionStorage.getItem('egypt_auth') === '1') {
+  document.addEventListener('DOMContentLoaded', () => {
+    initCheckboxes('itinerary');
+    initCheckboxes('budget');
+    initCheckboxes('pack');
+    initCheckboxes('book');
+    // apply row styles
+    document.querySelectorAll('[data-cb]').forEach(cb => applyRowDone(cb));
+  });
+}
+</script>
+</body>
+</html>

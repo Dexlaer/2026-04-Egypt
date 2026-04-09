@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Рекомендации — Египет 2026</title>
+  <meta name="description" content="Были в Египте? Поделитесь советом — что посмотреть, куда сходить, что не пропустить.">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .feedback-wrap {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .success-box {
+      display: none;
+      text-align: center;
+      padding: 3rem 2rem;
+    }
+    .success-box .s-icon { font-size: 4rem; margin-bottom: 1rem; }
+    .success-box h2 { color: var(--navy); margin-bottom: 0.5rem; }
+    .success-box p { color: var(--text-lt); }
+    .city-checkgroup { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .city-check-label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 0.4rem 0.9rem;
+      cursor: pointer;
+      font-size: 0.92rem;
+      background: var(--white);
+      transition: all 0.2s;
+    }
+    .city-check-label input { accent-color: var(--gold); }
+    .city-check-label:has(input:checked) {
+      border-color: var(--navy);
+      background: var(--sand);
+      font-weight: 600;
+      color: var(--navy);
+    }
+    .star-group { display: flex; gap: 0.3rem; }
+    .star-btn {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      transition: transform 0.15s;
+      color: var(--border);
+      padding: 0;
+    }
+    .star-btn.lit { color: var(--gold); }
+    .star-btn:hover { transform: scale(1.15); }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="navbar-brand" href="index.html">🇪🇬 <span>Египет</span> 2026</a>
+  <button class="nav-toggle" aria-label="Меню"><span></span><span></span><span></span></button>
+  <ul class="nav-links">
+    <li><a href="index.html">Главная</a></li>
+    <li><a href="cities.html">Города</a></li>
+    <li><a href="map.html">Карта</a></li>
+    <li><a href="tips.html">Советы</a></li>
+    <li><a href="feedback.html">Рекомендации</a></li>
+    <li class="nav-private"><a href="private.html">🔐 Наш план</a></li>
+  </ul>
+</nav>
+
+<section class="page-hero">
+  <h1>🌟 Поделитесь советом</h1>
+  <p>Были в Египте? Расскажите что посмотреть, куда сходить и что не пропустить — мы обновим гид!</p>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="feedback-wrap">
+
+      <!-- Intro -->
+      <div class="alert alert-info mb-3">
+        <strong>Как это работает:</strong> вы оставляете рекомендацию → она приходит нам на почту → лучшие советы мы добавляем в гид. Так путеводитель становится лучше для всех.
+      </div>
+
+      <!-- FORM — действие Formspree, нужно заменить YOUR_FORM_ID на реальный -->
+      <div class="card">
+        <div class="card-body" style="padding:2rem;">
+          <form id="feedback-form"
+                action="https://formspree.io/f/YOUR_FORM_ID"
+                method="POST">
+
+            <!-- Name -->
+            <div class="form-group">
+              <label class="form-label" for="fb_name">Ваше имя *</label>
+              <input class="form-input" type="text" id="fb_name" name="name"
+                     placeholder="Как вас зовут?" required>
+            </div>
+
+            <!-- Was in Egypt? -->
+            <div class="form-group">
+              <label class="form-label">Вы бывали в Египте? *</label>
+              <div class="form-radio-group">
+                <label class="form-radio-label">
+                  <input type="radio" name="been_to_egypt" value="Да, бывал(а)" required> Да, бывал(а)
+                </label>
+                <label class="form-radio-label">
+                  <input type="radio" name="been_to_egypt" value="Нет, но знаю"> Нет, но кое-что знаю
+                </label>
+                <label class="form-radio-label">
+                  <input type="radio" name="been_to_egypt" value="Живу/жил там"> Живу / жил там
+                </label>
+              </div>
+            </div>
+
+            <!-- City -->
+            <div class="form-group">
+              <label class="form-label">Про какой город совет? (можно несколько)</label>
+              <div class="city-checkgroup">
+                <label class="city-check-label"><input type="checkbox" name="city" value="Хургада"> 🤿 Хургада</label>
+                <label class="city-check-label"><input type="checkbox" name="city" value="Луксор"> 🏛 Луксор</label>
+                <label class="city-check-label"><input type="checkbox" name="city" value="Каир"> 🔺 Каир</label>
+                <label class="city-check-label"><input type="checkbox" name="city" value="Общее"> 🇪🇬 Общее</label>
+              </div>
+            </div>
+
+            <!-- Category -->
+            <div class="form-group">
+              <label class="form-label" for="fb_cat">Тема совета</label>
+              <select class="form-select" id="fb_cat" name="category">
+                <option value="">— выберите —</option>
+                <option>🏛 Достопримечательность (обязательно посетить)</option>
+                <option>❌ Не стоит туда идти</option>
+                <option>🍽 Ресторан / кафе</option>
+                <option>🛍️ Шоппинг / торговля</option>
+                <option>🚕 Транспорт / трансфер</option>
+                <option>🏨 Отель / жильё</option>
+                <option>💡 Лайфхак / совет</option>
+                <option>⚠️ Предупреждение / осторожно</option>
+              </select>
+            </div>
+
+            <!-- Tip text -->
+            <div class="form-group">
+              <label class="form-label" for="fb_tip">Ваш совет *</label>
+              <textarea class="form-textarea" id="fb_tip" name="tip"
+                        placeholder="Расскажите подробнее: что именно, где найти, цена, почему стоит или не стоит..."
+                        rows="5" required></textarea>
+            </div>
+
+            <!-- Rating -->
+            <div class="form-group">
+              <label class="form-label">Оцените Египет в целом</label>
+              <div class="star-group" id="star-group">
+                <button type="button" class="star-btn" data-val="1">★</button>
+                <button type="button" class="star-btn" data-val="2">★</button>
+                <button type="button" class="star-btn" data-val="3">★</button>
+                <button type="button" class="star-btn" data-val="4">★</button>
+                <button type="button" class="star-btn" data-val="5">★</button>
+              </div>
+              <input type="hidden" name="rating" id="rating-val" value="">
+            </div>
+
+            <!-- Contact (optional) -->
+            <div class="form-group">
+              <label class="form-label" for="fb_contact">Контакт (необязательно)</label>
+              <input class="form-input" type="text" id="fb_contact" name="contact"
+                     placeholder="Telegram / Instagram / email — если хотите, чтобы мы поблагодарили">
+            </div>
+
+            <input type="hidden" name="_subject" value="Новая рекомендация по Египту 🇪🇬">
+            <input type="hidden" name="_next" value="">
+
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:0.85rem;font-size:1rem;">
+              Отправить рекомендацию 🚀
+            </button>
+          </form>
+
+          <!-- Success state -->
+          <div class="success-box" id="success-box">
+            <div class="s-icon">🎉</div>
+            <h2>Спасибо!</h2>
+            <p>Ваш совет получен. Лучшие рекомендации появятся в гиде — вы помогаете другим путешественникам!</p>
+            <a href="cities.html" class="btn btn-primary mt-3">Читать гид по городам</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- What happens next -->
+      <div class="card mt-3">
+        <div class="card-body">
+          <h4 style="margin-bottom:1rem;">Что происходит дальше?</h4>
+          <div style="display:flex;flex-direction:column;gap:0.75rem;">
+            <div style="display:flex;gap:0.75rem;align-items:flex-start;">
+              <span style="font-size:1.3rem;flex-shrink:0;">📩</span>
+              <div><strong>Получаем совет</strong> — приходит на почту сразу после отправки</div>
+            </div>
+            <div style="display:flex;gap:0.75rem;align-items:flex-start;">
+              <span style="font-size:1.3rem;flex-shrink:0;">✍️</span>
+              <div><strong>Обновляем гид</strong> — лучшие советы добавляем в соответствующий раздел городов</div>
+            </div>
+            <div style="display:flex;gap:0.75rem;align-items:flex-start;">
+              <span style="font-size:1.3rem;flex-shrink:0;">🌍</span>
+              <div><strong>Помогаем другим</strong> — сайт становится лучшим путеводителем по Египту</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <p><strong>Египет 2026</strong> · Макс и Луиза · 14–21 апреля</p>
+  <p style="margin-top:0.3rem;"><a href="index.html">На главную</a> · <a href="cities.html">Гиды по городам</a></p>
+</footer>
+
+<!-- MUSIC PLAYER -->
+<div class="music-player" id="music-player">
+  <audio id="bg-audio" loop src="Kadir Demir - Desert Queen.mp3" preload="none"></audio>
+  <button class="music-btn" id="music-btn" onclick="toggleMusic()" title="Kadir Demir — Desert Queen">
+    <span class="music-note">♪</span>
+    <div class="music-bars"><span></span><span></span><span></span><span></span></div>
+  </button>
+  <div class="music-label">Desert Queen</div>
+</div>
+
+<script src="js/main.js"></script>
+<script>
+// Stars
+const stars = document.querySelectorAll('.star-btn');
+const ratingInput = document.getElementById('rating-val');
+stars.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const val = +btn.dataset.val;
+    ratingInput.value = val;
+    stars.forEach(s => s.classList.toggle('lit', +s.dataset.val <= val));
+  });
+  btn.addEventListener('mouseenter', () => {
+    const val = +btn.dataset.val;
+    stars.forEach(s => s.classList.toggle('lit', +s.dataset.val <= val));
+  });
+});
+document.getElementById('star-group').addEventListener('mouseleave', () => {
+  const current = +ratingInput.value;
+  stars.forEach(s => s.classList.toggle('lit', +s.dataset.val <= current));
+});
+
+// Form submit — show success if Formspree ID not set
+const form = document.getElementById('feedback-form');
+form.addEventListener('submit', async e => {
+  const action = form.action;
+  if (action.includes('YOUR_FORM_ID')) {
+    // Demo mode (no real ID) — just show success
+    e.preventDefault();
+    form.style.display = 'none';
+    document.getElementById('success-box').style.display = 'block';
+    return;
+  }
+  // Real Formspree submit — let it proceed normally, then show success
+  e.preventDefault();
+  try {
+    const resp = await fetch(action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { Accept: 'application/json' }
+    });
+    if (resp.ok) {
+      form.style.display = 'none';
+      document.getElementById('success-box').style.display = 'block';
+    } else {
+      alert('Ошибка отправки. Попробуйте ещё раз.');
+    }
+  } catch {
+    alert('Нет соединения. Попробуйте позже.');
+  }
+});
+</script>
+</body>
+</html>
