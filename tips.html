@@ -4,13 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Советы — Египет 2026</title>
-  <meta name="description" content="Практические советы для путешествия в Египет: шоппинг, безопасность, что взять, полезные ссылки.">
+  <meta name="description" content="Практические советы по первой поездке в Египет: деньги, шоппинг, связь, безопасность, офлайн-карты, полезные ссылки и то, что реально пригодится.">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <nav class="navbar">
-  <a class="navbar-brand" href="index.html">🇪🇬 <span>Египет</span> 2026</a>
+  <div class="navbar-left">
+    <a class="navbar-brand" href="index.html">🇪🇬 <span>Египет</span> 2026</a>
+    <div class="music-player music-player-nav" id="music-player">
+      <audio id="bg-audio" loop src="Kadir Demir - Desert Queen.mp3" preload="none"></audio>
+      <button class="music-btn" id="music-btn" onclick="toggleMusic()" title="Kadir Demir — Desert Queen" aria-label="Включить музыку">
+        <span class="music-note">♪</span>
+        <div class="music-bars"><span></span><span></span><span></span><span></span></div>
+      </button>
+      <div class="music-label">Атмосфера Египта</div>
+    </div>
+  </div>
   <button class="nav-toggle" aria-label="Меню"><span></span><span></span><span></span></button>
   <ul class="nav-links">
     <li><a href="index.html">Главная</a></li>
@@ -23,8 +33,8 @@
 </nav>
 
 <section class="page-hero">
-  <h1>💡 Советы путешественнику</h1>
-  <p>Шоппинг, деньги, безопасность, что взять с собой — всё в одном месте</p>
+  <h1>💡 Что важно знать</h1>
+  <p>Здесь мы собрали всё, на чём сами зависли перед поездкой: деньги, шоппинг, связь, безопасность и то, что реально стоит взять с собой.</p>
 </section>
 
 <section class="section">
@@ -184,7 +194,7 @@
         <div class="card-body">
           <h4>Гаджеты и прочее</h4>
           <ul class="checklist mt-2">
-            <li><input type="checkbox" id="pack_maps" disabled><label for="pack_maps">📱 Офлайн-карты (скачать Google Maps)</label></li>
+            <li><input type="checkbox" id="pack_maps" disabled><label for="pack_maps">📱 Офлайн-карты (лучше Maps.me, можно и Google Maps)</label></li>
             <li><input type="checkbox" id="pack_powerbank" disabled><label for="pack_powerbank">🔋 Повербанк</label></li>
             <li><input type="checkbox" id="pack_meds" disabled><label for="pack_meds">💊 Базовая аптечка + от живота</label></li>
             <li><input type="checkbox" id="pack_repel" disabled><label for="pack_repel">🦟 Репеллент от комаров</label></li>
@@ -246,7 +256,7 @@
       <div class="card-body">
         <p><strong>SIM-карта в аэропорту Хургады:</strong> Vodafone Egypt или We (Orange) — продаются сразу на выходе. Пакет ~$7 за 15 ГБ на 30 дней. Регистрация по паспорту — 5 минут.</p>
         <p>В отеле WiFi будет, но мобильный интернет нужен в Луксоре и Каире для Uber, карт, навигации.</p>
-        <div class="tip-box" style="margin-top:0.5rem;">Скачай Google Maps офлайн заранее — Египет, Луксор, Каир. В метро и в Долине Царей связи нет.</div>
+        <div class="tip-box" style="margin-top:0.5rem;">Скачай офлайн-карты заранее: лучше Maps.me, а Google Maps можно как запасной вариант. По маршруту нужны Египет, Луксор и Каир. В метро и в Долине Царей связи нет.</div>
       </div>
     </div>
 
@@ -260,9 +270,9 @@
         <div class="card-body">
           <h4>🚌 Транспорт</h4>
           <ul style="padding-left:1.2rem; font-size:0.92rem; margin-top:0.5rem; line-height:2;">
-            <li><strong>GoBus</strong> — go-bus.com (автобусы по Египту)</li>
-            <li><strong>12Go.asia</strong> — билеты на автобусы онлайн</li>
-            <li><strong>Aviasales</strong> — aviasales.ru (Луксор→Каир)</li>
+            <li><strong><a href="https://go-bus.com" target="_blank" rel="noopener noreferrer">GoBus</a></strong> — автобусы по Египту</li>
+            <li><strong><a href="https://12go.asia" target="_blank" rel="noopener noreferrer">12Go.asia</a></strong> — билеты на автобусы онлайн</li>
+            <li><strong><a href="https://www.aviasales.ru" target="_blank" rel="noopener noreferrer">Aviasales</a></strong> — Луксор → Каир</li>
             <li><strong>Uber</strong> — работает в Каире, удобно</li>
           </ul>
         </div>
@@ -271,11 +281,11 @@
         <div class="card-body">
           <h4>🏨 Жильё и экскурсии</h4>
           <ul style="padding-left:1.2rem; font-size:0.92rem; margin-top:0.5rem; line-height:2;">
-            <li><strong>Островок</strong> — ostrovok.ru (отели)</li>
-            <li><strong>Яндекс Путешествия</strong> — travel.yandex.ru</li>
-            <li><strong>Airbnb / Booking</strong> — Луксор, Каир</li>
-            <li><strong>Sputnik8</strong> — sputnik8.com (экскурсии)</li>
-            <li><strong>Tripster</strong> — tripster.ru (гиды)</li>
+            <li><strong><a href="https://ostrovok.ru" target="_blank" rel="noopener noreferrer">Островок</a></strong> — отели</li>
+            <li><strong><a href="https://travel.yandex.ru" target="_blank" rel="noopener noreferrer">Яндекс Путешествия</a></strong></li>
+            <li><strong><a href="https://www.airbnb.com" target="_blank" rel="noopener noreferrer">Airbnb</a></strong> / <strong><a href="https://www.booking.com" target="_blank" rel="noopener noreferrer">Booking</a></strong> — Луксор, Каир</li>
+            <li><strong><a href="https://sputnik8.com" target="_blank" rel="noopener noreferrer">Sputnik8</a></strong> — экскурсии</li>
+            <li><strong><a href="https://experience.tripster.ru" target="_blank" rel="noopener noreferrer">Tripster</a></strong> — гиды</li>
           </ul>
         </div>
       </div>
@@ -285,7 +295,7 @@
           <ul style="padding-left:1.2rem; font-size:0.92rem; margin-top:0.5rem; line-height:2;">
             <li>Полиция Египта: <strong>122</strong></li>
             <li>Скорая: <strong>123</strong></li>
-            <li>Консульство РФ (Каир): <strong>+20-2-27480353</strong></li>
+            <li>Консульство РФ (Каир): <strong><a href="tel:+20227480353">+20-2-27480353</a></strong></li>
             <li>Туристическая полиция: <strong>126</strong></li>
           </ul>
         </div>
@@ -312,15 +322,6 @@
 </footer>
 
 <!-- MUSIC PLAYER -->
-<div class="music-player" id="music-player">
-  <audio id="bg-audio" loop src="Kadir Demir - Desert Queen.mp3" preload="none"></audio>
-  <button class="music-btn" id="music-btn" onclick="toggleMusic()" title="Kadir Demir — Desert Queen">
-    <span class="music-note">♪</span>
-    <div class="music-bars"><span></span><span></span><span></span><span></span></div>
-  </button>
-  <div class="music-label">Desert Queen</div>
-</div>
-
 <script src="js/main.js"></script>
 </body>
 </html>

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Рекомендации — Египет 2026</title>
-  <meta name="description" content="Были в Египте? Поделитесь советом — что посмотреть, куда сходить, что не пропустить.">
+  <meta name="description" content="Если вы были в Египте, поделитесь полезным советом. Мы собираем живой семейный гид, который поможет тем, кто едет впервые.">
   <link rel="stylesheet" href="css/style.css">
   <style>
     .feedback-wrap {
@@ -56,7 +56,17 @@
 <body>
 
 <nav class="navbar">
-  <a class="navbar-brand" href="index.html">🇪🇬 <span>Египет</span> 2026</a>
+  <div class="navbar-left">
+    <a class="navbar-brand" href="index.html">🇪🇬 <span>Египет</span> 2026</a>
+    <div class="music-player music-player-nav" id="music-player">
+      <audio id="bg-audio" loop src="Kadir Demir - Desert Queen.mp3" preload="none"></audio>
+      <button class="music-btn" id="music-btn" onclick="toggleMusic()" title="Kadir Demir — Desert Queen" aria-label="Включить музыку">
+        <span class="music-note">♪</span>
+        <div class="music-bars"><span></span><span></span><span></span><span></span></div>
+      </button>
+      <div class="music-label">Атмосфера Египта</div>
+    </div>
+  </div>
   <button class="nav-toggle" aria-label="Меню"><span></span><span></span><span></span></button>
   <ul class="nav-links">
     <li><a href="index.html">Главная</a></li>
@@ -70,7 +80,7 @@
 
 <section class="page-hero">
   <h1>🌟 Поделитесь советом</h1>
-  <p>Были в Египте? Расскажите что посмотреть, куда сходить и что не пропустить — мы обновим гид!</p>
+  <p>Если вы были в Египте, расскажите, что реально оказалось полезным. Мы собираем этот семейный гид так, чтобы он помогал тем, кто едет впервые.</p>
 </section>
 
 <section class="section">
@@ -79,7 +89,7 @@
 
       <!-- Intro -->
       <div class="alert alert-info mb-3">
-        <strong>Как это работает:</strong> вы оставляете рекомендацию → она приходит нам на почту → лучшие советы мы добавляем в гид. Так путеводитель становится лучше для всех.
+        <strong>Как это работает:</strong> вы оставляете рекомендацию → она приходит нам → мы добавляем лучшие советы в гид. Так сайт остаётся живым, личным и реально полезным для следующих поездок.
       </div>
 
       <!-- FORM — действие Formspree, нужно заменить YOUR_FORM_ID на реальный -->
@@ -216,15 +226,6 @@
 </footer>
 
 <!-- MUSIC PLAYER -->
-<div class="music-player" id="music-player">
-  <audio id="bg-audio" loop src="Kadir Demir - Desert Queen.mp3" preload="none"></audio>
-  <button class="music-btn" id="music-btn" onclick="toggleMusic()" title="Kadir Demir — Desert Queen">
-    <span class="music-note">♪</span>
-    <div class="music-bars"><span></span><span></span><span></span><span></span></div>
-  </button>
-  <div class="music-label">Desert Queen</div>
-</div>
-
 <script src="js/main.js"></script>
 <script>
 // Stars

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Египет 2026 — Макс и Луиза</title>
-  <meta name="description" content="Путеводитель по Египту: Хургада, Луксор, Каир. 14–21 апреля 2026.">
+  <meta name="description" content="Семейный гид по первой поездке в Египет: Хургада, Луксор, Каир, карта, деньги, советы и всё, в чём мы сами разбирались перед путешествием.">
   <link rel="stylesheet" href="css/style.css">
   <style>
     .info-grid {
@@ -25,13 +25,484 @@
     .info-card .ic-icon { font-size: 2rem; margin-bottom: 0.5rem; }
     .info-card .ic-label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); margin-bottom: 0.25rem; }
     .info-card .ic-val { font-family: var(--font-h); font-size: 1.1rem; font-weight: 700; color: var(--gold); }
+    .hero-postcard-wrap {
+      display: flex;
+      justify-content: center;
+      margin-top: 2.1rem;
+      position: relative;
+    }
+    .hero-postcard {
+      width: min(384px, 84vw);
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(212,175,55,0.3);
+      border-radius: 20px;
+      box-shadow: 0 18px 42px rgba(0,0,0,0.22);
+      padding: 0.8rem;
+      transform: rotate(-4deg);
+      transform-origin: center;
+      backdrop-filter: blur(6px);
+    }
+    .hero-postcard img {
+      display: block;
+      width: 100%;
+      border-radius: 14px;
+    }
+    @media(max-width:720px){
+      .hero-postcard-wrap {
+        margin-top: 0.35rem;
+      }
+      .hero-postcard {
+        width: min(300px, 80vw);
+        transform: rotate(-3deg);
+      }
+      .info-grid {
+        margin-top: 2rem;
+      }
+    }
+
+    .live-grid {
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 1.25rem;
+      margin-top: 2rem;
+    }
+    .live-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.35rem;
+      border: 1px solid rgba(27,58,92,0.08);
+    }
+    .weather-card {
+      position: relative;
+      overflow: hidden;
+    }
+    .weather-camel {
+      width: 72px;
+      flex-shrink: 0;
+      opacity: 0.96;
+      transform: rotate(-6deg);
+    }
+    .weather-head {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1rem;
+      align-items: start;
+      margin-bottom: 1rem;
+    }
+    .weather-head-copy { min-width: 0; }
+    .weather-compact {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.9rem;
+      margin-top: 1rem;
+    }
+    .weather-mini {
+      background: #FBF8F0;
+      border: 1px solid rgba(27,58,92,0.08);
+      border-radius: 14px;
+      padding: 1rem;
+    }
+    .weather-mini-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+      margin-bottom: 0.35rem;
+    }
+    .weather-mini-city {
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-lt);
+    }
+    .weather-mini-temp {
+      font-family: var(--font-b);
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.1;
+      margin-bottom: 0.2rem;
+    }
+    .weather-mini-desc {
+      color: var(--text-lt);
+      font-size: 0.86rem;
+      margin: 0;
+    }
+    .live-card.clickable {
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    }
+    .live-card.clickable:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(27,58,92,0.14);
+      border-color: rgba(212,175,55,0.35);
+    }
+    .live-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .live-top-left {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      flex-wrap: wrap;
+    }
+    .live-city {
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-lt);
+    }
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #8B6914;
+      background: rgba(212,175,55,0.16);
+      border: 1px solid rgba(212,175,55,0.28);
+      border-radius: 999px;
+      padding: 0.22rem 0.55rem;
+      white-space: nowrap;
+    }
+    .live-icon {
+      font-size: 1.6rem;
+      line-height: 1;
+    }
+    .live-value {
+      font-family: var(--font-b);
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--navy);
+      line-height: 1.1;
+      margin-bottom: 0.25rem;
+    }
+    .live-desc {
+      color: var(--text-lt);
+      font-size: 0.9rem;
+      margin: 0;
+    }
+    .live-tap {
+      margin-top: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--navy);
+      background: rgba(27,58,92,0.05);
+      border-radius: 999px;
+      padding: 0.4rem 0.7rem;
+    }
+    .live-footer {
+      margin-top: 1rem;
+      color: var(--text-lt);
+      font-size: 0.82rem;
+      text-align: center;
+    }
+    .calc-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(27,58,92,0.58);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1200;
+      padding: 1.25rem;
+    }
+    .calc-overlay.open { display: flex; }
+    .calc-modal {
+      width: 100%;
+      max-width: 520px;
+      background: var(--white);
+      border-radius: 20px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.22);
+      overflow: hidden;
+    }
+    .calc-head {
+      background: linear-gradient(135deg, var(--navy), var(--navy-lt));
+      color: var(--white);
+      padding: 1.1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .calc-head h3 {
+      color: var(--white);
+      font-size: 1.4rem;
+      margin: 0;
+    }
+    .calc-close {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: var(--white);
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+    .calc-body { padding: 1.25rem; }
+    .calc-hint {
+      color: var(--text-lt);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.9rem;
+    }
+    .calc-field label {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-lt);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .calc-field input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.85rem 0.95rem;
+      font-size: 1.05rem;
+      font-family: var(--font-b);
+      color: var(--navy);
+      background: #fffdfa;
+      outline: none;
+    }
+    .calc-field input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.15);
+    }
+    .calc-quick {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+    .calc-chip {
+      border: 1px solid var(--border);
+      background: var(--sand);
+      color: var(--navy);
+      border-radius: 999px;
+      padding: 0.45rem 0.8rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .calc-foot {
+      margin-top: 1rem;
+      color: var(--text-lt);
+      font-size: 0.84rem;
+    }
+    .primer-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    .story-card {
+      position: relative;
+      overflow: hidden;
+    }
+    .story-card .story-icon {
+      position: absolute;
+      right: 1.2rem;
+      top: 1rem;
+      width: 68px;
+      opacity: 0.12;
+      pointer-events: none;
+    }
+    .story-card .story-copy {
+      position: relative;
+      z-index: 1;
+      padding-right: 3.5rem;
+    }
+    .primer-copy {
+      background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,248,231,0.96));
+      border: 1px solid rgba(212,175,55,0.22);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 2rem;
+    }
+    .primer-copy p:last-child { margin-bottom: 0; }
+    .primer-side {
+      display: grid;
+      gap: 1rem;
+    }
+    .primer-side .card { border: 1px solid rgba(27,58,92,0.08); }
+    .primer-kicker {
+      display: inline-block;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #8B6914;
+      background: rgba(212,175,55,0.12);
+      border: 1px solid rgba(212,175,55,0.2);
+      border-radius: 999px;
+      padding: 0.3rem 0.7rem;
+      margin-bottom: 1rem;
+    }
+    .primer-end {
+      margin-top: 1rem;
+      background: rgba(27,58,92,0.05);
+      border-left: 4px solid var(--gold);
+      padding: 0.9rem 1rem;
+      border-radius: 10px;
+      color: var(--navy);
+      font-weight: 500;
+    }
+    .link-soft {
+      color: var(--navy);
+      text-decoration: underline;
+      text-decoration-color: rgba(27,58,92,0.2);
+      text-underline-offset: 0.16em;
+    }
+    .link-soft:hover { text-decoration-color: var(--gold); }
+    .divider-art {
+      margin: 0 auto 1.6rem;
+      width: min(430px, 64%);
+      opacity: 0.92;
+      display: block;
+    }
+    .reason-icon {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto 0.9rem;
+      filter: drop-shadow(0 8px 18px rgba(27,58,92,0.08));
+    }
+    .site-nav-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    .site-nav-card {
+      display: block;
+      text-decoration: none;
+      background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,248,231,0.95));
+      border: 1px solid rgba(27,58,92,0.08);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 1.2rem 1.15rem;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    }
+    .site-nav-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px rgba(27,58,92,0.14);
+      border-color: rgba(212,175,55,0.28);
+    }
+    .site-nav-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      margin-bottom: 0.55rem;
+    }
+    .site-nav-kicker {
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-lt);
+    }
+    .site-nav-icon {
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+    .site-nav-card h4 {
+      margin-bottom: 0.35rem;
+      font-size: 1.25rem;
+    }
+    .site-nav-card p {
+      font-size: 0.92rem;
+      color: var(--text-lt);
+      margin-bottom: 0.85rem;
+    }
+    .site-nav-list {
+      list-style: none;
+      display: grid;
+      gap: 0.45rem;
+      margin: 0 0 1rem;
+      padding: 0;
+    }
+    .site-nav-list li {
+      position: relative;
+      padding-left: 1rem;
+      font-size: 0.9rem;
+      color: var(--text-lt);
+      line-height: 1.45;
+    }
+    .site-nav-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--gold);
+      font-weight: 700;
+    }
+    .site-nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--navy);
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    @media(max-width:900px){
+      .live-grid,
+      .primer-grid { grid-template-columns: 1fr; }
+      .calc-grid { grid-template-columns: 1fr; }
+      .weather-compact { grid-template-columns: 1fr; }
+      .site-nav-grid { grid-template-columns: 1fr; }
+      .weather-camel {
+        width: 52px;
+      }
+      .weather-head {
+        grid-template-columns: auto 1fr;
+        gap: 0.85rem;
+        align-items: start;
+      }
+      .story-card .story-icon {
+        width: 56px;
+        right: 0.9rem;
+      }
+      .story-card .story-copy {
+        padding-right: 2.4rem;
+      }
+      .reason-icon {
+        width: 108px;
+        height: 108px;
+      }
+    }
   </style>
 </head>
 <body>
 
 <!-- NAVBAR -->
 <nav class="navbar">
-  <a class="navbar-brand" href="index.html">🇪🇬 <span>Египет</span> 2026</a>
+  <div class="navbar-left">
+    <a class="navbar-brand" href="index.html">🇪🇬 <span>Египет</span> 2026</a>
+    <div class="music-player music-player-nav" id="music-player">
+      <audio id="bg-audio" loop src="Kadir Demir - Desert Queen.mp3" preload="none"></audio>
+      <button class="music-btn" id="music-btn" onclick="toggleMusic()" title="Kadir Demir — Desert Queen" aria-label="Включить музыку">
+        <span class="music-note">♪</span>
+        <div class="music-bars"><span></span><span></span><span></span><span></span></div>
+      </button>
+      <div class="music-label">Атмосфера Египта</div>
+    </div>
+  </div>
   <button class="nav-toggle" aria-label="Меню">
     <span></span><span></span><span></span>
   </button>
@@ -49,132 +520,198 @@
 <section class="hero">
   <div class="hero-bg-pattern"></div>
   <div class="hero-content">
-    <p class="hero-eyebrow">14 – 21 апреля 2026</p>
-    <h1>Макс и Луиза<br>едут в <em>Египет</em></h1>
-    <p class="hero-sub">Хургада · Луксор · Каир — 8 дней, три города, одно незабываемое путешествие</p>
+    <div class="hero-postcard-wrap">
+      <div class="hero-postcard">
+        <img src="Logo.jpg" alt="Проект Египетская сила">
+      </div>
+    </div>
+
+    <p class="hero-sub" style="margin-top:1.5rem;">Это наш семейный гид по первой поездке в Египет: мы собрали здесь всё, в чём сами разбирались перед путешествием, чтобы было удобно нам и полезно другим.</p>
 
     <!-- Countdown -->
     <div class="countdown-bar" id="countdown"></div>
 
     <div class="hero-btns">
-      <a href="cities.html" class="btn btn-primary">🏛 Гиды по городам</a>
-      <a href="map.html" class="btn btn-white">🗺 Карта маршрута</a>
+      <a href="cities.html" class="btn btn-primary">🏛 Города Египта</a>
+      <a href="map.html" class="btn btn-white">🗺 Карта интересных мест</a>
+      <a href="#first-time" class="btn btn-white">✨ Главные советы</a>
       <a href="private.html" class="btn btn-outline" style="border-color:rgba(212,175,55,0.5);color:var(--gold);">🔐 Личный план</a>
     </div>
+  </div>
+</section>
 
-    <div class="info-grid">
-      <div class="info-card">
-        <div class="ic-icon">✈️</div>
-        <div class="ic-label">Авиакомпания</div>
-        <div class="ic-val">Nesma Airlines</div>
-      </div>
-      <div class="info-card">
-        <div class="ic-icon">🌡️</div>
-        <div class="ic-label">Температура в апреле</div>
-        <div class="ic-val">+28–35°C</div>
-      </div>
-      <div class="info-card">
-        <div class="ic-icon">💵</div>
-        <div class="ic-label">Виза на месте</div>
-        <div class="ic-val">$30 / чел</div>
+<!-- WHY THIS SITE -->
+<section class="section" style="background:#FFF8E8; padding-top:2.75rem; padding-bottom:2.75rem;">
+  <div class="container">
+    <div class="card story-card" style="border:1px solid rgba(212,175,55,0.2);">
+      <img class="story-icon" src="images/papyrus-scroll.png" alt="">
+      <div class="card-body story-copy" style="padding:1.8rem 2rem;">
+        <h3 style="margin-bottom:0.7rem;">Почему мы вообще сделали этот сайт</h3>
+        <p style="font-size:0.98rem;color:var(--text-lt);">Когда мы начали собираться в Египет, быстро стало ясно: информация везде разбросана. Где-то про деньги, где-то про транспорт, где-то про города, где-то про “что реально нужно взять”. Поэтому мы решили собрать всё в одном месте и оформить это как нормальный живой сайт, а не как хаотичные заметки в телефоне.</p>
+        <p style="font-size:0.98rem;color:var(--text-lt); margin-bottom:0;">Сейчас это наш личный семейный гид и штаб подготовки. А дальше нам хочется, чтобы он остался полезным и другим: тем, кто тоже едет в Египет впервые и хочет спокойно понять страну без лишней суеты.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ROUTE STRIP -->
-<div class="route-strip">
+<!-- LIVE DATA -->
+<section class="section" style="background: var(--white); padding-top: 3rem; padding-bottom: 3rem;">
   <div class="container">
-    <div class="route-inner">
-      <div class="route-city">
-        <div class="route-city-icon">🏖️</div>
-        <span class="route-city-name">Сочи</span>
-        <span class="route-city-days">вылет</span>
+    <div class="section-title" style="margin-bottom:1rem;">
+      <h2>Сейчас в Египте</h2>
+      <div class="gold-line"></div>
+    </div>
+
+    <div class="live-grid">
+      <div class="live-card weather-card">
+        <div class="weather-head">
+          <img class="weather-camel" src="images/camel-backpack.png" alt="">
+          <div class="weather-head-copy">
+            <div class="live-top">
+              <div class="live-city">Погода по маршруту</div>
+              <div class="live-icon">🌤️</div>
+            </div>
+            <p class="live-desc">Небольшой ориентир по главным городам, чтобы быстрее понять, что там сейчас по ощущениям.</p>
+          </div>
+        </div>
+
+        <div class="weather-compact">
+          <div class="weather-mini">
+            <div class="weather-mini-head">
+              <div class="weather-mini-city">Хургада</div>
+              <div class="live-icon" id="live-hurghada-icon">⏳</div>
+            </div>
+            <div class="weather-mini-temp" id="live-hurghada-temp">...</div>
+            <p class="weather-mini-desc" id="live-hurghada-desc">Загружаем погоду...</p>
+          </div>
+
+          <div class="weather-mini">
+            <div class="weather-mini-head">
+              <div class="weather-mini-city">Луксор</div>
+              <div class="live-icon" id="live-luxor-icon">⏳</div>
+            </div>
+            <div class="weather-mini-temp" id="live-luxor-temp">...</div>
+            <p class="weather-mini-desc" id="live-luxor-desc">Загружаем погоду...</p>
+          </div>
+
+          <div class="weather-mini">
+            <div class="weather-mini-head">
+              <div class="weather-mini-city">Каир</div>
+              <div class="live-icon" id="live-cairo-icon">⏳</div>
+            </div>
+            <div class="weather-mini-temp" id="live-cairo-temp">...</div>
+            <p class="weather-mini-desc" id="live-cairo-desc">Загружаем погоду...</p>
+          </div>
+        </div>
       </div>
-      <div class="route-arrow">→</div>
-      <div class="route-city">
-        <div class="route-city-icon">🤿</div>
-        <span class="route-city-name">Хургада</span>
-        <span class="route-city-days">4 ночи</span>
+
+      <div class="live-card clickable" id="live-rate-card" role="button" tabindex="0" aria-label="Открыть калькулятор валют">
+        <div class="live-top">
+          <div class="live-top-left">
+            <div class="live-city">Курс</div>
+            <div class="live-badge">Нажми</div>
+          </div>
+          <div class="live-icon">💱</div>
+        </div>
+        <div class="live-value" id="live-rate-usd">...</div>
+        <p class="live-desc" id="live-rate-desc">Покажем связку доллар → египетские фунты → рубли, чтобы проще понимать цены на месте.</p>
+        <div class="live-tap">🧮 Открыть калькулятор для торга</div>
       </div>
-      <div class="route-arrow">→</div>
-      <div class="route-city">
-        <div class="route-city-icon">🏛️</div>
-        <span class="route-city-name">Луксор</span>
-        <span class="route-city-days">2 ночи</span>
+    </div>
+
+    <div class="live-footer">
+      <span id="live-updated">Данные загружаются…</span>
+      ·
+      <a class="link-soft" href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a>
+      ·
+      <a class="link-soft" href="https://www.exchangerate-api.com/docs/free" target="_blank" rel="noopener noreferrer">ExchangeRate-API</a>
+    </div>
+  </div>
+</section>
+
+<div class="calc-overlay" id="calc-overlay" aria-hidden="true">
+  <div class="calc-modal" role="dialog" aria-modal="true" aria-labelledby="calc-title">
+    <div class="calc-head">
+      <h3 id="calc-title">Калькулятор для торга</h3>
+      <button class="calc-close" id="calc-close" type="button" aria-label="Закрыть">×</button>
+    </div>
+    <div class="calc-body">
+      <p class="calc-hint">Вбей сумму в удобной валюте, а остальные пересчитаются сами. Удобно быстро понять, что тебе называют на рынке или в такси.</p>
+
+      <div class="calc-grid">
+        <div class="calc-field">
+          <label for="calc-egp">Египетские фунты</label>
+          <input id="calc-egp" type="number" min="0" step="0.01" placeholder="Например, 500">
+        </div>
+        <div class="calc-field">
+          <label for="calc-usd">Доллары</label>
+          <input id="calc-usd" type="number" min="0" step="0.01" placeholder="Например, 10">
+        </div>
+        <div class="calc-field">
+          <label for="calc-rub">Рубли</label>
+          <input id="calc-rub" type="number" min="0" step="0.01" placeholder="Например, 1000">
+        </div>
       </div>
-      <div class="route-arrow">→</div>
-      <div class="route-city">
-        <div class="route-city-icon">🔺</div>
-        <span class="route-city-name">Каир</span>
-        <span class="route-city-days">1 ночь</span>
+
+      <div class="calc-quick">
+        <button class="calc-chip" type="button" data-egp="100">100 EGP</button>
+        <button class="calc-chip" type="button" data-egp="250">250 EGP</button>
+        <button class="calc-chip" type="button" data-egp="500">500 EGP</button>
+        <button class="calc-chip" type="button" data-egp="1000">1000 EGP</button>
       </div>
-      <div class="route-arrow">→</div>
-      <div class="route-city">
-        <div class="route-city-icon">🤿</div>
-        <span class="route-city-name">Хургада</span>
-        <span class="route-city-days">1 ночь</span>
-      </div>
-      <div class="route-arrow">→</div>
-      <div class="route-city">
-        <div class="route-city-icon">🏡</div>
-        <span class="route-city-name">Сочи</span>
-        <span class="route-city-days">домой</span>
-      </div>
+
+      <div class="calc-foot" id="calc-foot">Курс подхватится автоматически, как только загрузится live-блок.</div>
     </div>
   </div>
 </div>
 
-<!-- CITY CARDS -->
-<section class="section" style="background: var(--sand);">
+<!-- FIRST TIME -->
+<section id="first-time" class="section" style="background: linear-gradient(180deg, #F8F0DD 0%, #FFFFFF 100%);">
   <div class="container">
     <div class="section-title">
-      <h2>Три города — три мира</h2>
+      <img class="divider-art" src="images/pyramids-panorama.png" alt="Пирамиды Египта">
+      <h2>Египет в двух словах</h2>
       <div class="gold-line"></div>
-      <p class="mt-2">Каждый город Египта — отдельная вселенная. Нажми на город — узнаешь всё.</p>
     </div>
-    <div class="grid-3">
-      <a href="cities.html#hurghada" class="city-card" style="text-decoration:none;">
-        <div class="city-card-header" style="background:linear-gradient(135deg,#006994,#00A8CC);">🤿</div>
-        <div class="city-card-body">
-          <h3>Хургада</h3>
-          <p>Красное море, коралловые рифы, острова Гифтун. База всей поездки — отдых, море, снорклинг.</p>
-          <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.75rem;">
-            <span class="badge badge-gold">Море</span>
-            <span class="badge badge-gold">Рифы</span>
-            <span class="badge badge-gold">Яхта</span>
-          </div>
-          <span class="city-card-link">Читать гид →</span>
-        </div>
-      </a>
 
-      <a href="cities.html#luxor" class="city-card" style="text-decoration:none;">
-        <div class="city-card-header" style="background:linear-gradient(135deg,#8B6914,#D4AF37);">🏛️</div>
-        <div class="city-card-body">
-          <h3>Луксор</h3>
-          <p>Открытый музей под небом: Долина Царей, Карнакский храм, Нил и фелука на закате.</p>
-          <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.75rem;">
-            <span class="badge badge-gold">Храмы</span>
-            <span class="badge badge-gold">История</span>
-            <span class="badge badge-gold">Нил</span>
-          </div>
-          <span class="city-card-link">Читать гид →</span>
-        </div>
-      </a>
+    <div class="primer-grid">
+      <div class="primer-copy">
+        <span class="primer-kicker">Первое знакомство</span>
+        <p>Египет — это не только “отель и море”. За одну поездку здесь можно поймать очень разный вайб: кораллы Красного моря, древние храмы, пустынные пейзажи, Нил и огромный шумный Каир. Поэтому страна ощущается не как один курорт, а как сразу несколько разных путешествий в одном.</p>
+        <p>Если ехать первый раз, лучше воспринимать Египет как микс отдыха и приключения. Где-то всё будет красиво и расслабленно, а где-то шумно, живо и немного хаотично. И это нормально: не “идеально по-европейски”, зато очень атмосферно и по-настоящему запоминается.</p>
+        <p>Именно поэтому наш маршрут такой: сначала море и отдых в Хургаде, потом древний Египет в Луксоре, а потом пирамиды и большой город в Каире. Получается не просто отпуск у бассейна, а ощущение полноценного первого знакомства со страной.</p>
+        <div class="primer-end">Ну вот мы и поехали в Египет первый раз: хотим взять от него и море, и историю, и пирамиды, и просто то самое ощущение большого живого путешествия.</div>
+      </div>
 
-      <a href="cities.html#cairo" class="city-card" style="text-decoration:none;">
-        <div class="city-card-header" style="background:linear-gradient(135deg,#1B3A5C,#2A5080);">🔺</div>
-        <div class="city-card-body">
-          <h3>Каир</h3>
-          <p>Пирамиды Гизы, Сфинкс, Большой египетский музей (GEM), легендарный базар Хан-эль-Халили.</p>
-          <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.75rem;">
-            <span class="badge badge-gold">Пирамиды</span>
-            <span class="badge badge-gold">GEM</span>
-            <span class="badge badge-gold">Базар</span>
+      <div class="primer-side">
+        <div class="card">
+          <div class="card-body">
+            <h4>Когда лучше ехать</h4>
+            <p style="font-size:0.92rem;color:var(--text-lt);">Для первого раза самые комфортные сезоны — весна и осень. В апреле уже очень тепло, море приятное, а по храмам и городам ещё можно гулять без экстремальной жары.</p>
           </div>
-          <span class="city-card-link">Читать гид →</span>
         </div>
-      </a>
+
+        <div class="card">
+          <div class="card-body">
+            <h4>Куда ехать в первый раз</h4>
+            <p style="font-size:0.92rem;color:var(--text-lt);"><strong>Хургада</strong> — море и рифы. <strong>Луксор</strong> — древности и храмы. <strong>Каир</strong> — пирамиды, музей и городской драйв. Вместе они дают очень цельную картину Египта.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <h4>Что важно знать <img src="images/scarab-sun.png" alt="" style="width:28px;vertical-align:middle;margin-left:0.35rem;"></h4>
+            <p style="font-size:0.92rem;color:var(--text-lt);">Тут стоит заранее принять местный ритм: торг, наличные, офлайн-карты, вода в бутылках, такси и немного гибкости. Если ехать с таким настроем, Египет раскрывается гораздо приятнее.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <h4>Очень кратко про историю</h4>
+            <p style="font-size:0.92rem;color:var(--text-lt);">Египет — одна из древнейших цивилизаций мира. Пирамиды, гробницы и храмы здесь не “музейная декорация”, а реальное наследие страны, которому тысячи лет. Поэтому даже обычная поездка сюда ощущается чуть глубже, чем просто пляжный отпуск.</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -189,28 +726,28 @@
     <div class="grid-4">
       <div class="card">
         <div class="card-body" style="text-align:center;">
-          <span class="card-icon">🎭</span>
+          <img class="reason-icon" src="images/history-emblem.png" alt="5000 лет истории">
           <h4>5000 лет истории</h4>
           <p style="font-size:0.88rem;color:var(--text-lt);">Храмы, гробницы и артефакты, которые не найти больше нигде в мире</p>
         </div>
       </div>
       <div class="card">
         <div class="card-body" style="text-align:center;">
-          <span class="card-icon">🐠</span>
+          <img class="reason-icon" src="images/reef-emblem.png" alt="Лучшие рифы мира">
           <h4>Лучшие рифы мира</h4>
           <p style="font-size:0.88rem;color:var(--text-lt);">Красное море — топ-5 мест для снорклинга и дайвинга на планете</p>
         </div>
       </div>
       <div class="card">
         <div class="card-body" style="text-align:center;">
-          <span class="card-icon">🔺</span>
+          <img class="reason-icon" src="images/wonder-emblem.png" alt="Чудо света">
           <h4>Чудо света</h4>
           <p style="font-size:0.88rem;color:var(--text-lt);">Единственное сохранившееся чудо древнего мира — пирамиды Гизы</p>
         </div>
       </div>
       <div class="card">
         <div class="card-body" style="text-align:center;">
-          <span class="card-icon">🛍️</span>
+          <img class="reason-icon" src="images/bazaar-emblem.png" alt="Шоппинг мечты">
           <h4>Шоппинг мечты</h4>
           <p style="font-size:0.88rem;color:var(--text-lt);">Хлопок, кожа, специи — качество по смешным ценам</p>
         </div>
@@ -219,12 +756,67 @@
   </div>
 </section>
 
+<!-- SITE NAV -->
+<section class="section" style="background:#FFF8E8; padding-top:2.6rem; padding-bottom:2.6rem;">
+  <div class="container">
+    <div class="section-title" style="margin-bottom:1.4rem;">
+      <h2>Куда дальше</h2>
+      <div class="gold-line"></div>
+      <p class="mt-2">Если листаешь главную и хочешь быстро понять, где что лежит, вот короткая навигация по самому полезному.</p>
+    </div>
+    <div class="site-nav-grid">
+      <a href="cities.html" class="site-nav-card">
+        <div class="site-nav-top">
+          <div class="site-nav-kicker">По городам</div>
+          <div class="site-nav-icon">🏛️</div>
+        </div>
+        <h4>Гиды по городам</h4>
+        <p>Если пока не очень понятно, чем вообще отличаются Хургада, Луксор и Каир, начни отсюда.</p>
+        <ul class="site-nav-list">
+          <li>Куда ехать за морем, а куда за историей</li>
+          <li>Что смотреть в каждом городе в первую очередь</li>
+          <li>Как понять вайб места ещё до поездки</li>
+        </ul>
+        <span class="site-nav-link">Открыть города →</span>
+      </a>
+      <a href="map.html" class="site-nav-card">
+        <div class="site-nav-top">
+          <div class="site-nav-kicker">Логистика</div>
+          <div class="site-nav-icon">🗺️</div>
+        </div>
+        <h4>Наш маршрут</h4>
+        <p>Это просто наглядная карта с основными точками поездки, чтобы быстро собрать общую картину маршрута.</p>
+        <ul class="site-nav-list">
+          <li>Города и ключевые места по пути</li>
+          <li>Порядок маршрута без перегруза деталями</li>
+          <li>Удобно открыть и сразу визуально сориентироваться</li>
+        </ul>
+        <span class="site-nav-link">Открыть карту →</span>
+      </a>
+      <a href="tips.html" class="site-nav-card">
+        <div class="site-nav-top">
+          <div class="site-nav-kicker">Практика</div>
+          <div class="site-nav-icon">💡</div>
+        </div>
+        <h4>Что важно знать</h4>
+        <p>Здесь собрали самое полезное из того, что реально помогает перед поездкой, а не просто красиво звучит в интернете.</p>
+        <ul class="site-nav-list">
+          <li>Деньги, наличные, курс и как проще платить</li>
+          <li>Связь, вода, офлайн-карты и транспорт</li>
+          <li>Что взять с собой и на чём люди обычно тупят</li>
+        </ul>
+        <span class="site-nav-link">Перейти к советам →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- CTA FEEDBACK -->
 <section class="section" style="background: var(--navy); padding: 3rem 0;">
   <div class="container text-center">
     <h2 style="color:var(--white);">Были в Египте? 🌟</h2>
-    <p style="color:rgba(255,255,255,0.65); margin: 0.75rem 0 2rem;">Поделитесь советом — куда сходить, что не пропустить, а что пропустить. Мы обновим гид!</p>
-    <a href="feedback.html" class="btn btn-primary" style="font-size:1rem; padding:0.8rem 2rem;">Оставить рекомендацию</a>
+    <p style="color:rgba(255,255,255,0.65); margin: 0.75rem 0 2rem;">Если у тебя есть полезный совет, напиши нам. Мы собираем этот гид живым и хотим, чтобы он реально помогал тем, кто едет впервые.</p>
+    <a href="feedback.html" class="btn btn-primary" style="font-size:1rem; padding:0.8rem 2rem;">Поделиться советом</a>
   </div>
 </section>
 
@@ -234,19 +826,10 @@
   <p style="margin-top:0.3rem;">Sochi AER → Hurghada HRG · <a href="feedback.html">Поделиться советом</a></p>
 </footer>
 
-<!-- MUSIC PLAYER -->
-<div class="music-player" id="music-player">
-  <audio id="bg-audio" loop src="Kadir Demir - Desert Queen.mp3" preload="none"></audio>
-  <button class="music-btn" id="music-btn" onclick="toggleMusic()" title="Kadir Demir — Desert Queen">
-    <span class="music-note">♪</span>
-    <div class="music-bars"><span></span><span></span><span></span><span></span></div>
-  </button>
-  <div class="music-label">Desert Queen</div>
-</div>
-
 <script src="js/main.js"></script>
 <script>
   updateCountdown('2026-04-14T14:30:00+03:00', 'countdown');
+  initEgyptLiveData();
 </script>
 </body>
 </html>

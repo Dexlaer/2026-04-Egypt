@@ -51,7 +51,17 @@
 
 <!-- NAVBAR -->
 <nav class="navbar">
-  <a class="navbar-brand" href="index.html">🇪🇬 <span>Египет</span> 2026</a>
+  <div class="navbar-left">
+    <a class="navbar-brand" href="index.html">🇪🇬 <span>Египет</span> 2026</a>
+    <div class="music-player music-player-nav" id="music-player">
+      <audio id="bg-audio" loop src="Kadir Demir - Desert Queen.mp3" preload="none"></audio>
+      <button class="music-btn" id="music-btn" onclick="toggleMusic()" title="Kadir Demir — Desert Queen" aria-label="Включить музыку">
+        <span class="music-note">♪</span>
+        <div class="music-bars"><span></span><span></span><span></span><span></span></div>
+      </button>
+      <div class="music-label">Атмосфера Египта</div>
+    </div>
+  </div>
   <button class="nav-toggle" aria-label="Меню"><span></span><span></span><span></span></button>
   <ul class="nav-links">
     <li><a href="index.html">Главная</a></li>
@@ -81,16 +91,6 @@
   <div class="legend-item"><div class="legend-dot" style="background:#0077B6;"></div> Хургада</div>
   <div class="legend-item"><div class="legend-dot" style="background:#D4AF37;"></div> Луксор</div>
   <div class="legend-item"><div class="legend-dot" style="background:#1B3A5C;"></div> Каир</div>
-</div>
-
-<!-- MUSIC PLAYER -->
-<div class="music-player" id="music-player">
-  <audio id="bg-audio" loop src="Kadir Demir - Desert Queen.mp3" preload="none"></audio>
-  <button class="music-btn" id="music-btn" onclick="toggleMusic()" title="Kadir Demir — Desert Queen">
-    <span class="music-note">♪</span>
-    <div class="music-bars"><span></span><span></span><span></span><span></span></div>
-  </button>
-  <div class="music-label">Desert Queen</div>
 </div>
 
 <script src="js/main.js"></script>
@@ -179,21 +179,6 @@ function renderMarkers(filter) {
     map.fitBounds(group.getBounds().pad(0.15));
   }
 }
-
-// Draw route line
-const routeCoords = [
-  [27.4348, 33.9931], // Sochi (approximate AER)
-  [27.1833, 33.8000], // Hurghada HRG
-  [25.6700, 32.7060], // Luxor LXR
-  [30.1219, 31.4056], // Cairo CAI
-  [27.1833, 33.8000], // Hurghada HRG (back)
-];
-L.polyline(routeCoords, {
-  color: '#D4AF37',
-  weight: 2.5,
-  dashArray: '8, 8',
-  opacity: 0.6
-}).addTo(map);
 
 renderMarkers('all');
 
