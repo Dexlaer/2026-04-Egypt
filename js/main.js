@@ -123,8 +123,8 @@ function applyCheckedStyle(cb) {
 
 // ── Password Gate ─────────────────────────
 const PASS_KEY = 'egypt_auth';
-// Password: egypt2026 (stored as simple obfuscation)
-const PASS_HASH = 'ZWd5cHQyMDI2'; // btoa('egypt2026')
+// Password: 1111 (stored as simple obfuscation)
+const PASS_HASH = 'MTExMQ=='; // btoa('1111')
 
 function checkPassword(input) {
   return btoa(input.trim()) === PASS_HASH;
