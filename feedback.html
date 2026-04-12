@@ -19,38 +19,12 @@
     .success-box .s-icon { font-size: 4rem; margin-bottom: 1rem; }
     .success-box h2 { color: var(--navy); margin-bottom: 0.5rem; }
     .success-box p { color: var(--text-lt); }
-    .city-checkgroup { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-    .city-check-label {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      border: 2px solid var(--border);
-      border-radius: 8px;
-      padding: 0.4rem 0.9rem;
-      cursor: pointer;
+    .simple-feedback-note {
+      color: var(--text-lt);
       font-size: 0.92rem;
-      background: var(--white);
-      transition: all 0.2s;
+      line-height: 1.7;
+      margin-bottom: 1.25rem;
     }
-    .city-check-label input { accent-color: var(--gold); }
-    .city-check-label:has(input:checked) {
-      border-color: var(--navy);
-      background: var(--sand);
-      font-weight: 600;
-      color: var(--navy);
-    }
-    .star-group { display: flex; gap: 0.3rem; }
-    .star-btn {
-      background: none;
-      border: none;
-      font-size: 1.8rem;
-      cursor: pointer;
-      transition: transform 0.15s;
-      color: var(--border);
-      padding: 0;
-    }
-    .star-btn.lit { color: var(--gold); }
-    .star-btn:hover { transform: scale(1.15); }
   </style>
 </head>
 <body>
@@ -87,101 +61,35 @@
   <div class="container">
     <div class="feedback-wrap">
 
-      <!-- Intro -->
-      <div class="alert alert-info mb-3">
-        <strong>Как это работает:</strong> вы оставляете рекомендацию → она приходит нам → мы добавляем лучшие советы в гид. Так сайт остаётся живым, личным и реально полезным для следующих поездок.
-      </div>
-
       <!-- FORM — действие Formspree, нужно заменить YOUR_FORM_ID на реальный -->
       <div class="card">
         <div class="card-body" style="padding:2rem;">
+          <p class="simple-feedback-note">Можно написать в свободной форме: что понравилось, где быть осторожнее, куда точно стоит сходить или что лучше не повторять. Без анкеты — просто полезный совет.</p>
+
           <form id="feedback-form"
                 action="https://formspree.io/f/YOUR_FORM_ID"
                 method="POST">
-
-            <!-- Name -->
-            <div class="form-group">
-              <label class="form-label" for="fb_name">Ваше имя *</label>
-              <input class="form-input" type="text" id="fb_name" name="name"
-                     placeholder="Как вас зовут?" required>
-            </div>
-
-            <!-- Was in Egypt? -->
-            <div class="form-group">
-              <label class="form-label">Вы бывали в Египте? *</label>
-              <div class="form-radio-group">
-                <label class="form-radio-label">
-                  <input type="radio" name="been_to_egypt" value="Да, бывал(а)" required> Да, бывал(а)
-                </label>
-                <label class="form-radio-label">
-                  <input type="radio" name="been_to_egypt" value="Нет, но знаю"> Нет, но кое-что знаю
-                </label>
-                <label class="form-radio-label">
-                  <input type="radio" name="been_to_egypt" value="Живу/жил там"> Живу / жил там
-                </label>
-              </div>
-            </div>
-
-            <!-- City -->
-            <div class="form-group">
-              <label class="form-label">Про какой город совет? (можно несколько)</label>
-              <div class="city-checkgroup">
-                <label class="city-check-label"><input type="checkbox" name="city" value="Хургада"> 🤿 Хургада</label>
-                <label class="city-check-label"><input type="checkbox" name="city" value="Луксор"> 🏛 Луксор</label>
-                <label class="city-check-label"><input type="checkbox" name="city" value="Каир"> 🔺 Каир</label>
-                <label class="city-check-label"><input type="checkbox" name="city" value="Общее"> 🇪🇬 Общее</label>
-              </div>
-            </div>
-
-            <!-- Category -->
-            <div class="form-group">
-              <label class="form-label" for="fb_cat">Тема совета</label>
-              <select class="form-select" id="fb_cat" name="category">
-                <option value="">— выберите —</option>
-                <option>🏛 Достопримечательность (обязательно посетить)</option>
-                <option>❌ Не стоит туда идти</option>
-                <option>🍽 Ресторан / кафе</option>
-                <option>🛍️ Шоппинг / торговля</option>
-                <option>🚕 Транспорт / трансфер</option>
-                <option>🏨 Отель / жильё</option>
-                <option>💡 Лайфхак / совет</option>
-                <option>⚠️ Предупреждение / осторожно</option>
-              </select>
-            </div>
 
             <!-- Tip text -->
             <div class="form-group">
               <label class="form-label" for="fb_tip">Ваш совет *</label>
               <textarea class="form-textarea" id="fb_tip" name="tip"
-                        placeholder="Расскажите подробнее: что именно, где найти, цена, почему стоит или не стоит..."
-                        rows="5" required></textarea>
-            </div>
-
-            <!-- Rating -->
-            <div class="form-group">
-              <label class="form-label">Оцените Египет в целом</label>
-              <div class="star-group" id="star-group">
-                <button type="button" class="star-btn" data-val="1">★</button>
-                <button type="button" class="star-btn" data-val="2">★</button>
-                <button type="button" class="star-btn" data-val="3">★</button>
-                <button type="button" class="star-btn" data-val="4">★</button>
-                <button type="button" class="star-btn" data-val="5">★</button>
-              </div>
-              <input type="hidden" name="rating" id="rating-val" value="">
+                        placeholder="Например: где лучше менять деньги, какой район понравился, на чём сэкономить, где не стоит соглашаться на первую цену..."
+                        rows="8" required></textarea>
             </div>
 
             <!-- Contact (optional) -->
             <div class="form-group">
-              <label class="form-label" for="fb_contact">Контакт (необязательно)</label>
+              <label class="form-label" for="fb_contact">Имя или контакт (необязательно)</label>
               <input class="form-input" type="text" id="fb_contact" name="contact"
-                     placeholder="Telegram / Instagram / email — если хотите, чтобы мы поблагодарили">
+                     placeholder="Можно оставить имя, Telegram или email">
             </div>
 
             <input type="hidden" name="_subject" value="Новая рекомендация по Египту 🇪🇬">
             <input type="hidden" name="_next" value="">
 
             <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:0.85rem;font-size:1rem;">
-              Отправить рекомендацию 🚀
+              Отправить совет
             </button>
           </form>
 
@@ -189,29 +97,8 @@
           <div class="success-box" id="success-box">
             <div class="s-icon">🎉</div>
             <h2>Спасибо!</h2>
-            <p>Ваш совет получен. Лучшие рекомендации появятся в гиде — вы помогаете другим путешественникам!</p>
+            <p>Совет получен. Если он будет полезен другим путешественникам, мы добавим его в гид.</p>
             <a href="cities.html" class="btn btn-primary mt-3">Читать гид по городам</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- What happens next -->
-      <div class="card mt-3">
-        <div class="card-body">
-          <h4 style="margin-bottom:1rem;">Что происходит дальше?</h4>
-          <div style="display:flex;flex-direction:column;gap:0.75rem;">
-            <div style="display:flex;gap:0.75rem;align-items:flex-start;">
-              <span style="font-size:1.3rem;flex-shrink:0;">📩</span>
-              <div><strong>Получаем совет</strong> — приходит на почту сразу после отправки</div>
-            </div>
-            <div style="display:flex;gap:0.75rem;align-items:flex-start;">
-              <span style="font-size:1.3rem;flex-shrink:0;">✍️</span>
-              <div><strong>Обновляем гид</strong> — лучшие советы добавляем в соответствующий раздел городов</div>
-            </div>
-            <div style="display:flex;gap:0.75rem;align-items:flex-start;">
-              <span style="font-size:1.3rem;flex-shrink:0;">🌍</span>
-              <div><strong>Помогаем другим</strong> — сайт становится лучшим путеводителем по Египту</div>
-            </div>
           </div>
         </div>
       </div>
@@ -222,31 +109,13 @@
 
 <footer class="footer">
   <p><strong>Египет 2026</strong> · семейный гид по первой поездке</p>
+  <p style="margin-top:0.3rem;">Разработка <a href="https://all-bot.ru" target="_blank" rel="noopener noreferrer">All-bot.ru</a></p>
   <p style="margin-top:0.3rem;"><a href="index.html">На главную</a> · <a href="cities.html">Гиды по городам</a></p>
 </footer>
 
 <!-- MUSIC PLAYER -->
 <script src="js/main.js"></script>
 <script>
-// Stars
-const stars = document.querySelectorAll('.star-btn');
-const ratingInput = document.getElementById('rating-val');
-stars.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const val = +btn.dataset.val;
-    ratingInput.value = val;
-    stars.forEach(s => s.classList.toggle('lit', +s.dataset.val <= val));
-  });
-  btn.addEventListener('mouseenter', () => {
-    const val = +btn.dataset.val;
-    stars.forEach(s => s.classList.toggle('lit', +s.dataset.val <= val));
-  });
-});
-document.getElementById('star-group').addEventListener('mouseleave', () => {
-  const current = +ratingInput.value;
-  stars.forEach(s => s.classList.toggle('lit', +s.dataset.val <= current));
-});
-
 // Form submit — show success if Formspree ID not set
 const form = document.getElementById('feedback-form');
 form.addEventListener('submit', async e => {

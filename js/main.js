@@ -5,6 +5,7 @@
 // ── Navbar mobile toggle ──────────────────
 document.addEventListener('DOMContentLoaded', () => {
   initMusicPlayer();
+  initCurrencyCalculator();
 
   const toggle = document.querySelector('.nav-toggle');
   const links  = document.querySelector('.nav-links');
@@ -337,6 +338,26 @@ function setLiveWeatherCard(id, payload) {
   iconEl.textContent = icon;
 }
 
+function setAverageEgyptTemperature(weatherResults) {
+  const chip = document.getElementById('nav-average-temp');
+  const valueEl = document.getElementById('nav-average-temp-value');
+  if (!chip || !valueEl) return;
+
+  const temperatures = weatherResults
+    .filter(result => result.status === 'fulfilled' && result.value && typeof result.value.temperature === 'number')
+    .map(result => result.value.temperature);
+
+  if (!temperatures.length) {
+    chip.classList.remove('is-visible');
+    valueEl.textContent = '';
+    return;
+  }
+
+  const average = temperatures.reduce((sum, temp) => sum + temp, 0) / temperatures.length;
+  valueEl.textContent = `${Math.round(average)}°C`;
+  chip.classList.add('is-visible');
+}
+
 async function fetchCityWeather(latitude, longitude) {
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,weather_code&timezone=auto&forecast_days=1`;
   const response = await fetch(url);
@@ -379,6 +400,7 @@ async function initEgyptLiveData() {
     const target = weatherTargets[index];
     setLiveWeatherCard(target.id, result.status === 'fulfilled' ? result.value : null);
   });
+  setAverageEgyptTemperature(weatherResults);
 
   try {
     const [usdRates, rubRates] = await Promise.all([
@@ -399,12 +421,13 @@ async function initEgyptLiveData() {
     if (rateValue) rateValue.innerHTML = `1 USD ≈ ${usdToEgp.toFixed(2)} EGP ≈ ${usdToRub.toFixed(2)} RUB`;
     if (rateDesc) rateDesc.textContent = `Дополнительно: 100 RUB ≈ ${(rubToEgp * 100).toFixed(2)} EGP. Небольшой ориентир, чтобы быстрее понимать местные цены.`;
     if (rateBadge) rateBadge.textContent = 'На сейчас';
-    initCurrencyCalculator();
   } catch (error) {
     if (rateValue) rateValue.textContent = '—';
     if (rateDesc) rateDesc.textContent = 'Курс временно не загрузился, позже подтянется сам.';
     if (rateBadge) rateBadge.textContent = 'Обновится';
   }
+
+  initCurrencyCalculator();
 
   if (updatedEl) {
     const now = new Date();
@@ -421,6 +444,7 @@ function roundCurrency(value) {
 
 function initCurrencyCalculator() {
   const card = document.getElementById('live-rate-card');
+  const triggers = document.querySelectorAll('[data-calc-trigger]');
   const overlay = document.getElementById('calc-overlay');
   const closeBtn = document.getElementById('calc-close');
   const egpInput = document.getElementById('calc-egp');
@@ -428,10 +452,12 @@ function initCurrencyCalculator() {
   const rubInput = document.getElementById('calc-rub');
   const foot = document.getElementById('calc-foot');
 
-  if (!card || !overlay || !closeBtn || !egpInput || !usdInput || !rubInput) return;
+  if (!overlay || !closeBtn || !egpInput || !usdInput || !rubInput) return;
 
   if (foot && egyptRates.usdToEgp && egyptRates.usdToRub) {
     foot.textContent = `Ориентир сейчас: 1 USD ≈ ${egyptRates.usdToEgp.toFixed(2)} EGP ≈ ${egyptRates.usdToRub.toFixed(2)} RUB`;
+  } else if (foot) {
+    foot.textContent = 'Курс ещё загружается. Если данные не подтянулись, попробуй открыть калькулятор чуть позже.';
   }
 
   const open = () => {
@@ -445,7 +471,7 @@ function initCurrencyCalculator() {
     overlay.setAttribute('aria-hidden', 'true');
   };
 
-  if (!card.dataset.boundCalc) {
+  if (card && !card.dataset.boundCalc) {
     card.addEventListener('click', open);
     card.addEventListener('keydown', e => {
       if (e.key === 'Enter' || e.key === ' ') {
@@ -453,6 +479,16 @@ function initCurrencyCalculator() {
         open();
       }
     });
+    card.dataset.boundCalc = '1';
+  }
+
+  triggers.forEach(trigger => {
+    if (trigger.dataset.boundCalc) return;
+    trigger.addEventListener('click', open);
+    trigger.dataset.boundCalc = '1';
+  });
+
+  if (!overlay.dataset.boundCalc) {
     closeBtn.addEventListener('click', close);
     overlay.addEventListener('click', e => {
       if (e.target === overlay) close();
@@ -460,7 +496,7 @@ function initCurrencyCalculator() {
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape' && overlay.classList.contains('open')) close();
     });
-    card.dataset.boundCalc = '1';
+    overlay.dataset.boundCalc = '1';
   }
 
   let syncing = false;
