@@ -34,6 +34,19 @@
       line-height: 1.7;
       margin-bottom: 1.25rem;
     }
+    .feedback-badge {
+      display: inline-flex;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      padding: 0.35rem 0.8rem;
+      border-radius: 999px;
+      background: rgba(212,175,55,0.14);
+      color: #8B6914;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
   </style>
 </head>
 <body>
@@ -41,14 +54,6 @@
 <nav class="navbar">
   <div class="navbar-left">
     <a class="navbar-brand" href="index.html">🇪🇬 <span>Египет</span> 2026</a>
-    <div class="music-player music-player-nav" id="music-player">
-      <audio id="bg-audio" loop src="Kadir Demir - Desert Queen.mp3" preload="none"></audio>
-      <button class="music-btn" id="music-btn" onclick="toggleMusic()" title="Kadir Demir — Desert Queen" aria-label="Включить музыку">
-        <span class="music-note">♪</span>
-        <div class="music-bars"><span></span><span></span><span></span><span></span></div>
-      </button>
-      <div class="music-label">Атмосфера Египта</div>
-    </div>
   </div>
   <button class="nav-toggle" aria-label="Меню"><span></span><span></span><span></span></button>
   <ul class="nav-links">
@@ -69,6 +74,15 @@
 <section class="section">
   <div class="container">
     <div class="feedback-wrap">
+      <div class="card" style="margin-bottom:1.4rem;border:1px solid rgba(212,175,55,0.24);">
+        <div class="card-body" style="padding:1.5rem 1.7rem;">
+          <div class="feedback-badge">Наша рекомендация</div>
+          <h3 style="margin-bottom:0.6rem;">🎬 Документалка для настроя</h3>
+          <p style="font-size:0.95rem;color:var(--text-lt);margin-bottom:0;">
+            Очень зашла документалка BBC с Джоан Флетчер: <strong>The Story of Egypt</strong> / <strong>Immortal Egypt with Joann Fletcher</strong>, 4 серии. По-русски ищите как «Бессмертный Египет с Джоан Флетчер» или «История Египта». Она не просто рассказывает, а ходит по местам, показывает храмы, гробницы и помогает почувствовать страну до поездки.
+          </p>
+        </div>
+      </div>
 
       <!-- FORM — действие Formspree, нужно заменить YOUR_FORM_ID на реальный -->
       <div class="card">

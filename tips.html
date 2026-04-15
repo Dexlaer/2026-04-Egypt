@@ -16,68 +16,69 @@
   <link rel="manifest" href="site.webmanifest">
   <link rel="stylesheet" href="css/style.css">
   <style>
-    .tips-intro-card {
-      position: relative;
-      overflow: hidden;
-      margin-bottom: 2.4rem;
-      padding: 1.6rem 1.8rem;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 1.25rem;
-      align-items: center;
-      border-radius: 22px;
+    .tips-toc,
+    .section-title[id],
+    .must-know-block[id] {
+      scroll-margin-top: 96px;
+    }
+    .tips-toc {
+      margin: 0 0 2.8rem;
+      padding: 1.25rem;
+      border-radius: 24px;
       background:
-        radial-gradient(circle at 95% 10%, rgba(212,175,55,0.22), transparent 26%),
-        linear-gradient(135deg, rgba(255,248,231,0.98), rgba(255,255,255,0.96));
-      border: 1px solid rgba(212,175,55,0.26);
+        radial-gradient(circle at 100% 0%, rgba(212,175,55,0.18), transparent 28%),
+        linear-gradient(135deg, rgba(27,58,92,0.98), rgba(20,46,74,0.96));
+      border: 1px solid rgba(212,175,55,0.28);
       box-shadow: var(--shadow);
     }
-    .tips-intro-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image: linear-gradient(135deg, rgba(27,58,92,0.035) 25%, transparent 25%, transparent 50%, rgba(27,58,92,0.035) 50%, rgba(27,58,92,0.035) 75%, transparent 75%);
-      background-size: 28px 28px;
-      opacity: 0.45;
-      pointer-events: none;
+    .tips-toc-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      color: rgba(255,255,255,0.88);
     }
-    .tips-intro-copy {
-      position: relative;
-      z-index: 1;
-      max-width: 670px;
-      padding-right: 0;
+    .tips-toc-head strong {
+      display: block;
+      color: var(--gold);
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      letter-spacing: 0.02em;
     }
-    .tips-intro-kicker {
-      display: inline-flex;
+    .tips-toc-head span {
+      display: block;
+      color: rgba(255,255,255,0.64);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .tips-toc-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.7rem;
+    }
+    .tips-toc-link {
+      display: flex;
       align-items: center;
-      gap: 0.4rem;
-      margin-bottom: 0.65rem;
-      padding: 0.28rem 0.75rem;
-      border-radius: 999px;
-      background: rgba(27,58,92,0.08);
-      color: var(--navy);
-      font-size: 0.75rem;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0.72rem 0.85rem;
+      border-radius: 15px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.9);
       font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      font-size: 0.88rem;
+      line-height: 1.25;
+      text-align: center;
+      text-decoration: none;
+      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
     }
-    .tips-intro-copy p {
-      margin: 0;
-      color: var(--text-lt);
-      font-size: 0.98rem;
-      line-height: 1.75;
-    }
-    .tips-intro-art {
-      position: relative;
-      right: auto;
-      top: auto;
-      width: 116px;
-      transform: rotate(7deg);
-      border-radius: 0;
-      border: 0;
-      filter: drop-shadow(0 14px 20px rgba(27,58,92,0.16));
-      z-index: 1;
-      justify-self: end;
+    .tips-toc-link:hover {
+      transform: translateY(-2px);
+      background: rgba(212,175,55,0.2);
+      border-color: rgba(212,175,55,0.45);
+      color: #fff;
     }
     .tips-card-accent {
       border-color: rgba(212,175,55,0.3);
@@ -137,19 +138,29 @@
       }
     }
     @media(max-width:700px) {
-      .tips-intro-card {
-        padding: 1.35rem;
-        grid-template-columns: 1fr;
+      .tips-toc,
+      .section-title[id],
+      .must-know-block[id] {
+        scroll-margin-top: 82px;
       }
-      .tips-intro-copy {
-        padding-right: 0;
+      .tips-toc {
+        padding: 1rem;
+        margin-bottom: 2.2rem;
       }
-      .tips-intro-art {
-        position: relative;
-        width: 86px;
-        margin: 1rem 0 0 auto;
+      .tips-toc-head {
         display: block;
-        transform: rotate(7deg);
+      }
+      .tips-toc-head strong {
+        margin-bottom: 0.25rem;
+      }
+      .tips-toc-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.55rem;
+      }
+      .tips-toc-link {
+        min-height: 44px;
+        padding: 0.65rem 0.55rem;
+        font-size: 0.8rem;
       }
     }
   </style>
@@ -159,14 +170,6 @@
 <nav class="navbar">
   <div class="navbar-left">
     <a class="navbar-brand" href="index.html">🇪🇬 <span>Египет</span> 2026</a>
-    <div class="music-player music-player-nav" id="music-player">
-      <audio id="bg-audio" loop src="Kadir Demir - Desert Queen.mp3" preload="none"></audio>
-      <button class="music-btn" id="music-btn" onclick="toggleMusic()" title="Kadir Demir — Desert Queen" aria-label="Включить музыку">
-        <span class="music-note">♪</span>
-        <div class="music-bars"><span></span><span></span><span></span><span></span></div>
-      </button>
-      <div class="music-label">Атмосфера Египта</div>
-    </div>
   </div>
   <button class="nav-toggle" aria-label="Меню"><span></span><span></span><span></span></button>
   <ul class="nav-links">
@@ -180,21 +183,34 @@
 </nav>
 
 <section class="page-hero">
-  <h1>💡 Что важно знать</h1>
-  <p>Здесь собрана практическая база для первой поездки в Египет: деньги, транспорт, вода, связь, торг, безопасность и вещи, которые реально помогают на месте.</p>
+  <h1>💡 Памятка без паники</h1>
+  <p>Короткая база для первой поездки: деньги, транспорт, вода, связь, торг и безопасность — всё, что помогает не растеряться на месте.</p>
 </section>
 
 <section class="section">
   <div class="container">
-    <div class="tips-intro-card">
-      <div class="tips-intro-copy">
-        <div class="tips-intro-kicker">Памятка без паники</div>
-        <p>Эта страница не про “страшилки”, а про спокойную подготовку: что лучше знать заранее, где не переплатить, как не растеряться на месте и какие мелочи реально делают поездку проще.</p>
+    <nav class="tips-toc" aria-label="Оглавление советов">
+      <div class="tips-toc-head">
+        <strong>Быстрая навигация</strong>
+        <span>Если нужно не читать всё подряд — прыгайте сразу к нужной теме.</span>
       </div>
-      <img class="tips-intro-art" src="images/papyrus-scroll.png" alt="">
-    </div>
+      <div class="tips-toc-grid">
+        <a class="tips-toc-link" href="#tips-start">🧭 База</a>
+        <a class="tips-toc-link" href="#tips-scams">🚨 Разводы</a>
+        <a class="tips-toc-link" href="#tips-shopping">🛍️ Шоппинг</a>
+        <a class="tips-toc-link" href="#tips-money">💵 Деньги</a>
+        <a class="tips-toc-link" href="#tips-transport">🚕 Транспорт</a>
+        <a class="tips-toc-link" href="#tips-pack">🎒 Что взять</a>
+        <a class="tips-toc-link" href="#tips-safety">🛡️ Безопасность</a>
+        <a class="tips-toc-link" href="#tips-food">🍽️ Еда</a>
+        <a class="tips-toc-link" href="#tips-internet">📱 Связь</a>
+        <a class="tips-toc-link" href="#tips-words">🗣️ Слова</a>
+        <a class="tips-toc-link" href="#tips-must">⚑ До вылета</a>
+        <a class="tips-toc-link" href="#tips-links">🔗 Ссылки</a>
+      </div>
+    </nav>
 
-    <div class="section-title">
+    <div class="section-title" id="tips-start">
       <h2>🧭 Египет без сюрпризов</h2>
       <div class="gold-line"></div>
     </div>
@@ -222,7 +238,7 @@
       </div>
     </div>
 
-    <div class="section-title mt-4">
+    <div class="section-title mt-4" id="tips-scams">
       <h2>🚨 Как не попасть на развод</h2>
       <div class="gold-line"></div>
     </div>
@@ -255,7 +271,7 @@
     </div>
 
     <!-- SHOPPING -->
-    <div class="section-title">
+    <div class="section-title" id="tips-shopping">
       <h2>🛍️ Шоппинг</h2>
       <div class="gold-line"></div>
     </div>
@@ -340,7 +356,7 @@
     </div>
 
     <!-- MONEY -->
-    <div class="section-title">
+    <div class="section-title" id="tips-money">
       <h2>💵 Деньги и оплата</h2>
       <div class="gold-line"></div>
     </div>
@@ -351,6 +367,7 @@
           <h4>💴 Наличные EGP (египетские фунты)</h4>
           <p style="font-size:0.92rem;">Основная валюта для базаров, такси, уличной еды, местных кафе. Менять доллары → фунты в аэропорту или в банкоматах. Курс: примерно 50 EGP = $1.</p>
           <div class="tip-box" style="margin-top:0.75rem;">Лучше иметь запас наличных долларов на старт поездки и отдельно сразу отложить деньги на визы в аэропорту.</div>
+          <div class="tip-box" style="margin-top:0.75rem;"><strong>Доллары лучше брать новые.</strong> В Египте старые, потрёпанные, надорванные или исписанные купюры могут принимать хуже или по менее приятному курсу. Особенно спокойно проходят свежие банкноты без дефектов.</div>
         </div>
       </div>
       <div class="card">
@@ -358,6 +375,8 @@
           <h4>💳 Карты и доллары</h4>
           <p style="font-size:0.92rem;">В крупных отелях, ТЦ и ресторанах принимают карты Visa/Mastercard. Доллары берут повсюду, но дают сдачу в фунтах по невыгодному курсу.</p>
           <div class="tip-box" style="margin-top:0.75rem;">Карты МИР не работают. Лучше иметь наличные USD + снять фунты в банкомате.</div>
+          <div class="tip-box" style="margin-top:0.75rem;">Если есть иностранная виртуальная карта, попробуйте заранее добавить её в Apple Pay. В Египте Apple Pay работает там, где терминал принимает бесконтактную оплату, но всё зависит от банка карты и конкретного терминала — наличные всё равно лучше иметь.</div>
+          <div class="tip-box" style="margin-top:0.75rem;">В РФ новые доллары сейчас не всегда легко найти: в продаже могут быть старые серии. Если купили старые купюры, просто “поменять на новые” обычно нельзя — банк фактически выкупает их у вас и продаёт другие. Иногда можно попробовать снять валюту в банкомате, например у Тинькофф: в приложении видно, где доступна выдача валюты, но заранее не всегда понятно, какие именно купюры выдаст банкомат.</div>
         </div>
       </div>
     </div>
@@ -366,7 +385,7 @@
       <strong>🏨 Отели лучше проверять в трёх местах.</strong> Сравните агрегаторы, Booking и официальный сайт самого отеля. Иногда напрямую выходит заметно дешевле: например, один хороший отель на 4 дня с all inclusive на агрегаторе стоил около 80 000 ₽, на Booking со скидками — около 40 000 ₽, а на сайте отеля со всеми налогами — около 35 000 ₽.
     </div>
 
-    <div class="section-title mt-4">
+    <div class="section-title mt-4" id="tips-transport">
       <h2>🚕 Транспорт по городам</h2>
       <div class="gold-line"></div>
     </div>
@@ -393,7 +412,7 @@
     </div>
 
     <!-- WHAT TO TAKE -->
-    <div class="section-title mt-4">
+    <div class="section-title mt-4" id="tips-pack">
       <h2>🎒 Что взять с собой</h2>
       <div class="gold-line"></div>
     </div>
@@ -404,7 +423,7 @@
           <h4>Документы и деньги</h4>
           <ul class="checklist mt-2">
             <li><input type="checkbox" id="pack_pass" disabled><label for="pack_pass">Паспорт (действие 6+ месяцев)</label></li>
-            <li><input type="checkbox" id="pack_cash" disabled><label for="pack_cash">💵 Наличные доллары + мелкие купюры</label></li>
+            <li><input type="checkbox" id="pack_cash" disabled><label for="pack_cash">💵 Новые наличные доллары + мелкие купюры</label></li>
             <li><input type="checkbox" id="pack_card" disabled><label for="pack_card">💳 Иностранная карта или запасной способ оплаты, если есть</label></li>
             <li><input type="checkbox" id="pack_ins" disabled><label for="pack_ins">📄 Страховка распечатана</label></li>
             <li><input type="checkbox" id="pack_ticket" disabled><label for="pack_ticket">✈️ Билеты и брони в телефоне и офлайн</label></li>
@@ -439,6 +458,8 @@
           <h4>Гаджеты и прочее</h4>
           <ul class="checklist mt-2">
             <li><input type="checkbox" id="pack_maps" disabled><label for="pack_maps">📱 Офлайн-карты (лучше Maps.me, можно и Google Maps)</label></li>
+            <li><input type="checkbox" id="pack_translate" disabled><label for="pack_translate">🗣️ Переводчик + офлайн-языки скачаны заранее</label></li>
+            <li><input type="checkbox" id="pack_sim" disabled><label for="pack_sim">📶 SIM/eSIM: решить до вылета или купить по прилёту</label></li>
             <li><input type="checkbox" id="pack_powerbank" disabled><label for="pack_powerbank">🔋 Повербанк</label></li>
             <li><input type="checkbox" id="pack_meds" disabled><label for="pack_meds">💊 Базовая аптечка + от живота</label></li>
             <li><input type="checkbox" id="pack_repel" disabled><label for="pack_repel">🦟 Репеллент от комаров</label></li>
@@ -449,11 +470,11 @@
     </div>
 
     <div class="alert alert-warn">
-      <strong>🎬 Фильмы на дорогу:</strong> «Смерть на Ниле» (2022), «Мумия» (1999), «Английский пациент» (1996), «Принц Египта» (1998) — атмосфера обеспечена ещё в самолёте!
+      <strong>🎬 Что посмотреть перед поездкой:</strong> «Смерть на Ниле» (2022), «Мумия» (1999), «Английский пациент» (1996), «Принц Египта» (1998). Ещё очень советуем документальный сериал BBC с Джоан Флетчер: <strong>The Story of Egypt</strong> / <strong>Immortal Egypt with Joann Fletcher</strong>, 4 серии. По-русски ищите как «Бессмертный Египет с Джоан Флетчер» или «История Египта» — она ходит по местам, показывает храмы, гробницы и объясняет историю живым языком.
     </div>
 
     <!-- SAFETY -->
-    <div class="section-title mt-4">
+    <div class="section-title mt-4" id="tips-safety">
       <h2>🛡️ Безопасность</h2>
       <div class="gold-line"></div>
     </div>
@@ -491,7 +512,7 @@
       — Оформи страховку до отъезда
     </div>
 
-    <div class="section-title mt-4">
+    <div class="section-title mt-4" id="tips-food">
       <h2>🍽️ Еда, вода и аптечка</h2>
       <div class="gold-line"></div>
     </div>
@@ -519,7 +540,7 @@
     </div>
 
     <!-- SIM -->
-    <div class="section-title mt-4">
+    <div class="section-title mt-4" id="tips-internet">
       <h2>📱 Связь и интернет</h2>
       <div class="gold-line"></div>
     </div>
@@ -527,11 +548,13 @@
       <div class="card-body">
         <p><strong>SIM-карта:</strong> Vodafone Egypt, Orange, Etisalat или WE обычно продаются в аэропортах и салонах операторов. Регистрация по паспорту, лучше подключить интернет сразу после прилёта.</p>
         <p>Wi‑Fi в отелях бывает нестабильным, поэтому мобильный интернет лучше иметь сразу: для такси, карт, переводчика и связи.</p>
+        <div class="tip-box" style="margin-top:0.5rem;"><strong>SIM или eSIM.</strong> Самый понятный вариант — купить местную SIM в аэропорту после прилёта: паспорт, тариф, проверили интернет на месте и пошли дальше. Если телефон поддерживает eSIM, можно оформить её онлайн заранее и включить уже в Египте — удобно, когда хочется сразу быть на связи без очереди у стойки.</div>
+        <div class="tip-box" style="margin-top:0.5rem;"><strong>Переводчик лучше поставить заранее.</strong> Не все в Египте уверенно говорят по-английски, особенно вне отелей и туристических стоек. Если английский слабый или его вообще нет, скачайте Google Translate / Apple Translate / Яндекс Переводчик и офлайн-пакеты русского, английского и арабского. С SIM/eSIM можно пользоваться онлайн-переводом, но офлайн-режим спасает в дороге, гробницах, метро и местах, где связь пропадает.</div>
         <div class="tip-box" style="margin-top:0.5rem;">Скачай офлайн-карты заранее: лучше Maps.me, а Google Maps можно как запасной вариант. Сохрани регионы и города, куда планируешь ехать: в гробницах, метро, пустыне и на трассах связь может пропадать.</div>
       </div>
     </div>
 
-    <div class="section-title mt-4">
+    <div class="section-title mt-4" id="tips-words">
       <img class="tips-mini-art" src="images/camel-backpack.png" alt="">
       <h2>🗣️ Полезные слова</h2>
       <div class="gold-line"></div>
@@ -553,7 +576,7 @@
       </div>
     </div>
 
-    <div class="must-know-block">
+    <div class="must-know-block" id="tips-must">
       <span class="egp-corner egp-tl"></span>
       <span class="egp-corner egp-tr"></span>
       <span class="egp-corner egp-bl"></span>
@@ -561,7 +584,7 @@
       <div class="must-know-label">⚑ Самое важное</div>
       <h2>Что лучше знать до вылета</h2>
       <ul class="must-know-list">
-        <li>Наличные доллары — взять с запасом, мелкими купюрами</li>
+        <li>Наличные доллары — лучше новые, без дефектов, с запасом и мелкими купюрами</li>
         <li>Паспорт, страховка, брони и билеты офлайн</li>
         <li>Офлайн-карты скачаны заранее (Maps.me / Google Maps)</li>
         <li>Аптечка: от живота, солнцезащита, регидратация</li>
@@ -574,33 +597,51 @@
     </div>
 
     <!-- USEFUL LINKS -->
-    <div class="section-title mt-4">
+    <div class="section-title mt-4" id="tips-links">
       <h2>🔗 Полезные ссылки</h2>
       <div class="gold-line"></div>
     </div>
     <div class="grid-2">
       <div class="card">
         <div class="card-body">
-          <h4>🚌 Транспорт</h4>
+          <h4>🚌 Автобусы, поезда, перелёты</h4>
           <ul style="padding-left:1.2rem; font-size:0.92rem; margin-top:0.5rem; line-height:2;">
             <li><strong><a href="https://go-bus.com" target="_blank" rel="noopener noreferrer">GoBus</a></strong> — автобусы по Египту</li>
             <li><strong><a href="https://12go.asia" target="_blank" rel="noopener noreferrer">12Go.asia</a></strong> — билеты на автобусы онлайн</li>
+            <li><strong><a href="https://www.enr.gov.eg/En/" target="_blank" rel="noopener noreferrer">Egyptian National Railways</a></strong> — официальный сайт железных дорог Египта</li>
+            <li><strong><a href="https://enr.gov.eg/ticketing/public/login.jsf" target="_blank" rel="noopener noreferrer">ENR ticketing</a></strong> — официальная онлайн-покупка билетов на поезд</li>
+            <li><strong><a href="https://www.bookaway.com/routes/egypt" target="_blank" rel="noopener noreferrer">Bookaway</a></strong> — поезда, автобусы и трансферы, часто удобнее для туристов</li>
+            <li><strong><a href="https://12go.asia/en" target="_blank" rel="noopener noreferrer">12Go</a></strong> — поезда и междугородний транспорт, удобно сравнивать варианты</li>
             <li><strong><a href="https://www.aviasales.ru" target="_blank" rel="noopener noreferrer">Aviasales</a></strong> — внутренние перелёты по Египту</li>
             <li><strong>Uber</strong> — где доступен, обычно удобнее уличного такси</li>
           </ul>
+          <div class="tip-box" style="margin-top:0.75rem;">По поездам сначала проверяйте официальный ENR, но если сайт неудобен или не принимает оплату, проще смотреть 12Go или Bookaway. За удобство там может быть комиссия.</div>
         </div>
       </div>
       <div class="card">
         <div class="card-body">
-          <h4>🏨 Жильё и экскурсии</h4>
+          <h4>🏨 Жильё</h4>
           <ul style="padding-left:1.2rem; font-size:0.92rem; margin-top:0.5rem; line-height:2;">
             <li><strong><a href="https://ostrovok.ru" target="_blank" rel="noopener noreferrer">Островок</a></strong> — отели</li>
+            <li><strong><a href="https://www.ozon.ru/travel/hotels/" target="_blank" rel="noopener noreferrer">Ozon Travel</a></strong> — отели и апартаменты, можно оплачивать российской картой</li>
             <li><strong><a href="https://travel.yandex.ru" target="_blank" rel="noopener noreferrer">Яндекс Путешествия</a></strong></li>
             <li><strong><a href="https://www.airbnb.com" target="_blank" rel="noopener noreferrer">Airbnb</a></strong> / <strong><a href="https://www.booking.com" target="_blank" rel="noopener noreferrer">Booking</a></strong> — квартиры и отели в городах</li>
             <li><strong>Официальный сайт отеля</strong> — обязательно сравнить перед оплатой, иногда там дешевле с учётом налогов</li>
-            <li><strong><a href="https://sputnik8.com" target="_blank" rel="noopener noreferrer">Sputnik8</a></strong> — экскурсии</li>
-            <li><strong><a href="https://experience.tripster.ru" target="_blank" rel="noopener noreferrer">Tripster</a></strong> — гиды</li>
           </ul>
+          <div class="tip-box" style="margin-top:0.75rem;">Если нет иностранной карты, проверьте Ozon Travel и Яндекс Путешествия: там можно заранее оплатить отели и апартаменты российской картой. По нашему опыту разница с прямой оплатой иностранной картой бывает небольшой — по сути это цена плюс небольшая комиссия за конвертацию и сервис.</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <h4>🏛️ Экскурсии и гиды</h4>
+          <ul style="padding-left:1.2rem; font-size:0.92rem; margin-top:0.5rem; line-height:2;">
+            <li><strong><a href="https://experience.tripster.ru" target="_blank" rel="noopener noreferrer">Tripster</a></strong> — авторские экскурсии и русскоязычные гиды</li>
+            <li><strong><a href="https://sputnik8.com" target="_blank" rel="noopener noreferrer">Sputnik8</a></strong> — экскурсии, трансферы и групповые поездки</li>
+            <li><strong><a href="https://www.getyourguide.com/destinations/luxor-l109/" target="_blank" rel="noopener noreferrer">GetYourGuide</a></strong> — удобно искать международные туры по Луксору и Каиру</li>
+            <li><strong><a href="https://www.viator.com/Egypt/d722-ttd" target="_blank" rel="noopener noreferrer">Viator</a></strong> — крупная база экскурсий с отзывами</li>
+            <li><strong><a href="https://www.tripifytour.com/" target="_blank" rel="noopener noreferrer">Tripify Tour</a></strong> — местные экскурсии из Хургады, Шарма и Марса-Алама</li>
+          </ul>
+          <div class="tip-box" style="margin-top:0.75rem;">Перед оплатой сравните одну и ту же экскурсию в 2–3 местах: часто отличается не только цена, но и размер группы, язык гида, входные билеты и доплаты за трансфер из удалённых районов.</div>
         </div>
       </div>
       <div class="card">

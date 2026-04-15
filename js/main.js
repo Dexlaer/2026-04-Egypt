@@ -6,6 +6,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   initMusicPlayer();
   initCurrencyCalculator();
+  initEgyptTimeWidget();
 
   const toggle = document.querySelector('.nav-toggle');
   const links  = document.querySelector('.nav-links');
@@ -60,38 +61,184 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// ── Countdown ────────────────────────────
-function updateCountdown(targetDateStr, elementId) {
-  const el = document.getElementById(elementId);
-  if (!el) return;
-  const target = new Date(targetDateStr).getTime();
+// ── Egypt Time Widget ─────────────────────
+const TIME_ZONES_RU = [
+  { city: 'Калининград', zone: 'Europe/Kaliningrad' },
+  { city: 'Москва', zone: 'Europe/Moscow' },
+  { city: 'Самара', zone: 'Europe/Samara' },
+  { city: 'Екатеринбург', zone: 'Asia/Yekaterinburg' },
+  { city: 'Омск', zone: 'Asia/Omsk' },
+  { city: 'Красноярск', zone: 'Asia/Krasnoyarsk' },
+  { city: 'Иркутск', zone: 'Asia/Irkutsk' },
+  { city: 'Якутск', zone: 'Asia/Yakutsk' },
+  { city: 'Владивосток', zone: 'Asia/Vladivostok' },
+  { city: 'Магадан', zone: 'Asia/Magadan' },
+  { city: 'Камчатка', zone: 'Asia/Kamchatka' }
+];
 
-  function tick() {
-    const now = Date.now();
-    const diff = target - now;
+function getTimeParts(timeZone) {
+  const now = new Date();
+  const parts = new Intl.DateTimeFormat('ru-RU', {
+    timeZone,
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    weekday: 'short',
+    day: '2-digit',
+    month: 'short'
+  }).formatToParts(now);
 
-    if (diff <= 0) {
-      el.innerHTML = '<span class="countdown-num text-gold">Поехали! 🛫</span>';
-      return;
-    }
+  const part = type => parts.find(item => item.type === type)?.value || '';
+  return {
+    hour: part('hour'),
+    minute: part('minute'),
+    weekday: part('weekday'),
+    day: part('day'),
+    month: part('month')
+  };
+}
 
-    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const s = Math.floor((diff % (1000 * 60)) / 1000);
+function formatZoneTime(timeZone) {
+  const parts = getTimeParts(timeZone);
+  return `${parts.hour}:${parts.minute}`;
+}
 
-    el.innerHTML = `
-      <div class="countdown-item"><span class="countdown-num">${d}</span><span class="countdown-lbl">дней</span></div>
-      <div class="countdown-sep">:</div>
-      <div class="countdown-item"><span class="countdown-num">${String(h).padStart(2,'0')}</span><span class="countdown-lbl">часов</span></div>
-      <div class="countdown-sep">:</div>
-      <div class="countdown-item"><span class="countdown-num">${String(m).padStart(2,'0')}</span><span class="countdown-lbl">минут</span></div>
-      <div class="countdown-sep">:</div>
-      <div class="countdown-item"><span class="countdown-num">${String(s).padStart(2,'0')}</span><span class="countdown-lbl">секунд</span></div>
-    `;
+function getDayPhase(timeZone) {
+  const hour = Number(getTimeParts(timeZone).hour);
+  if (hour >= 7 && hour < 18) {
+    return 'is-day';
   }
-  tick();
-  setInterval(tick, 1000);
+  if ((hour >= 5 && hour < 7) || (hour >= 18 && hour < 21)) {
+    return 'is-twilight';
+  }
+  return 'is-night';
+}
+
+function getZoneOffsetMinutes(timeZone) {
+  const now = new Date();
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone,
+    timeZoneName: 'shortOffset'
+  }).formatToParts(now);
+  const offset = parts.find(part => part.type === 'timeZoneName')?.value || 'GMT+0';
+  const match = offset.match(/GMT([+-])(\d{1,2})(?::(\d{2}))?/);
+  if (!match) return 0;
+
+  const sign = match[1] === '-' ? -1 : 1;
+  const hours = Number(match[2] || 0);
+  const minutes = Number(match[3] || 0);
+  return sign * (hours * 60 + minutes);
+}
+
+function formatTimeDifference(cityZone) {
+  const egyptOffset = getZoneOffsetMinutes('Africa/Cairo');
+  const cityOffset = getZoneOffsetMinutes(cityZone);
+  const diff = cityOffset - egyptOffset;
+  if (diff === 0) return '0 ч';
+
+  const abs = Math.abs(diff);
+  const hours = Math.floor(abs / 60);
+  const minutes = abs % 60;
+  const value = minutes ? `${hours}:${String(minutes).padStart(2, '0')} ч` : `${hours} ч`;
+  return diff > 0 ? `+${value}` : `-${value}`;
+}
+
+function initEgyptTimeWidget() {
+  const navbar = document.querySelector('.navbar');
+  const brand = document.querySelector('.navbar-brand');
+  if (!navbar || !brand || document.getElementById('egypt-time-btn')) return;
+
+  const holder = document.querySelector('.navbar-left') || navbar;
+  const button = document.createElement('button');
+  button.className = 'egypt-time-btn';
+  button.id = 'egypt-time-btn';
+  button.type = 'button';
+  button.setAttribute('aria-label', 'Сравнить время Египта и России');
+  button.innerHTML = `
+    <span class="egypt-time-icon">◷</span>
+    <span class="egypt-time-main">
+      <span class="egypt-time-value">--:--</span>
+      <span class="egypt-time-date">Египет</span>
+    </span>
+  `;
+
+  if (holder.classList.contains('navbar-left')) {
+    brand.insertAdjacentElement('afterend', button);
+  } else {
+    brand.insertAdjacentElement('afterend', button);
+  }
+
+  const overlay = document.createElement('div');
+  overlay.className = 'time-overlay';
+  overlay.id = 'time-overlay';
+  overlay.setAttribute('aria-hidden', 'true');
+  overlay.innerHTML = `
+    <div class="time-modal" role="dialog" aria-modal="true" aria-labelledby="time-title">
+      <div class="time-head">
+        <div>
+          <div class="time-kicker">Местное время</div>
+          <h3 id="time-title">🇪🇬 Египет</h3>
+          <p id="time-date">Считаем время...</p>
+        </div>
+        <button class="time-close" id="time-close" type="button" aria-label="Закрыть">×</button>
+      </div>
+      <div class="time-body">
+        <div class="time-egypt-now" id="time-egypt-now">--:--</div>
+        <p class="time-note">Сравнение с основными часовыми поясами России. Время считается по часовым зонам браузера, поэтому учитывает сезонные изменения там, где они есть.</p>
+        <div class="time-zones" id="time-zones"></div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  const closeBtn = overlay.querySelector('#time-close');
+  const valueEl = button.querySelector('.egypt-time-value');
+  const buttonDateEl = button.querySelector('.egypt-time-date');
+  const egyptNowEl = overlay.querySelector('#time-egypt-now');
+  const dateEl = overlay.querySelector('#time-date');
+  const zonesEl = overlay.querySelector('#time-zones');
+
+  const open = () => {
+    renderTimeWidget();
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden', 'false');
+  };
+  const close = () => {
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+  };
+
+  function renderTimeWidget() {
+    const egyptParts = getTimeParts('Africa/Cairo');
+    const egyptTime = `${egyptParts.hour}:${egyptParts.minute}`;
+    valueEl.textContent = egyptTime;
+    buttonDateEl.textContent = `${egyptParts.weekday}, ${egyptParts.day} ${egyptParts.month}`;
+    egyptNowEl.textContent = egyptTime;
+    dateEl.textContent = `${egyptParts.weekday}, ${egyptParts.day} ${egyptParts.month}`;
+
+    zonesEl.innerHTML = TIME_ZONES_RU.map(item => {
+      const phase = getDayPhase(item.zone);
+      return `
+        <div class="time-zone-row ${phase}">
+          <span class="time-city">${item.city}</span>
+          <span class="time-diff">${formatTimeDifference(item.zone)}</span>
+          <span class="time-clock">${formatZoneTime(item.zone)}</span>
+        </div>
+      `;
+    }).join('');
+  }
+
+  button.addEventListener('click', open);
+  closeBtn.addEventListener('click', close);
+  overlay.addEventListener('click', event => {
+    if (event.target === overlay) close();
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && overlay.classList.contains('open')) close();
+  });
+
+  renderTimeWidget();
+  setInterval(renderTimeWidget, 30000);
 }
 
 // ── LocalStorage Checkboxes ───────────────
@@ -193,8 +340,21 @@ function writeMusicState(patch) {
 
 function setMusicButtonState(isPlaying) {
   const { btn } = getMusicElements();
-  if (!btn) return;
-  btn.classList.toggle('playing', isPlaying);
+  const heroImage = document.getElementById('hero-postcard-img');
+  const heroHint = document.querySelector('.hero-music-hint');
+  if (btn) {
+    btn.classList.toggle('playing', isPlaying);
+    btn.setAttribute('aria-label', isPlaying ? 'Выключить музыку' : 'Включить музыку');
+    btn.setAttribute('title', isPlaying ? 'Выключить атмосферу Египта' : 'Включить атмосферу Египта');
+  }
+  if (heroHint) {
+    heroHint.textContent = isPlaying ? 'Атмосфера включена' : 'Приправить звуком';
+  }
+  if (heroImage) {
+    const idleSrc = heroImage.dataset.idleSrc || heroImage.getAttribute('src');
+    const playingSrc = heroImage.dataset.playingSrc || idleSrc;
+    heroImage.src = isPlaying ? playingSrc : idleSrc;
+  }
 }
 
 function fadeAudio(audio, from, to, duration, onDone) {
@@ -234,7 +394,7 @@ function pauseMusicWithFade(audio) {
 }
 
 function initMusicPlayer() {
-  const { audio } = getMusicElements();
+  const { audio, btn } = getMusicElements();
   if (!audio) return;
 
   const state = readMusicState();
@@ -248,6 +408,11 @@ function initMusicPlayer() {
   audio.addEventListener('timeupdate', () => {
     writeMusicState({ time: audio.currentTime });
   });
+
+  if (btn && !btn.dataset.boundMusic) {
+    btn.addEventListener('click', toggleMusic);
+    btn.dataset.boundMusic = '1';
+  }
 
   window.addEventListener('pagehide', () => {
     writeMusicState({
@@ -316,6 +481,8 @@ function weatherCodeToRu(code) {
 const egyptRates = {
   usdToEgp: null,
   usdToRub: null,
+  eurToEgp: null,
+  eurToRub: null,
   rubToEgp: null
 };
 
@@ -403,23 +570,28 @@ async function initEgyptLiveData() {
   setAverageEgyptTemperature(weatherResults);
 
   try {
-    const [usdRates, rubRates] = await Promise.all([
+    const [usdRates, eurRates, rubRates] = await Promise.all([
       fetchRates('USD'),
+      fetchRates('EUR'),
       fetchRates('RUB')
     ]);
 
     const usdToEgp = usdRates.EGP;
+    const eurToEgp = eurRates.EGP;
+    const eurToRub = eurRates.RUB;
     const rubToEgp = rubRates.EGP;
     const usdToRub = usdRates.RUB;
 
-    if (!usdToEgp || !rubToEgp || !usdToRub) throw new Error('Required rates missing');
+    if (!usdToEgp || !eurToEgp || !eurToRub || !rubToEgp || !usdToRub) throw new Error('Required rates missing');
 
     egyptRates.usdToEgp = usdToEgp;
     egyptRates.usdToRub = usdToRub;
+    egyptRates.eurToEgp = eurToEgp;
+    egyptRates.eurToRub = eurToRub;
     egyptRates.rubToEgp = rubToEgp;
 
     if (rateValue) rateValue.innerHTML = `1 USD ≈ ${usdToEgp.toFixed(2)} EGP ≈ ${usdToRub.toFixed(2)} RUB`;
-    if (rateDesc) rateDesc.textContent = `Дополнительно: 100 RUB ≈ ${(rubToEgp * 100).toFixed(2)} EGP. Небольшой ориентир, чтобы быстрее понимать местные цены.`;
+    if (rateDesc) rateDesc.textContent = `1 EUR ≈ ${eurToEgp.toFixed(2)} EGP ≈ ${eurToRub.toFixed(2)} RUB. Дополнительно: 100 RUB ≈ ${(rubToEgp * 100).toFixed(2)} EGP.`;
     if (rateBadge) rateBadge.textContent = 'На сейчас';
   } catch (error) {
     if (rateValue) rateValue.textContent = '—';
@@ -449,13 +621,14 @@ function initCurrencyCalculator() {
   const closeBtn = document.getElementById('calc-close');
   const egpInput = document.getElementById('calc-egp');
   const usdInput = document.getElementById('calc-usd');
+  const eurInput = document.getElementById('calc-eur');
   const rubInput = document.getElementById('calc-rub');
   const foot = document.getElementById('calc-foot');
 
-  if (!overlay || !closeBtn || !egpInput || !usdInput || !rubInput) return;
+  if (!overlay || !closeBtn || !egpInput || !usdInput || !eurInput || !rubInput) return;
 
-  if (foot && egyptRates.usdToEgp && egyptRates.usdToRub) {
-    foot.textContent = `Ориентир сейчас: 1 USD ≈ ${egyptRates.usdToEgp.toFixed(2)} EGP ≈ ${egyptRates.usdToRub.toFixed(2)} RUB`;
+  if (foot && egyptRates.usdToEgp && egyptRates.usdToRub && egyptRates.eurToEgp && egyptRates.eurToRub) {
+    foot.textContent = `Ориентир сейчас: 1 USD ≈ ${egyptRates.usdToEgp.toFixed(2)} EGP ≈ ${egyptRates.usdToRub.toFixed(2)} RUB · 1 EUR ≈ ${egyptRates.eurToEgp.toFixed(2)} EGP ≈ ${egyptRates.eurToRub.toFixed(2)} RUB`;
   } else if (foot) {
     foot.textContent = 'Курс ещё загружается. Если данные не подтянулись, попробуй открыть калькулятор чуть позже.';
   }
@@ -502,29 +675,42 @@ function initCurrencyCalculator() {
   let syncing = false;
 
   function fillFromEgp(amount) {
-    if (!egyptRates.usdToEgp || !egyptRates.rubToEgp) return;
+    if (!egyptRates.usdToEgp || !egyptRates.eurToEgp || !egyptRates.rubToEgp) return;
     syncing = true;
     egpInput.value = amount === '' ? '' : roundCurrency(Number(amount));
     usdInput.value = amount === '' ? '' : roundCurrency(Number(amount) / egyptRates.usdToEgp);
+    eurInput.value = amount === '' ? '' : roundCurrency(Number(amount) / egyptRates.eurToEgp);
     rubInput.value = amount === '' ? '' : roundCurrency(Number(amount) / egyptRates.rubToEgp);
     syncing = false;
   }
 
   function fillFromUsd(amount) {
-    if (!egyptRates.usdToEgp || !egyptRates.usdToRub) return;
+    if (!egyptRates.usdToEgp || !egyptRates.usdToRub || !egyptRates.eurToEgp) return;
     syncing = true;
     usdInput.value = amount === '' ? '' : roundCurrency(Number(amount));
     egpInput.value = amount === '' ? '' : roundCurrency(Number(amount) * egyptRates.usdToEgp);
+    eurInput.value = amount === '' ? '' : roundCurrency((Number(amount) * egyptRates.usdToEgp) / egyptRates.eurToEgp);
     rubInput.value = amount === '' ? '' : roundCurrency(Number(amount) * egyptRates.usdToRub);
     syncing = false;
   }
 
+  function fillFromEur(amount) {
+    if (!egyptRates.eurToEgp || !egyptRates.eurToRub || !egyptRates.usdToEgp) return;
+    syncing = true;
+    eurInput.value = amount === '' ? '' : roundCurrency(Number(amount));
+    egpInput.value = amount === '' ? '' : roundCurrency(Number(amount) * egyptRates.eurToEgp);
+    usdInput.value = amount === '' ? '' : roundCurrency((Number(amount) * egyptRates.eurToEgp) / egyptRates.usdToEgp);
+    rubInput.value = amount === '' ? '' : roundCurrency(Number(amount) * egyptRates.eurToRub);
+    syncing = false;
+  }
+
   function fillFromRub(amount) {
-    if (!egyptRates.rubToEgp || !egyptRates.usdToRub) return;
+    if (!egyptRates.rubToEgp || !egyptRates.usdToRub || !egyptRates.eurToRub) return;
     syncing = true;
     rubInput.value = amount === '' ? '' : roundCurrency(Number(amount));
     egpInput.value = amount === '' ? '' : roundCurrency(Number(amount) * egyptRates.rubToEgp);
     usdInput.value = amount === '' ? '' : roundCurrency(Number(amount) / egyptRates.usdToRub);
+    eurInput.value = amount === '' ? '' : roundCurrency(Number(amount) / egyptRates.eurToRub);
     syncing = false;
   }
 
@@ -536,6 +722,10 @@ function initCurrencyCalculator() {
     usdInput.addEventListener('input', () => {
       if (syncing) return;
       fillFromUsd(usdInput.value);
+    });
+    eurInput.addEventListener('input', () => {
+      if (syncing) return;
+      fillFromEur(eurInput.value);
     });
     rubInput.addEventListener('input', () => {
       if (syncing) return;
