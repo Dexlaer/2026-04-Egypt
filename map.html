@@ -17,32 +17,102 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <style>
-    body { display: flex; flex-direction: column; height: 100vh; }
-    #map { flex: 1; }
-    .map-legend {
-      position: absolute;
-      bottom: 30px;
-      right: 12px;
-      z-index: 1000;
-      background: white;
-      border-radius: 10px;
-      padding: 0.75rem 1rem;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-      font-size: 0.82rem;
-      min-width: 140px;
+    body {
+      min-height: 100vh;
+      background: #F8F0DD;
     }
-    .map-legend h4 { font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--navy); }
-    .legend-item { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem; }
-    .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; border: 2px solid rgba(0,0,0,0.2); }
+    .map-shell {
+      display: grid;
+      grid-template-columns: minmax(320px, 390px) minmax(0, 1fr);
+      height: calc(100vh - 74px);
+      min-height: 650px;
+      background: #F8F0DD;
+    }
+    .map-panel {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      background:
+        radial-gradient(circle at 0 0, rgba(212,175,55,0.2), transparent 30%),
+        linear-gradient(180deg, #FFF9EC 0%, #FFFFFF 100%);
+      border-right: 1px solid rgba(27,58,92,0.12);
+      box-shadow: 8px 0 24px rgba(27,58,92,0.08);
+      z-index: 700;
+    }
+    .map-panel-head {
+      padding: 1.25rem 1.25rem 1rem;
+      border-bottom: 1px solid rgba(27,58,92,0.1);
+    }
+    .map-panel-head h1 {
+      margin: 0 0 0.45rem;
+      color: var(--navy);
+      font-family: var(--font-h);
+      font-size: 1.75rem;
+    }
+    .map-panel-head p {
+      margin: 0;
+      color: var(--text-lt);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    .map-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.55rem;
+      margin-top: 0.9rem;
+    }
+    .map-action-btn {
+      min-height: 40px;
+      border: 1px solid rgba(27,58,92,0.15);
+      border-radius: 12px;
+      background: #fff;
+      color: var(--navy);
+      font-family: var(--font-b);
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 5px 14px rgba(27,58,92,0.08);
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .map-action-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(212,175,55,0.65);
+    }
+    .map-layer-switcher {
+      margin-top: 0.75rem;
+      padding: 0.45rem;
+      border-radius: 15px;
+      background: rgba(27,58,92,0.07);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.35rem;
+    }
+    .map-layer-btn {
+      min-height: 34px;
+      border: 1px solid transparent;
+      border-radius: 11px;
+      background: transparent;
+      color: var(--text-lt);
+      font-family: var(--font-b);
+      font-size: 0.78rem;
+      font-weight: 900;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .map-layer-btn.active {
+      background: #fff;
+      color: var(--navy);
+      border-color: rgba(212,175,55,0.45);
+      box-shadow: 0 4px 12px rgba(27,58,92,0.08);
+    }
     .map-filter-bar {
       background: var(--navy);
-      padding: 0.5rem 1rem;
+      padding: 0.7rem 1rem;
       display: flex;
       gap: 0.5rem;
       flex-wrap: wrap;
       align-items: center;
     }
-    .map-filter-bar span { color: rgba(255,255,255,0.6); font-size: 0.82rem; margin-right: 0.25rem; }
+    .map-filter-bar span { color: rgba(255,255,255,0.68); font-size: 0.82rem; margin-right: 0.25rem; }
     .filter-btn {
       padding: 0.3rem 0.8rem;
       border-radius: 20px;
@@ -55,6 +125,321 @@
       transition: all 0.2s;
     }
     .filter-btn.active { background: var(--gold); border-color: var(--gold); color: var(--navy); font-weight: 600; }
+    .map-place-list {
+      overflow: auto;
+      padding: 1rem;
+      display: grid;
+      gap: 0.65rem;
+    }
+    .map-panel-foot {
+      margin-top: auto;
+      padding: 0.8rem 1rem 1rem;
+      border-top: 1px solid rgba(27,58,92,0.1);
+      color: var(--text-lt);
+      font-size: 0.78rem;
+      line-height: 1.5;
+    }
+    .map-panel-foot a {
+      color: var(--navy);
+      font-weight: 800;
+    }
+    .place-list-btn {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.72rem;
+      width: 100%;
+      padding: 0.85rem;
+      border: 1px solid rgba(27,58,92,0.1);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.88);
+      text-align: left;
+      cursor: pointer;
+      box-shadow: 0 5px 16px rgba(27,58,92,0.07);
+      transition: transform 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .place-list-btn:hover,
+    .place-list-btn.active {
+      transform: translateY(-1px);
+      border-color: rgba(212,175,55,0.58);
+      background: #fff;
+    }
+    .place-list-icon {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: var(--sand);
+      font-size: 1.25rem;
+    }
+    .place-list-title {
+      display: block;
+      color: var(--navy);
+      font-weight: 900;
+      line-height: 1.25;
+    }
+    .place-list-meta {
+      display: block;
+      margin-top: 0.25rem;
+      color: var(--text-lt);
+      font-size: 0.78rem;
+      line-height: 1.35;
+    }
+    .map-stage {
+      position: relative;
+      min-width: 0;
+      min-height: 0;
+    }
+    #map {
+      height: 100%;
+      width: 100%;
+    }
+    .map-card {
+      position: absolute;
+      left: 1rem;
+      right: 1rem;
+      bottom: 1rem;
+      z-index: 900;
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 1rem;
+      max-width: 720px;
+      padding: 0.85rem;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.96);
+      border: 1px solid rgba(212,175,55,0.26);
+      box-shadow: 0 18px 42px rgba(27,58,92,0.22);
+      backdrop-filter: blur(12px);
+    }
+    .map-card.is-hidden {
+      display: none;
+    }
+    .map-card-img {
+      min-height: 140px;
+      border-radius: 16px;
+      background:
+        linear-gradient(135deg, rgba(27,58,92,0.08), rgba(212,175,55,0.22)),
+        var(--sand);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      color: var(--navy);
+      font-size: 2.4rem;
+    }
+    .map-card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .map-card-body {
+      min-width: 0;
+    }
+    .map-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.8rem;
+      margin-bottom: 0.3rem;
+    }
+    .map-card h2 {
+      margin: 0;
+      color: var(--navy);
+      font-family: var(--font-h);
+      font-size: 1.35rem;
+    }
+    .map-card-close {
+      border: 0;
+      background: rgba(27,58,92,0.08);
+      color: var(--navy);
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+    .map-card-desc {
+      margin: 0.3rem 0 0.7rem;
+      color: var(--text-lt);
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+    .map-card-address-row,
+    .map-card-note {
+      margin: 0 0 0.7rem;
+      padding: 0.55rem 0.7rem;
+      border-radius: 12px;
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+    .map-card-address-row {
+      background: rgba(27,58,92,0.07);
+      color: var(--navy);
+      font-weight: 800;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .map-copy-btn {
+      display: inline-grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      border: 1px solid rgba(27,58,92,0.12);
+      background: #fff;
+      color: var(--navy);
+      cursor: pointer;
+      font-size: 1rem;
+      transition: transform 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .map-copy-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(212,175,55,0.65);
+      background: rgba(212,175,55,0.12);
+    }
+    .map-card-note {
+      background: rgba(212,175,55,0.14);
+      color: #74530b;
+    }
+    .map-card-facts {
+      display: flex;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.75rem;
+    }
+    .map-card-facts span {
+      padding: 0.22rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(212,175,55,0.14);
+      color: #8B6914;
+      font-size: 0.73rem;
+      font-weight: 800;
+    }
+    .map-card-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      align-items: center;
+    }
+    .map-card-link,
+    .map-audio-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 0.55rem 0.85rem;
+      border-radius: 999px;
+      font-family: var(--font-b);
+      font-size: 0.82rem;
+      font-weight: 900;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .map-card-link {
+      background: var(--navy);
+      color: #fff;
+    }
+    .map-audio-btn {
+      border: 1px solid rgba(212,175,55,0.55);
+      background: rgba(212,175,55,0.12);
+      color: var(--navy);
+    }
+    .map-audio-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.52;
+    }
+    .map-location-status {
+      position: absolute;
+      top: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 900;
+      max-width: calc(100% - 2rem);
+      padding: 0.52rem 0.9rem;
+      border-radius: 999px;
+      background: rgba(27,58,92,0.92);
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 800;
+      box-shadow: 0 10px 24px rgba(27,58,92,0.24);
+    }
+    .map-location-status:empty {
+      display: none;
+    }
+    .user-location-marker {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #1D9BF0;
+      border: 4px solid #fff;
+      box-shadow: 0 0 0 9px rgba(29,155,240,0.18), 0 4px 14px rgba(0,0,0,0.28);
+    }
+    .map-legend {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      z-index: 850;
+      background: rgba(255,255,255,0.94);
+      border-radius: 14px;
+      padding: 0.75rem 1rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      font-size: 0.82rem;
+      min-width: 140px;
+    }
+    .map-legend h4 { font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--navy); }
+    .legend-item { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; border: 2px solid rgba(0,0,0,0.2); }
+    @media(max-width: 900px) {
+      body {
+        height: auto;
+      }
+      .map-shell {
+        grid-template-columns: 1fr;
+        height: auto;
+        min-height: 0;
+      }
+      .map-panel {
+        max-height: none;
+        border-right: 0;
+      }
+      .map-place-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        max-height: 260px;
+      }
+      .map-stage {
+        height: 72vh;
+        min-height: 540px;
+      }
+      .map-card {
+        grid-template-columns: 110px 1fr;
+      }
+      .map-legend {
+        display: none;
+      }
+    }
+    @media(max-width: 620px) {
+      .map-panel-head h1 {
+        font-size: 1.45rem;
+      }
+      .map-place-list {
+        grid-template-columns: 1fr;
+        max-height: 230px;
+      }
+      .map-stage {
+        height: 70vh;
+        min-height: 500px;
+      }
+      .map-card {
+        grid-template-columns: 1fr;
+        max-height: 58vh;
+        overflow: auto;
+      }
+      .map-card-img {
+        min-height: 130px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -70,134 +455,425 @@
     <li><a href="cities.html">Города</a></li>
     <li><a href="map.html">Карта</a></li>
     <li><a href="tips.html">Советы</a></li>
-    <li><a href="feedback.html">Рекомендации</a></li>
+    <li><a href="feedback.html">Обратная связь</a></li>
     <li class="nav-private"><a href="private.html">🔐 Наш план</a></li>
   </ul>
 </nav>
 
-<!-- FILTER BAR -->
-<div class="map-filter-bar">
-  <span>Показать:</span>
-  <button class="filter-btn active" data-city="all">Все</button>
-  <button class="filter-btn" data-city="hurghada">🤿 Хургада</button>
-  <button class="filter-btn" data-city="luxor">🏛 Луксор</button>
-  <button class="filter-btn" data-city="cairo">🔺 Каир</button>
-</div>
+<main class="map-shell">
+  <aside class="map-panel">
+    <div class="map-panel-head">
+      <h1>🗺 Карта мест</h1>
+      <p>Точки для первого знакомства с Египтом: море, храмы, пирамиды, базары и места, куда хочется ткнуть пальцем на карте.</p>
+      <div class="map-actions">
+        <button class="map-action-btn" id="locate-btn" type="button">📍 Я здесь</button>
+        <button class="map-action-btn" id="fit-btn" type="button">🧭 Вся карта</button>
+      </div>
+      <div class="map-layer-switcher" aria-label="Слой карты">
+        <button class="map-layer-btn active" type="button" data-layer="streets">Улицы</button>
+        <button class="map-layer-btn" type="button" data-layer="satellite">Спутник</button>
+        <button class="map-layer-btn" type="button" data-layer="detail">Детально</button>
+      </div>
+    </div>
+    <div class="map-filter-bar">
+      <span>Показать:</span>
+      <button class="filter-btn active" data-city="all">Все</button>
+      <button class="filter-btn" data-city="hurghada">🤿 Хургада</button>
+      <button class="filter-btn" data-city="luxor">🏛 Луксор</button>
+      <button class="filter-btn" data-city="cairo">🔺 Каир</button>
+    </div>
+    <div class="map-place-list" id="place-list" aria-label="Список мест на карте"></div>
+    <div class="map-panel-foot">
+      Египет 2026 · карта интересных мест<br>
+      Разработка <a href="https://all-bot.ru" target="_blank" rel="noopener noreferrer">All-bot.ru</a>
+    </div>
+  </aside>
 
-<!-- MAP -->
-<div id="map"></div>
-
-<!-- LEGEND -->
-<div class="map-legend">
-  <h4>🗺 Легенда</h4>
-  <div class="legend-item"><div class="legend-dot" style="background:#0077B6;"></div> Хургада</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#D4AF37;"></div> Луксор</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#1B3A5C;"></div> Каир</div>
-</div>
-
-<footer class="footer">
-  <p><strong>Египет 2026</strong> · семейный гид по первой поездке</p>
-  <p style="margin-top:0.3rem;">Разработка <a href="https://all-bot.ru" target="_blank" rel="noopener noreferrer">All-bot.ru</a></p>
-  <p style="margin-top:0.3rem;"><a href="feedback.html">Поделиться советом</a> · <a href="cities.html">Гиды по городам</a></p>
-</footer>
+  <section class="map-stage">
+    <div id="map"></div>
+    <div class="map-location-status" id="location-status" aria-live="polite"></div>
+    <div class="map-legend">
+      <h4>🗺 Легенда</h4>
+      <div class="legend-item"><div class="legend-dot" style="background:#0077B6;"></div> Хургада</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#D4AF37;"></div> Луксор</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#1B3A5C;"></div> Каир</div>
+    </div>
+    <article class="map-card is-hidden" id="place-card" aria-live="polite">
+      <div class="map-card-img" id="place-card-image"></div>
+      <div class="map-card-body">
+        <div class="map-card-top">
+          <h2 id="place-card-title"></h2>
+          <button class="map-card-close" id="place-card-close" type="button" aria-label="Закрыть карточку">×</button>
+        </div>
+        <p class="map-card-desc" id="place-card-desc"></p>
+        <div class="map-card-address-row">
+          <span id="place-card-address"></span>
+          <button class="map-copy-btn" id="place-copy-address" type="button" aria-label="Скопировать адрес" title="Скопировать адрес">⧉</button>
+        </div>
+        <p class="map-card-note" id="place-card-note"></p>
+        <div class="map-card-facts" id="place-card-facts"></div>
+        <div class="map-card-actions">
+          <button class="map-audio-btn" id="place-audio-btn" type="button">▶ Послушать</button>
+          <a class="map-card-link" id="place-google-link" href="#" target="_blank" rel="noopener noreferrer">Google Maps</a>
+          <a class="map-card-link" id="place-apple-link" href="#" target="_blank" rel="noopener noreferrer">Apple Maps</a>
+        </div>
+        <audio id="place-audio" preload="none"></audio>
+      </div>
+    </article>
+  </section>
+</main>
 
 <script src="js/main.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const map = L.map('map', { zoomControl: true }).setView([27.5, 31.5], 6);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-  maxZoom: 19
-}).addTo(map);
+const baseLayers = {
+  streets: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles © Esri',
+    maxZoom: 19
+  }),
+  satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles © Esri',
+    maxZoom: 19
+  }),
+  detail: L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
+    maxZoom: 20
+  })
+};
+let activeBaseLayer = baseLayers.streets.addTo(map);
 
-function makeIcon(color) {
+const HURGHADA = { color: '#0077B6', city: 'hurghada', cityLabel: 'Хургада' };
+const LUXOR = { color: '#D4AF37', city: 'luxor', cityLabel: 'Луксор' };
+const CAIRO = { color: '#1B3A5C', city: 'cairo', cityLabel: 'Каир' };
+
+const places = [
+  { id:'hurghada-center', lat:27.2578, lng:33.8116, ...HURGHADA, icon:'🏨', title:'Хургада — центр', address:'Downtown Hurghada, Red Sea Governorate', desc:'Удобная база для моря, островов, шоппинга и вечерних прогулок. Хорошая точка, чтобы понять город без спешки.', note:'Удобно использовать как ориентир, если нужно встретиться с водителем или быстро вернуться в центральную часть города.', tag:'Точка старта', facts:['море рядом','вечером','такси'] },
+  { id:'hurghada-airport', lat:27.1783, lng:33.7994, ...HURGHADA, icon:'✈️', title:'Аэропорт Хургады HRG', address:'Hurghada International Airport (HRG), Hurghada', desc:'Главный аэропорт курортной Хургады. До туристической зоны обычно 10–20 минут, до центра/марины около 15–25 минут, до Эль-Гуны примерно 35–50 минут.', note:'После багажа можно купить SIM у Vodafone, Orange, Etisalat или WE: нужен паспорт, часто удобнее иметь наличные. Такси у выхода есть, но цену лучше согласовать до посадки; трансфер из отеля или заранее заказанная машина обычно спокойнее. Для города ориентир по такси часто около $10–20, в дальние отели и Эль-Гуну дороже.', tag:'Аэропорт', facts:['SIM по прилёту','10–25 мин до города','торг за такси'] },
+  { id:'giftun-islands', lat:27.1667, lng:33.9167, ...HURGHADA, icon:'🐠', title:'Острова Гифтун', address:'Giftun Islands, Red Sea, напротив Хургады', desc:'Рифы, яхта, снорклинг и тот самый цвет Красного моря. Обычно сюда едут на полдня или почти на весь день.', note:'Смотрите, что включено: трансфер, обед, маска, жилет, островная остановка и сколько людей на лодке. Самые дешёвые туры часто самые тесные.', tag:'Снорклинг', facts:['яхта','рифы','купание'] },
+  { id:'orange-bay', lat:27.1819, lng:33.9538, ...HURGHADA, icon:'🏖️', title:'Orange Bay', address:'Orange Bay, Giftun Islands, Hurghada', desc:'Популярная пляжная остановка на островах Гифтун: белый песок, бирюзовая вода, качели и много “открыточных” фото.', note:'Хорошо для красивых фотографий и спокойного пляжа, но не ждите уединения: место популярное и туристическое.', tag:'Пляж', facts:['Гифтун','фото','яхта'] },
+  { id:'mahmya-island', lat:27.1902, lng:33.9549, ...HURGHADA, icon:'🏝️', title:'Mahmya Island', address:'Mahmya Island, Giftun Islands, Hurghada', desc:'Более спокойный островной формат на Гифтун: пляж, море, лежаки и ощущение “мальдивского” дня в Красном море.', note:'Подходит, если хочется не только снорклинг, но и нормальный пляжный день с лежаком и красивой водой.', tag:'Пляжный день', facts:['пляж','море','релакс'] },
+  { id:'mamsha', lat:27.1843, lng:33.8357, ...HURGHADA, icon:'🌊', title:'Набережная Мамша', address:'El Mamsha / Village Road, Hurghada', desc:'Вечерний променад с кафе, ресторанами и спокойной прогулочной атмосферой после жары.', note:'Лучше приходить после 17:00. Для чая, кальяна и неспешной прогулки это приятнее, чем дневная жара.', tag:'Прогулка', facts:['вечером','кафе','променад'] },
+  { id:'hurghada-marina', lat:27.2260, lng:33.8416, ...HURGHADA, icon:'⚓', title:'Hurghada Marina', address:'Hurghada Marina Boulevard, Hurghada', desc:'Аккуратная марина с яхтами, ресторанами и вечерней прогулкой у воды. Хорошо зайти после старого города или перед ужином.', note:'Это более “цивильная” прогулка: кафе дороже, чем в городе, зато красиво, спокойно и удобно для первого вечера.', tag:'Вечером', facts:['яхты','рестораны','променад'] },
+  { id:'el-mina-mosque', lat:27.2299, lng:33.8428, ...HURGHADA, icon:'🕌', title:'Мечеть Эль-Мина', address:'El Mina Mosque, near Hurghada Marina, Hurghada', desc:'Одна из самых заметных мечетей Хургады рядом с мариной. Красиво снаружи, а внутрь стоит заходить только с уважением к правилам одежды.', note:'Плечи и колени закрыты, обувь снять. Если не уверены, просто посмотрите снаружи: место всё равно очень фотогеничное.', tag:'Архитектура', facts:['бесплатно','одежда','фото'] },
+  { id:'el-dahar', lat:27.2396, lng:33.8296, ...HURGHADA, icon:'🕌', title:'Эль-Дахар', address:'El Dahar, Old Town, Hurghada', desc:'Старый город: базар, мечеть, рыбный рынок и более живой египетский быт, чем в курортной зоне.', note:'Здесь нужен спокойный настрой: торг, шум, местный ритм. Зато это хорошее место почувствовать настоящий город.', tag:'Аутентика', facts:['базар','мечеть','торг'] },
+  { id:'hurghada-fish-market', lat:27.2320, lng:33.8418, ...HURGHADA, icon:'🐟', title:'Рыбный рынок', address:'Hurghada Fish Market, near Marina / El Mina Mosque', desc:'Атмосферное место для свежей рыбы и морепродуктов. Лучше утром: больше выбора, живее рынок и интереснее наблюдать за местной жизнью.', note:'Если хотите есть на месте, заранее уточняйте цену за рыбу и приготовление отдельно, чтобы не было сюрприза в счёте.', tag:'Местный быт', facts:['утром','морепродукты','торг'] },
+  { id:'sheraton-road', lat:27.2162, lng:33.8392, ...HURGHADA, icon:'👟', title:'Sheraton Road', address:'Sheraton Road, Hurghada', desc:'Главная туристическая торговая улица: сувениры, одежда, аптеки, обменники и лавки. Здесь важно спокойно торговаться и не спешить.', note:'Для покупок начинайте с цены сильно ниже первой. Если не нравится — уходите, это часто лучший аргумент.', tag:'Шоппинг', facts:['магазины','торг','вечером'] },
+  { id:'senzo-mall', lat:27.1934, lng:33.8310, ...HURGHADA, icon:'🛍️', title:'Senzo Mall', address:'Senzo Mall, Safaga Road, Hurghada', desc:'Крупный торговый центр с магазинами, супермаркетом и понятными фиксированными ценами.', note:'Хорошо для Carrefour, аптек, одежды и покупок без торга. Удобно, если нужен “нормальный магазин”, а не базар.', tag:'Шоппинг', facts:['ТЦ','фикс цены','еда'] },
+  { id:'hurghada-museum', lat:27.1767, lng:33.8242, ...HURGHADA, icon:'🏺', title:'Музей Хургады', address:'Hurghada Museum, Tourist Villages, Hurghada', desc:'Небольшой музей с древнеегипетскими и историческими экспонатами. Хороший вариант, если хочется истории без отдельной поездки в Луксор или Каир.', note:'Удобно ставить на день без моря или на вечер: внутри прохладнее, чем гулять по солнцу. Ориентир для иностранцев — около 200 EGP за взрослый билет, лучше проверить перед визитом.', tag:'Музей', facts:['~200 EGP','1–2 часа','в помещении'] },
+  { id:'hurghada-grand-aquarium', lat:27.1298, lng:33.8228, ...HURGHADA, icon:'🐡', title:'Hurghada Grand Aquarium', address:'Hurghada Grand Aquarium, Villages Road, Hurghada', desc:'Аквариум, подводный тоннель, мини-зоопарк и морские обитатели Красного моря. Хорошо для семьи или дня, когда не хочется на жару.', note:'Не замена снорклингу, но хороший запасной вариант: дети, жара, ветер или если хочется увидеть рыб без лодки. На сайте аквариума часто выгоднее онлайн-билет, чем цена на входе.', tag:'Семейно', facts:['~$32 онлайн','детям','2–3 часа'] },
+  { id:'sand-city', lat:27.0964, lng:33.8230, ...HURGHADA, icon:'🏜️', title:'Sand City', address:'Sand City Hurghada, Safaga Road, near Senzo Mall', desc:'Парк песчаных скульптур рядом с южной частью Хургады. Не must see, но необычная короткая остановка для фото.', note:'Лучше совмещать с Senzo Mall или дорогой на юг, отдельно ехать только ради него стоит не всем.', tag:'Фото', facts:['скульптуры','коротко','рядом с Senzo'] },
+  { id:'sahl-hasheesh', lat:27.0477, lng:33.8922, ...HURGHADA, icon:'🌅', title:'Sahl Hasheesh Old Town', address:'Old Town, Sahl Hasheesh, south of Hurghada', desc:'Курортная зона южнее Хургады: длинная набережная, спокойные отели, море и более “дорогой” вид отдыха.', note:'Ехать стоит, если хочется красивой прогулки у моря или посмотреть район для будущего отеля. Из центра Хургады закладывайте время на дорогу.', tag:'Прогулка у моря', facts:['южнее города','набережная','отели'] },
+  { id:'el-gouna-marina', lat:27.4103, lng:33.6759, ...HURGHADA, icon:'⛵', title:'Abu Tig Marina, El Gouna', address:'Abu Tig Marina, El Gouna, north of Hurghada', desc:'Эль-Гуна севернее Хургады: марина, каналы, рестораны и совсем другой, более европейский курортный вайб.', note:'Это уже поездка за город, но для вечера красиво. Цены в кафе и ресторанах обычно выше, чем в Хургаде.', tag:'За городом', facts:['Эль-Гуна','рестораны','вечером'] },
+
+  { id:'luxor-center', lat:25.6872, lng:32.6396, ...LUXOR, icon:'🏛️', title:'Луксор — центр', address:'Luxor Corniche / East Bank, Luxor', desc:'Берег Нила, набережная, храмы рядом и удобная база для западного и восточного берегов.', tag:'Точка старта', facts:['Нил','вечером','храмы'] },
+  { id:'luxor-airport', lat:25.6710, lng:32.7066, ...LUXOR, icon:'✈️', title:'Аэропорт Луксора LXR', address:'Luxor International Airport (LXR), Luxor', desc:'Небольшой и понятный аэропорт восточнее города. До центра Луксора и набережной обычно 15–25 минут, до западного берега дольше из-за переправы/моста.', note:'Лучше заранее договориться с жильём о трансфере или брать официальное такси у аэропорта. Uber в Луксоре обычно не рассчитываем как основной вариант. Цену называйте до посадки; для центра ориентир часто около $8–15, но зависит от времени, багажа и торга.', tag:'Аэропорт', facts:['15–25 мин до центра','такси/трансфер','цену заранее'] },
+  { id:'karnak-temple', lat:25.7188, lng:32.6573, ...LUXOR, icon:'🏛️', title:'Карнакский храм', address:'Karnak Temple Complex, Karnak, Luxor', desc:'Один из самых мощных храмовых комплексов Египта: колонны, дворы, обелиски и ощущение масштаба.', tag:'Must see', facts:['храм','история','2–3 часа'] },
+  { id:'valley-of-kings', lat:25.7402, lng:32.6014, ...LUXOR, icon:'⚰️', title:'Долина Царей', address:'Valley of the Kings, West Bank, Luxor', desc:'Гробницы фараонов с росписями, которым тысячи лет. Лучше ехать утром, пока не так жарко.', tag:'Must see', facts:['гробницы','утром','жара'] },
+  { id:'hatshepsut-temple', lat:25.7380, lng:32.6066, ...LUXOR, icon:'🏔️', title:'Храм Хатшепсут', address:'Mortuary Temple of Hatshepsut, Deir el-Bahari, Luxor', desc:'Террасы в скале и одна из самых узнаваемых локаций западного берега Луксора.', tag:'Западный берег', facts:['храм','скалы','фото'] },
+  { id:'memnon-colossi', lat:25.7206, lng:32.6097, ...LUXOR, icon:'🗿', title:'Колоссы Мемнона', address:'Colossi of Memnon, West Bank, Luxor', desc:'Две огромные статуи у дороги. Хороший короткий фотостоп по пути к гробницам.', tag:'Бесплатно', facts:['фотостоп','быстро','бесплатно'] },
+  { id:'luxor-temple', lat:25.6992, lng:32.6390, ...LUXOR, icon:'🌙', title:'Луксорский храм', address:'Luxor Temple, Luxor City, East Bank', desc:'Храм прямо в городе. Особенно красиво вечером, когда включается подсветка.', tag:'Вечером', facts:['подсветка','центр','прогулка'] },
+  { id:'felucca-nile', lat:25.6940, lng:32.6060, ...LUXOR, icon:'⛵', title:'Фелука на Ниле', address:'Nile Corniche / felucca docks, Luxor', desc:'Парусная прогулка по Нилу на закате. Спокойный способ перевести дух после храмов.', tag:'Романтика', facts:['закат','Нил','торг'] },
+
+  { id:'cairo-center', lat:30.0444, lng:31.2357, ...CAIRO, icon:'🏙️', title:'Каир — центр', address:'Downtown Cairo / Tahrir Square area, Cairo', desc:'Большой, шумный и очень живой город. Удобная база для музеев, базаров и старого Каира.', tag:'Точка старта', facts:['мегаполис','Uber','музеи'] },
+  { id:'cairo-airport', lat:30.1219, lng:31.4056, ...CAIRO, icon:'✈️', title:'Аэропорт Каира CAI', address:'Cairo International Airport (CAI), Heliopolis, Cairo', desc:'Крупный аэропорт с несколькими терминалами. До Downtown/Tahrir обычно 35–60 минут, до Гизы и пирамид часто 45–90 минут из-за трафика.', note:'SIM можно купить у операторов в зоне багажа/прилёта: нужен паспорт. Для города удобнее Uber/Careem с фиксированной ценой; обычное такси берите только после договорённости о сумме. Ориентир: до центра часто 200–400 EGP, до Гизы примерно 300–450 EGP, но пробки легко меняют время.', tag:'Аэропорт', facts:['SIM по прилёту','Uber/Careem','трафик'] },
+  { id:'giza-pyramids', lat:29.9792, lng:31.1342, ...CAIRO, icon:'🔺', title:'Пирамиды Гизы', address:'Giza Plateau, Al Haram, Giza', desc:'Главный символ Египта и единственное сохранившееся чудо древнего мира.', tag:'Must see', facts:['пирамиды','утром','торг'] },
+  { id:'sphinx', lat:29.9753, lng:31.1376, ...CAIRO, icon:'🦁', title:'Сфинкс', address:'Great Sphinx of Giza, Giza Plateau', desc:'Легендарная фигура рядом с пирамидами. Лучше смотреть вместе с плато Гизы.', tag:'Рядом с пирамидами', facts:['Гиза','фото','история'] },
+  { id:'grand-egyptian-museum', lat:29.9887, lng:31.1177, ...CAIRO, icon:'🏺', title:'Grand Egyptian Museum', address:'Grand Egyptian Museum, Cairo-Alexandria Desert Road, Giza', desc:'Большой музей рядом с пирамидами. Хорошее место, чтобы собрать историю Египта в голове.', tag:'Музей', facts:['музей','Гиза','3–4 часа'] },
+  { id:'khan-el-khalili', lat:30.0477, lng:31.2622, ...CAIRO, icon:'🏪', title:'Хан-эль-Халили', address:'Khan el-Khalili, El-Gamaleya, Cairo', desc:'Исторический базар: специи, медь, кожа, сувениры и обязательный торг.', tag:'Шоппинг', facts:['базар','торг','вечером'] },
+  { id:'saladin-citadel', lat:30.0286, lng:31.2598, ...CAIRO, icon:'🏰', title:'Цитадель Саладина', address:'Salah al-Din Citadel, Al Abageyah, Cairo', desc:'Крепость, мечеть Мухаммеда Али и панорамный вид на Каир.', tag:'Панорама', facts:['вид','мечеть','история'] },
+  { id:'muizz-street', lat:30.0597, lng:31.2421, ...CAIRO, icon:'🕌', title:'Улица Муиз', address:'Al Moez Ldin Allah Al Fatmi Street, Islamic Cairo', desc:'Пешеходная улица с исламской архитектурой, фонарями, лавками и вечерней атмосферой.', tag:'Вечером', facts:['старый Каир','прогулка','архитектура'] }
+];
+
+let activeFilter = 'all';
+let activePlaceId = null;
+let userMarker = null;
+let userCircle = null;
+let currentAudioPlaceId = null;
+const markersById = new Map();
+const layerGroup = L.layerGroup().addTo(map);
+
+const placeList = document.getElementById('place-list');
+const placeCard = document.getElementById('place-card');
+const cardImage = document.getElementById('place-card-image');
+const cardTitle = document.getElementById('place-card-title');
+const cardDesc = document.getElementById('place-card-desc');
+const cardAddress = document.getElementById('place-card-address');
+const cardNote = document.getElementById('place-card-note');
+const copyAddressBtn = document.getElementById('place-copy-address');
+const cardFacts = document.getElementById('place-card-facts');
+const googleLink = document.getElementById('place-google-link');
+const appleLink = document.getElementById('place-apple-link');
+const cardClose = document.getElementById('place-card-close');
+const audio = document.getElementById('place-audio');
+const audioBtn = document.getElementById('place-audio-btn');
+const locateBtn = document.getElementById('locate-btn');
+const fitBtn = document.getElementById('fit-btn');
+const locationStatus = document.getElementById('location-status');
+
+function setBaseLayer(layerName) {
+  const nextLayer = baseLayers[layerName];
+  if (!nextLayer || nextLayer === activeBaseLayer) return;
+
+  map.removeLayer(activeBaseLayer);
+  activeBaseLayer = nextLayer.addTo(map);
+  document.querySelectorAll('.map-layer-btn').forEach(button => {
+    button.classList.toggle('active', button.dataset.layer === layerName);
+  });
+}
+
+function makeIcon(place) {
   return L.divIcon({
     className: '',
     html: `<div style="
-      width:28px;height:28px;border-radius:50% 50% 50% 0;
-      background:${color};border:3px solid white;
+      width:32px;height:32px;border-radius:50% 50% 50% 0;
+      background:${place.color};border:3px solid white;
       box-shadow:0 3px 10px rgba(0,0,0,0.35);
       transform:rotate(-45deg);
-    "></div>`,
-    iconSize: [28, 28],
-    iconAnchor: [14, 28],
+      display:grid;place-items:center;
+    "><span style="transform:rotate(45deg);font-size:15px;">${place.icon}</span></div>`,
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
     popupAnchor: [0, -30]
   });
 }
 
-function popupHTML(icon, title, desc, tag) {
-  return `
-    <div style="min-width:180px">
-      <div class="map-popup-title">${icon} ${title}</div>
-      <p class="map-popup-desc">${desc}</p>
-      <span class="map-popup-tag">${tag}</span>
-    </div>`;
+function mapsUrl(place) {
+  return `https://www.google.com/maps/search/?api=1&query=${place.lat},${place.lng}`;
 }
 
-const HURGHADA  = { color: '#0077B6', city: 'hurghada' };
-const LUXOR     = { color: '#D4AF37', city: 'luxor' };
-const CAIRO     = { color: '#1B3A5C', city: 'cairo' };
+function appleMapsUrl(place) {
+  return `https://maps.apple.com/?q=${encodeURIComponent(place.title)}&ll=${place.lat},${place.lng}`;
+}
 
-const places = [
-  // Hurghada
-  { lat:27.2578, lng:33.8116, ...HURGHADA, icon:'🏨', title:'Хургада — центр',       desc:'Удобная база для моря, островов, шоппинга и вечерних прогулок по городу.',  tag:'Точка старта' },
-  { lat:27.1667, lng:33.9167, ...HURGHADA, icon:'🐠', title:'Острова Гифтун',        desc:'Лучшие рифы Красного моря. Яхта 09:00–15:00, $25–40/чел.',              tag:'Снорклинг' },
-  { lat:27.1843, lng:33.8357, ...HURGHADA, icon:'🌊', title:'Набережная Мамша',      desc:'Главный вечерний променад 4 км. Рестораны, кальян, атмосфера.',         tag:'Прогулка' },
-  { lat:27.2396, lng:33.8296, ...HURGHADA, icon:'🕌', title:'Эль-Дахар',            desc:'Старый город: базар, мечеть, рыбный рынок. Настоящий египетский быт.',  tag:'Аутентика' },
-  { lat:27.1934, lng:33.8310, ...HURGHADA, icon:'🛍️', title:'Senzo Mall',            desc:'Крупнейший ТЦ: 150+ магазинов, Carrefour, кино. Открыт до 23:00.',      tag:'Шоппинг' },
+function filteredPlaces() {
+  return places.filter(place => activeFilter === 'all' || place.city === activeFilter);
+}
 
-  // Luxor
-  { lat:25.6872, lng:32.6396, ...LUXOR,    icon:'🏛️', title:'Луксор — центр',       desc:'Берег Нила и удобная отправная точка для храмов, гробниц и вечерних прогулок.',   tag:'Точка старта' },
-  { lat:25.7188, lng:32.6573, ...LUXOR,    icon:'🏛️', title:'Карнакский храм',      desc:'134 колонны, 100 га, строился 1500 лет. Главное в Луксоре. ~$5.',       tag:'Must see ⭐' },
-  { lat:25.7402, lng:32.6014, ...LUXOR,    icon:'⚰️', title:'Долина Царей',         desc:'63 гробницы фараонов с тысячелетними росписями. ~$10 (3 гробницы).',    tag:'Must see ⭐' },
-  { lat:25.7380, lng:32.6066, ...LUXOR,    icon:'🏔️', title:'Храм Хатшепсут',       desc:'Три террасы в скале. Женщина-фараон. ~$7.',                             tag:'Западный берег' },
-  { lat:25.7206, lng:32.6097, ...LUXOR,    icon:'🗿', title:'Колоссы Мемнона',      desc:'Две статуи 18 метров. Бесплатно. Фотостоп по дороге в Долину Царей.',   tag:'Бесплатно' },
-  { lat:25.6992, lng:32.6390, ...LUXOR,    icon:'🌙', title:'Луксорский храм',      desc:'В центре города. Обелиск Рамсеса II. Красив вечером с подсветкой. ~$5.', tag:'Вечером' },
-  { lat:25.6940, lng:32.6060, ...LUXOR,    icon:'⛵', title:'Фелука на Ниле',       desc:'Закатная прогулка под парусом. 150–200 EGP (~$4) за лодку. Must do!',   tag:'Романтика ⭐' },
+function fitToVisiblePlaces() {
+  const visible = filteredPlaces();
+  if (!visible.length) return;
+  const bounds = L.latLngBounds(visible.map(place => [place.lat, place.lng]));
+  map.fitBounds(bounds.pad(0.18));
+}
 
-  // Cairo
-  { lat:30.0444, lng:31.2357, ...CAIRO,    icon:'🏙️', title:'Каир — центр',         desc:'Огромный мегаполис, который удобно использовать как базу для пирамид, музеев и старого города.', tag:'Точка старта' },
-  { lat:29.9792, lng:31.1342, ...CAIRO,    icon:'🔺', title:'Пирамиды Гизы',        desc:'Единственное сохранившееся чудо древнего мира. Вход ~$10.',             tag:'Must see ⭐' },
-  { lat:29.9753, lng:31.1376, ...CAIRO,    icon:'🦁', title:'Сфинкс',              desc:'73 метра в длину, высечен из одного блока известняка. XIV–XV вв. до н.э.', tag:'Рядом с пирамидами' },
-  { lat:29.9887, lng:31.1177, ...CAIRO,    icon:'🏺', title:'Grand Egyptian Museum',desc:'Крупнейший археологический музей. 5000+ предметов Тутанхамона. ~$20.',  tag:'Must see ⭐' },
-  { lat:30.0477, lng:31.2622, ...CAIRO,    icon:'🏪', title:'Хан-эль-Халили',      desc:'Базар с 1382 года. Специи, кожа, медь, ювелирка. Торгуйся!',           tag:'Шоппинг ⭐' },
-  { lat:30.0286, lng:31.2598, ...CAIRO,    icon:'🏰', title:'Цитадель Саладина',   desc:'XII век, мечеть Мухаммеда Али. Панорамный вид на весь Каир. ~$7.',      tag:'Панорама' },
-  { lat:30.0597, lng:31.2421, ...CAIRO,    icon:'🕌', title:'Улица Муиз',          desc:'Пешеходная. Высшая концентрация исламских памятников. Бесплатно.',      tag:'Вечером' },
-];
+function renderPlaceList() {
+  placeList.innerHTML = filteredPlaces().map(place => `
+    <button class="place-list-btn ${place.id === activePlaceId ? 'active' : ''}" type="button" data-place-id="${place.id}">
+      <span class="place-list-icon">${place.icon}</span>
+      <span>
+        <span class="place-list-title">${place.title}</span>
+        <span class="place-list-meta">${place.cityLabel} · ${place.tag}</span>
+      </span>
+    </button>
+  `).join('');
 
-let markers = [];
-let layerGroup = L.layerGroup().addTo(map);
+  placeList.querySelectorAll('.place-list-btn').forEach(button => {
+    button.addEventListener('click', () => selectPlace(button.dataset.placeId, true));
+  });
+}
 
-function renderMarkers(filter) {
+function renderMarkers() {
   layerGroup.clearLayers();
-  markers = [];
-  places
-    .filter(p => filter === 'all' || p.city === filter)
-    .forEach(p => {
-      const m = L.marker([p.lat, p.lng], { icon: makeIcon(p.color) })
-        .bindPopup(popupHTML(p.icon, p.title, p.desc, p.tag), { maxWidth: 240 });
-      layerGroup.addLayer(m);
-      markers.push(m);
-    });
+  markersById.clear();
 
-  // Fit bounds
-  if (markers.length > 0) {
-    const group = L.featureGroup(markers);
-    map.fitBounds(group.getBounds().pad(0.15));
+  filteredPlaces().forEach(place => {
+    const marker = L.marker([place.lat, place.lng], { icon: makeIcon(place), title: place.title })
+      .on('click', () => selectPlace(place.id, false));
+    marker.bindTooltip(place.title, { direction: 'top', offset: [0, -24] });
+    marker.addTo(layerGroup);
+    markersById.set(place.id, marker);
+  });
+}
+
+function renderCard(place) {
+  cardTitle.textContent = `${place.icon} ${place.title}`;
+  cardDesc.textContent = place.desc;
+  cardAddress.textContent = `📍 ${place.address || `${place.lat}, ${place.lng}`}`;
+  cardNote.textContent = place.note || '';
+  cardNote.hidden = !place.note;
+  cardFacts.innerHTML = place.facts.map(fact => `<span>${fact}</span>`).join('');
+  googleLink.href = mapsUrl(place);
+  appleLink.href = appleMapsUrl(place);
+
+  if (place.image) {
+    cardImage.innerHTML = `<img src="${place.image}" alt="${place.title}">`;
+  } else {
+    cardImage.innerHTML = `<span>${place.icon}</span>`;
+  }
+
+  audio.pause();
+  audio.removeAttribute('src');
+  audioBtn.textContent = '▶ Послушать';
+  audioBtn.hidden = !place.audio;
+  audioBtn.disabled = !place.audio;
+  currentAudioPlaceId = null;
+  if (place.audio) {
+    audio.src = place.audio;
+    currentAudioPlaceId = place.id;
+  }
+
+  placeCard.classList.remove('is-hidden');
+}
+
+function selectPlace(placeId, shouldFly) {
+  const place = places.find(item => item.id === placeId);
+  if (!place) return;
+
+  activePlaceId = place.id;
+  renderPlaceList();
+  renderCard(place);
+
+  const marker = markersById.get(place.id);
+  if (shouldFly) {
+    map.flyTo([place.lat, place.lng], Math.max(map.getZoom(), 14), { duration: 0.6 });
+  } else {
+    map.panTo([place.lat, place.lng]);
+  }
+  if (marker) marker.openTooltip();
+}
+
+function showStatus(message, timeout = 3200) {
+  locationStatus.textContent = message;
+  if (timeout) {
+    window.setTimeout(() => {
+      if (locationStatus.textContent === message) locationStatus.textContent = '';
+    }, timeout);
   }
 }
 
-renderMarkers('all');
+function getActivePlace() {
+  return places.find(item => item.id === activePlaceId);
+}
 
-// Filter buttons
-document.querySelectorAll('.filter-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderMarkers(btn.dataset.city);
+function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    return navigator.clipboard.writeText(text);
+  }
+
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.setAttribute('readonly', '');
+  textarea.style.position = 'fixed';
+  textarea.style.left = '-9999px';
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand('copy');
+  document.body.removeChild(textarea);
+  return Promise.resolve();
+}
+
+function locateUser() {
+  if (!navigator.geolocation) {
+    showStatus('Геолокация не поддерживается этим браузером');
+    return;
+  }
+
+  showStatus('Ищем вас на карте...');
+  navigator.geolocation.getCurrentPosition(position => {
+    const { latitude, longitude, accuracy } = position.coords;
+    const latLng = [latitude, longitude];
+
+    if (!userMarker) {
+      const icon = L.divIcon({
+        className: '',
+        html: '<div class="user-location-marker"></div>',
+        iconSize: [22, 22],
+        iconAnchor: [11, 11]
+      });
+      userMarker = L.marker(latLng, { icon, zIndexOffset: 1000 }).addTo(map);
+      userCircle = L.circle(latLng, {
+        radius: accuracy || 80,
+        color: '#1D9BF0',
+        fillColor: '#1D9BF0',
+        fillOpacity: 0.12,
+        weight: 1
+      }).addTo(map);
+    } else {
+      userMarker.setLatLng(latLng);
+      userCircle.setLatLng(latLng);
+      userCircle.setRadius(accuracy || 80);
+    }
+
+    map.flyTo(latLng, 15, { duration: 0.7 });
+    showStatus('Показали ваше местоположение');
+  }, () => {
+    showStatus('Не получилось получить геолокацию. Проверьте разрешение в браузере.');
+  }, {
+    enableHighAccuracy: true,
+    timeout: 10000,
+    maximumAge: 30000
   });
+}
+
+function setFilter(filter) {
+  activeFilter = filter;
+  if (activeFilter !== 'all') {
+    const selected = places.find(place => place.id === activePlaceId);
+    if (selected && selected.city !== activeFilter) {
+      activePlaceId = null;
+      placeCard.classList.add('is-hidden');
+    }
+  }
+
+  document.querySelectorAll('.filter-btn').forEach(button => {
+    button.classList.toggle('active', button.dataset.city === filter);
+  });
+  renderMarkers();
+  renderPlaceList();
+  fitToVisiblePlaces();
+}
+
+document.querySelectorAll('.filter-btn').forEach(button => {
+  button.addEventListener('click', () => setFilter(button.dataset.city));
 });
+
+document.querySelectorAll('.map-layer-btn').forEach(button => {
+  button.addEventListener('click', () => setBaseLayer(button.dataset.layer));
+});
+
+cardClose.addEventListener('click', () => {
+  activePlaceId = null;
+  placeCard.classList.add('is-hidden');
+  audio.pause();
+  renderPlaceList();
+});
+
+copyAddressBtn.addEventListener('click', () => {
+  const place = getActivePlace();
+  if (!place) return;
+
+  const text = place.address || `${place.lat}, ${place.lng}`;
+  copyText(text)
+    .then(() => showStatus('Адрес скопирован'))
+    .catch(() => showStatus('Не получилось скопировать адрес'));
+});
+
+audioBtn.addEventListener('click', () => {
+  if (!audio.src || !currentAudioPlaceId) return;
+  if (audio.paused) {
+    audio.play();
+    audioBtn.textContent = '⏸ Пауза';
+  } else {
+    audio.pause();
+    audioBtn.textContent = '▶ Послушать';
+  }
+});
+
+audio.addEventListener('ended', () => {
+  audioBtn.textContent = '▶ Послушать';
+});
+
+locateBtn.addEventListener('click', locateUser);
+fitBtn.addEventListener('click', () => {
+  placeCard.classList.add('is-hidden');
+  fitToVisiblePlaces();
+});
+
+renderMarkers();
+renderPlaceList();
+fitToVisiblePlaces();
 </script>
 </body>
 </html>

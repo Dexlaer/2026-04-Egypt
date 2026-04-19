@@ -614,6 +614,14 @@ function roundCurrency(value) {
   return Math.round(value * 100) / 100;
 }
 
+function parseCurrencyInput(value) {
+  const raw = String(value).trim().replace(/\s/g, '').replace(',', '.');
+  if (raw === '') return { empty: true, value: null };
+  if (raw === '.' || !/^\d*\.?\d*$/.test(raw)) return { empty: false, value: null };
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) ? { empty: false, value: parsed } : { empty: false, value: null };
+}
+
 function initCurrencyCalculator() {
   const card = document.getElementById('live-rate-card');
   const triggers = document.querySelectorAll('[data-calc-trigger]');
@@ -674,62 +682,100 @@ function initCurrencyCalculator() {
 
   let syncing = false;
 
-  function fillFromEgp(amount) {
+  function clearConvertedInputs(sourceInput) {
+    [egpInput, usdInput, eurInput, rubInput].forEach(input => {
+      if (input !== sourceInput) input.value = '';
+    });
+  }
+
+  function setConvertedValue(input, value, sourceInput) {
+    if (input !== sourceInput) input.value = roundCurrency(value);
+  }
+
+  function fillFromEgp(amount, sourceInput = null) {
     if (!egyptRates.usdToEgp || !egyptRates.eurToEgp || !egyptRates.rubToEgp) return;
+    const parsed = parseCurrencyInput(amount);
+    if (parsed.empty) {
+      clearConvertedInputs(sourceInput);
+      return;
+    }
+    if (parsed.value === null) return;
+    const value = parsed.value;
     syncing = true;
-    egpInput.value = amount === '' ? '' : roundCurrency(Number(amount));
-    usdInput.value = amount === '' ? '' : roundCurrency(Number(amount) / egyptRates.usdToEgp);
-    eurInput.value = amount === '' ? '' : roundCurrency(Number(amount) / egyptRates.eurToEgp);
-    rubInput.value = amount === '' ? '' : roundCurrency(Number(amount) / egyptRates.rubToEgp);
+    setConvertedValue(egpInput, value, sourceInput);
+    setConvertedValue(usdInput, value / egyptRates.usdToEgp, sourceInput);
+    setConvertedValue(eurInput, value / egyptRates.eurToEgp, sourceInput);
+    setConvertedValue(rubInput, value / egyptRates.rubToEgp, sourceInput);
     syncing = false;
   }
 
-  function fillFromUsd(amount) {
+  function fillFromUsd(amount, sourceInput = null) {
     if (!egyptRates.usdToEgp || !egyptRates.usdToRub || !egyptRates.eurToEgp) return;
+    const parsed = parseCurrencyInput(amount);
+    if (parsed.empty) {
+      clearConvertedInputs(sourceInput);
+      return;
+    }
+    if (parsed.value === null) return;
+    const value = parsed.value;
     syncing = true;
-    usdInput.value = amount === '' ? '' : roundCurrency(Number(amount));
-    egpInput.value = amount === '' ? '' : roundCurrency(Number(amount) * egyptRates.usdToEgp);
-    eurInput.value = amount === '' ? '' : roundCurrency((Number(amount) * egyptRates.usdToEgp) / egyptRates.eurToEgp);
-    rubInput.value = amount === '' ? '' : roundCurrency(Number(amount) * egyptRates.usdToRub);
+    setConvertedValue(usdInput, value, sourceInput);
+    setConvertedValue(egpInput, value * egyptRates.usdToEgp, sourceInput);
+    setConvertedValue(eurInput, (value * egyptRates.usdToEgp) / egyptRates.eurToEgp, sourceInput);
+    setConvertedValue(rubInput, value * egyptRates.usdToRub, sourceInput);
     syncing = false;
   }
 
-  function fillFromEur(amount) {
+  function fillFromEur(amount, sourceInput = null) {
     if (!egyptRates.eurToEgp || !egyptRates.eurToRub || !egyptRates.usdToEgp) return;
+    const parsed = parseCurrencyInput(amount);
+    if (parsed.empty) {
+      clearConvertedInputs(sourceInput);
+      return;
+    }
+    if (parsed.value === null) return;
+    const value = parsed.value;
     syncing = true;
-    eurInput.value = amount === '' ? '' : roundCurrency(Number(amount));
-    egpInput.value = amount === '' ? '' : roundCurrency(Number(amount) * egyptRates.eurToEgp);
-    usdInput.value = amount === '' ? '' : roundCurrency((Number(amount) * egyptRates.eurToEgp) / egyptRates.usdToEgp);
-    rubInput.value = amount === '' ? '' : roundCurrency(Number(amount) * egyptRates.eurToRub);
+    setConvertedValue(eurInput, value, sourceInput);
+    setConvertedValue(egpInput, value * egyptRates.eurToEgp, sourceInput);
+    setConvertedValue(usdInput, (value * egyptRates.eurToEgp) / egyptRates.usdToEgp, sourceInput);
+    setConvertedValue(rubInput, value * egyptRates.eurToRub, sourceInput);
     syncing = false;
   }
 
-  function fillFromRub(amount) {
+  function fillFromRub(amount, sourceInput = null) {
     if (!egyptRates.rubToEgp || !egyptRates.usdToRub || !egyptRates.eurToRub) return;
+    const parsed = parseCurrencyInput(amount);
+    if (parsed.empty) {
+      clearConvertedInputs(sourceInput);
+      return;
+    }
+    if (parsed.value === null) return;
+    const value = parsed.value;
     syncing = true;
-    rubInput.value = amount === '' ? '' : roundCurrency(Number(amount));
-    egpInput.value = amount === '' ? '' : roundCurrency(Number(amount) * egyptRates.rubToEgp);
-    usdInput.value = amount === '' ? '' : roundCurrency(Number(amount) / egyptRates.usdToRub);
-    eurInput.value = amount === '' ? '' : roundCurrency(Number(amount) / egyptRates.eurToRub);
+    setConvertedValue(rubInput, value, sourceInput);
+    setConvertedValue(egpInput, value * egyptRates.rubToEgp, sourceInput);
+    setConvertedValue(usdInput, value / egyptRates.usdToRub, sourceInput);
+    setConvertedValue(eurInput, value / egyptRates.eurToRub, sourceInput);
     syncing = false;
   }
 
   if (!egpInput.dataset.boundCalc) {
     egpInput.addEventListener('input', () => {
       if (syncing) return;
-      fillFromEgp(egpInput.value);
+      fillFromEgp(egpInput.value, egpInput);
     });
     usdInput.addEventListener('input', () => {
       if (syncing) return;
-      fillFromUsd(usdInput.value);
+      fillFromUsd(usdInput.value, usdInput);
     });
     eurInput.addEventListener('input', () => {
       if (syncing) return;
-      fillFromEur(eurInput.value);
+      fillFromEur(eurInput.value, eurInput);
     });
     rubInput.addEventListener('input', () => {
       if (syncing) return;
-      fillFromRub(rubInput.value);
+      fillFromRub(rubInput.value, rubInput);
     });
 
     document.querySelectorAll('.calc-chip').forEach(btn => {

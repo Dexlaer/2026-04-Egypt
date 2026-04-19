@@ -53,7 +53,7 @@ a:hover { color: var(--gold); }
 .navbar {
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1400;
   background: var(--navy);
   display: flex;
   align-items: center;
@@ -317,7 +317,7 @@ a:hover { color: var(--gold); }
     padding: 0 0.9rem;
     gap: 0.75rem;
     position: sticky;
-    z-index: 300;
+    z-index: 1400;
   }
   .navbar-brand {
     font-size: 1.08rem;
@@ -348,7 +348,7 @@ a:hover { color: var(--gold); }
     background: rgba(255,255,255,0.06);
     border: 1px solid rgba(255,255,255,0.08);
     position: relative;
-    z-index: 320;
+    z-index: 1420;
   }
   .nav-links {
     position: fixed;
@@ -362,7 +362,7 @@ a:hover { color: var(--gold); }
     box-shadow: 0 8px 24px rgba(0,0,0,0.3);
     opacity: 0;
     pointer-events: none;
-    z-index: 310;
+    z-index: 1410;
   }
   .nav-links.open {
     transform: translateY(0);
