@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Карта маршрута — Египет 2026</title>
-  <meta name="description" content="Карта интересных мест Египта: Хургада, Луксор, Каир и точки для первого знакомства со страной.">
+  <meta name="description" content="Карта интересных мест Египта: Хургада, Луксор, Каир, Шарм-эль-Шейх и Александрия для первого знакомства со страной.">
   <meta name="theme-color" content="#1B3A5C">
   <meta property="og:title" content="Карта — Египет 2026">
   <meta property="og:description" content="Карта интересных мест Египта от All-bot.ru.">
@@ -76,33 +76,6 @@
     .map-action-btn:hover {
       transform: translateY(-1px);
       border-color: rgba(212,175,55,0.65);
-    }
-    .map-layer-switcher {
-      margin-top: 0.75rem;
-      padding: 0.45rem;
-      border-radius: 15px;
-      background: rgba(27,58,92,0.07);
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.35rem;
-    }
-    .map-layer-btn {
-      min-height: 34px;
-      border: 1px solid transparent;
-      border-radius: 11px;
-      background: transparent;
-      color: var(--text-lt);
-      font-family: var(--font-b);
-      font-size: 0.78rem;
-      font-weight: 900;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s, border-color 0.2s;
-    }
-    .map-layer-btn.active {
-      background: #fff;
-      color: var(--navy);
-      border-color: rgba(212,175,55,0.45);
-      box-shadow: 0 4px 12px rgba(27,58,92,0.08);
     }
     .map-filter-bar {
       background: var(--navy);
@@ -193,6 +166,42 @@
     #map {
       height: 100%;
       width: 100%;
+    }
+    .map-layer-control {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      z-index: 860;
+      min-width: 190px;
+      max-width: calc(100% - 2rem);
+      padding: 0.7rem 0.8rem;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.96);
+      box-shadow: 0 10px 26px rgba(27,58,92,0.16);
+      border: 1px solid rgba(27,58,92,0.12);
+      backdrop-filter: blur(10px);
+    }
+    .map-layer-control label {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--navy);
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .map-layer-select {
+      width: 100%;
+      min-height: 40px;
+      border-radius: 12px;
+      border: 1px solid rgba(27,58,92,0.14);
+      background: #fff;
+      color: var(--navy);
+      font-family: var(--font-b);
+      font-size: 0.9rem;
+      font-weight: 800;
+      padding: 0 0.85rem;
+      box-shadow: inset 0 1px 2px rgba(27,58,92,0.05);
     }
     .map-card {
       position: absolute;
@@ -341,6 +350,10 @@
       background: var(--navy);
       color: #fff;
     }
+    .map-card-link.ticket-link {
+      background: #D4AF37;
+      color: #1B3A5C;
+    }
     .map-audio-btn {
       border: 1px solid rgba(212,175,55,0.55);
       background: rgba(212,175,55,0.12);
@@ -412,6 +425,10 @@
         height: 72vh;
         min-height: 540px;
       }
+      .map-layer-control {
+        top: 0.85rem;
+        left: 0.85rem;
+      }
       .map-card {
         grid-template-columns: 110px 1fr;
       }
@@ -430,6 +447,10 @@
       .map-stage {
         height: 70vh;
         min-height: 500px;
+      }
+      .map-layer-control {
+        min-width: 0;
+        width: calc(100% - 1.7rem);
       }
       .map-card {
         grid-template-columns: 1fr;
@@ -456,7 +477,6 @@
     <li><a href="map.html">Карта</a></li>
     <li><a href="tips.html">Советы</a></li>
     <li><a href="feedback.html">Обратная связь</a></li>
-    <li class="nav-private"><a href="private.html">🔐 Наш план</a></li>
   </ul>
 </nav>
 
@@ -469,11 +489,6 @@
         <button class="map-action-btn" id="locate-btn" type="button">📍 Я здесь</button>
         <button class="map-action-btn" id="fit-btn" type="button">🧭 Вся карта</button>
       </div>
-      <div class="map-layer-switcher" aria-label="Слой карты">
-        <button class="map-layer-btn active" type="button" data-layer="streets">Улицы</button>
-        <button class="map-layer-btn" type="button" data-layer="satellite">Спутник</button>
-        <button class="map-layer-btn" type="button" data-layer="detail">Детально</button>
-      </div>
     </div>
     <div class="map-filter-bar">
       <span>Показать:</span>
@@ -481,22 +496,35 @@
       <button class="filter-btn" data-city="hurghada">🤿 Хургада</button>
       <button class="filter-btn" data-city="luxor">🏛 Луксор</button>
       <button class="filter-btn" data-city="cairo">🔺 Каир</button>
+      <button class="filter-btn" data-city="sharm">🌴 Шарм</button>
+      <button class="filter-btn" data-city="alexandria">🌊 Александрия</button>
     </div>
     <div class="map-place-list" id="place-list" aria-label="Список мест на карте"></div>
     <div class="map-panel-foot">
       Египет 2026 · карта интересных мест<br>
-      Разработка <a href="https://all-bot.ru" target="_blank" rel="noopener noreferrer">All-bot.ru</a>
+      Разработка <a href="https://all-bot.ru" target="_blank" rel="noopener noreferrer">All-bot.ru</a><br>
+      <button class="support-footer-btn" type="button" data-support-trigger>Угостить кофе ☕</button>
     </div>
   </aside>
 
   <section class="map-stage">
     <div id="map"></div>
+    <div class="map-layer-control">
+      <label for="map-layer-select">Вид карты</label>
+      <select class="map-layer-select" id="map-layer-select" aria-label="Выбрать вид карты">
+        <option value="satellite">Спутник</option>
+        <option value="streets">Улицы</option>
+        <option value="detail">Подробно</option>
+      </select>
+    </div>
     <div class="map-location-status" id="location-status" aria-live="polite"></div>
     <div class="map-legend">
       <h4>🗺 Легенда</h4>
       <div class="legend-item"><div class="legend-dot" style="background:#0077B6;"></div> Хургада</div>
       <div class="legend-item"><div class="legend-dot" style="background:#D4AF37;"></div> Луксор</div>
       <div class="legend-item"><div class="legend-dot" style="background:#1B3A5C;"></div> Каир</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#00A896;"></div> Шарм</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#5B7DB1;"></div> Александрия</div>
     </div>
     <article class="map-card is-hidden" id="place-card" aria-live="polite">
       <div class="map-card-img" id="place-card-image"></div>
@@ -514,6 +542,7 @@
         <div class="map-card-facts" id="place-card-facts"></div>
         <div class="map-card-actions">
           <button class="map-audio-btn" id="place-audio-btn" type="button">▶ Послушать</button>
+          <a class="map-card-link ticket-link" id="place-ticket-link" href="#" target="_blank" rel="noopener noreferrer" hidden>Купить билет</a>
           <a class="map-card-link" id="place-google-link" href="#" target="_blank" rel="noopener noreferrer">Google Maps</a>
           <a class="map-card-link" id="place-apple-link" href="#" target="_blank" rel="noopener noreferrer">Apple Maps</a>
         </div>
@@ -526,6 +555,7 @@
 <script src="js/main.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+const MAP_LAYER_STORAGE_KEY = 'egypt-map-layer';
 const map = L.map('map', { zoomControl: true }).setView([27.5, 31.5], 6);
 
 const baseLayers = {
@@ -542,11 +572,15 @@ const baseLayers = {
     maxZoom: 20
   })
 };
-let activeBaseLayer = baseLayers.streets.addTo(map);
+const storedBaseLayerName = localStorage.getItem(MAP_LAYER_STORAGE_KEY);
+let activeBaseLayerName = baseLayers[storedBaseLayerName] ? storedBaseLayerName : 'satellite';
+let activeBaseLayer = baseLayers[activeBaseLayerName].addTo(map);
 
 const HURGHADA = { color: '#0077B6', city: 'hurghada', cityLabel: 'Хургада' };
 const LUXOR = { color: '#D4AF37', city: 'luxor', cityLabel: 'Луксор' };
 const CAIRO = { color: '#1B3A5C', city: 'cairo', cityLabel: 'Каир' };
+const SHARM = { color: '#00A896', city: 'sharm', cityLabel: 'Шарм-эль-Шейх' };
+const ALEXANDRIA = { color: '#5B7DB1', city: 'alexandria', cityLabel: 'Александрия' };
 
 const places = [
   { id:'hurghada-center', lat:27.2578, lng:33.8116, ...HURGHADA, icon:'🏨', title:'Хургада — центр', address:'Downtown Hurghada, Red Sea Governorate', desc:'Удобная база для моря, островов, шоппинга и вечерних прогулок. Хорошая точка, чтобы понять город без спешки.', note:'Удобно использовать как ориентир, если нужно встретиться с водителем или быстро вернуться в центральную часть города.', tag:'Точка старта', facts:['море рядом','вечером','такси'] },
@@ -560,7 +594,7 @@ const places = [
   { id:'el-dahar', lat:27.2396, lng:33.8296, ...HURGHADA, icon:'🕌', title:'Эль-Дахар', address:'El Dahar, Old Town, Hurghada', desc:'Старый город: базар, мечеть, рыбный рынок и более живой египетский быт, чем в курортной зоне.', note:'Здесь нужен спокойный настрой: торг, шум, местный ритм. Зато это хорошее место почувствовать настоящий город.', tag:'Аутентика', facts:['базар','мечеть','торг'] },
   { id:'hurghada-fish-market', lat:27.2320, lng:33.8418, ...HURGHADA, icon:'🐟', title:'Рыбный рынок', address:'Hurghada Fish Market, near Marina / El Mina Mosque', desc:'Атмосферное место для свежей рыбы и морепродуктов. Лучше утром: больше выбора, живее рынок и интереснее наблюдать за местной жизнью.', note:'Если хотите есть на месте, заранее уточняйте цену за рыбу и приготовление отдельно, чтобы не было сюрприза в счёте.', tag:'Местный быт', facts:['утром','морепродукты','торг'] },
   { id:'sheraton-road', lat:27.2162, lng:33.8392, ...HURGHADA, icon:'👟', title:'Sheraton Road', address:'Sheraton Road, Hurghada', desc:'Главная туристическая торговая улица: сувениры, одежда, аптеки, обменники и лавки. Здесь важно спокойно торговаться и не спешить.', note:'Для покупок начинайте с цены сильно ниже первой. Если не нравится — уходите, это часто лучший аргумент.', tag:'Шоппинг', facts:['магазины','торг','вечером'] },
-  { id:'senzo-mall', lat:27.1934, lng:33.8310, ...HURGHADA, icon:'🛍️', title:'Senzo Mall', address:'Senzo Mall, Safaga Road, Hurghada', desc:'Крупный торговый центр с магазинами, супермаркетом и понятными фиксированными ценами.', note:'Хорошо для Carrefour, аптек, одежды и покупок без торга. Удобно, если нужен “нормальный магазин”, а не базар.', tag:'Шоппинг', facts:['ТЦ','фикс цены','еда'] },
+  { id:'senzo-mall', lat:27.1934, lng:33.8310, ...HURGHADA, icon:'🛍️', title:'Senzo Mall', address:'Senzo Mall, Safaga Road, Hurghada', desc:'Удобный торговый центр Хургады, куда стоит ехать не только “за супермаркетом”, но и за нормальным шоппингом без торга и без суеты базара.', note:'По опыту это реально рабочее место для покупок: особенно хороши местные магазины — вещи часто сидят лучше, чем ожидаешь, выглядят достойно и стоят дешевле. А если попали на распродажи, можно очень приятно закупиться без нервов и торгов.', tag:'Шоппинг', facts:['фикс цены','местные бренды','распродажи'] },
   { id:'hurghada-museum', lat:27.1767, lng:33.8242, ...HURGHADA, icon:'🏺', title:'Музей Хургады', address:'Hurghada Museum, Tourist Villages, Hurghada', desc:'Небольшой музей с древнеегипетскими и историческими экспонатами. Хороший вариант, если хочется истории без отдельной поездки в Луксор или Каир.', note:'Удобно ставить на день без моря или на вечер: внутри прохладнее, чем гулять по солнцу. Ориентир для иностранцев — около 200 EGP за взрослый билет, лучше проверить перед визитом.', tag:'Музей', facts:['~200 EGP','1–2 часа','в помещении'] },
   { id:'hurghada-grand-aquarium', lat:27.1298, lng:33.8228, ...HURGHADA, icon:'🐡', title:'Hurghada Grand Aquarium', address:'Hurghada Grand Aquarium, Villages Road, Hurghada', desc:'Аквариум, подводный тоннель, мини-зоопарк и морские обитатели Красного моря. Хорошо для семьи или дня, когда не хочется на жару.', note:'Не замена снорклингу, но хороший запасной вариант: дети, жара, ветер или если хочется увидеть рыб без лодки. На сайте аквариума часто выгоднее онлайн-билет, чем цена на входе.', tag:'Семейно', facts:['~$32 онлайн','детям','2–3 часа'] },
   { id:'sand-city', lat:27.0964, lng:33.8230, ...HURGHADA, icon:'🏜️', title:'Sand City', address:'Sand City Hurghada, Safaga Road, near Senzo Mall', desc:'Парк песчаных скульптур рядом с южной частью Хургады. Не must see, но необычная короткая остановка для фото.', note:'Лучше совмещать с Senzo Mall или дорогой на юг, отдельно ехать только ради него стоит не всем.', tag:'Фото', facts:['скульптуры','коротко','рядом с Senzo'] },
@@ -578,12 +612,31 @@ const places = [
 
   { id:'cairo-center', lat:30.0444, lng:31.2357, ...CAIRO, icon:'🏙️', title:'Каир — центр', address:'Downtown Cairo / Tahrir Square area, Cairo', desc:'Большой, шумный и очень живой город. Удобная база для музеев, базаров и старого Каира.', tag:'Точка старта', facts:['мегаполис','Uber','музеи'] },
   { id:'cairo-airport', lat:30.1219, lng:31.4056, ...CAIRO, icon:'✈️', title:'Аэропорт Каира CAI', address:'Cairo International Airport (CAI), Heliopolis, Cairo', desc:'Крупный аэропорт с несколькими терминалами. До Downtown/Tahrir обычно 35–60 минут, до Гизы и пирамид часто 45–90 минут из-за трафика.', note:'SIM можно купить у операторов в зоне багажа/прилёта: нужен паспорт. Для города удобнее Uber/Careem с фиксированной ценой; обычное такси берите только после договорённости о сумме. Ориентир: до центра часто 200–400 EGP, до Гизы примерно 300–450 EGP, но пробки легко меняют время.', tag:'Аэропорт', facts:['SIM по прилёту','Uber/Careem','трафик'] },
-  { id:'giza-pyramids', lat:29.9792, lng:31.1342, ...CAIRO, icon:'🔺', title:'Пирамиды Гизы', address:'Giza Plateau, Al Haram, Giza', desc:'Главный символ Египта и единственное сохранившееся чудо древнего мира.', tag:'Must see', facts:['пирамиды','утром','торг'] },
-  { id:'sphinx', lat:29.9753, lng:31.1376, ...CAIRO, icon:'🦁', title:'Сфинкс', address:'Great Sphinx of Giza, Giza Plateau', desc:'Легендарная фигура рядом с пирамидами. Лучше смотреть вместе с плато Гизы.', tag:'Рядом с пирамидами', facts:['Гиза','фото','история'] },
-  { id:'grand-egyptian-museum', lat:29.9887, lng:31.1177, ...CAIRO, icon:'🏺', title:'Grand Egyptian Museum', address:'Grand Egyptian Museum, Cairo-Alexandria Desert Road, Giza', desc:'Большой музей рядом с пирамидами. Хорошее место, чтобы собрать историю Египта в голове.', tag:'Музей', facts:['музей','Гиза','3–4 часа'] },
+  { id:'cairo-hurghada-road', lat:28.5440, lng:32.9070, ...CAIRO, icon:'🚌', title:'Дорога Каир → Хургада', address:'Cairo–Hurghada Road / Eastern Desert route', mapQuery:'Cairo Hurghada Road, Egypt', desc:'Если ехать землёй из Каира в Хургаду, это совсем другой Египет: пустыня, древние монастыри, римские каменоломни, Красное море и курорт, которому по меркам страны вообще “вчера”.', note:'Коротко про эту дорогу: Каир — Хургада. Пустыня, монастырь святого Антония, римские каменоломни, камень для Пантеона, Красное море и курорт, которому меньше 50 лет. На автобусе или в машине по трассе бывают обычные проверки: могут попросить паспорт и задать простые вопросы — куда едете, откуда и где остановитесь. Это стандартная проверка, не повод нервничать.', tag:'Аудио в путь', facts:['пустыня','проверки на трассе','слушать в автобусе'], audio:'audio/cairo-hurghada.mp3' },
+  { id:'saint-anthony-monastery', lat:28.9239, lng:32.3500, ...CAIRO, icon:'⛪', title:'Монастырь Святого Антония', address:'Monastery of Saint Anthony, Red Sea Governorate', mapQuery:'Monastery of Saint Anthony, Egypt', desc:'Один из самых древних христианских монастырей в мире, спрятанный в Восточной пустыне. Это одно из самых сильных мест по дороге к Красному морю, если хочется почувствовать не только курортный, но и очень старый Египет.', note:'Это не “случайная остановка у трассы”, а реально историческое место мирового масштаба. Если когда-нибудь захочется отдельной поездки из Каира или Хургады, монастырь Святого Антония стоит того.', tag:'Пустыня и история', facts:['один из старейших в мире','Восточная пустыня','коптский Египет'] },
+  { id:'mons-claudianus', lat:26.8096, lng:33.4889, ...HURGHADA, icon:'🪨', title:'Mons Claudianus — римские каменоломни', address:'Mons Claudianus, Red Sea Governorate', mapQuery:'Mons Claudianus, Egypt', desc:'Огромные римские каменоломни в Восточной пустыне, где добывали редкий камень для имперских строек. Это уже не “по пути на пять минут”, а историческая глубина той самой пустыни между Нилом и Красным морем.', note:'Именно отсюда в Рим везли камень для крупных имперских зданий, в том числе для Пантеона. На обычной туристической поездке сюда обычно специально не заезжают, но для понимания дороги Каир → Хургада это красивая деталь: пустыня здесь веками была не пустотой, а рабочим маршрутом истории.', tag:'Римский Египет', facts:['камень для Пантеона','Восточная пустыня','римская история'] },
+  { id:'giza-plateau', lat:29.9777, lng:31.1326, ...CAIRO, icon:'🏜️', title:'Плато Гизы', address:'Giza Plateau, Al Haram, Giza', mapQuery:'Giza Plateau, Giza, Egypt', desc:'Весь комплекс сразу: три главные пирамиды, Сфинкс, панорамные точки и маршруты между ними. Для первого раза лучше закладывать минимум полдня.', note:'По территории ходит зелёный автобус-шаттл между основными точками плато, он уже включён в билет. Онлайн-билеты удобнее брать заранее на официальном сайте Egymonuments.', tag:'Комплекс', facts:['полдня и больше','зелёный шаттл','официальный билет'], ticketUrl:'https://egymonuments.com/en/locations/details/Pyramids', ticketLabel:'Билеты на плато' },
+  { id:'giza-new-gate', lat:29.9698, lng:31.1167, ...CAIRO, icon:'🚪', title:'Новый главный вход в пирамиды', address:'The Great Gate / Cairo-Fayoum Desert Road, Giza 3512201', mapQuery:'The Great Gate, Cairo-Fayoum Desert Road, Giza 3512201, Egypt', desc:'Новый красивый вход на плато Гизы, который начали переводить в основной поток посетителей через Fayoum Desert Road. Если всё работает по новой схеме, именно сюда удобнее ориентироваться на въезд.', note:'С апреля 2025 на плато запускали новую схему входа и транспорта через этот въезд. После входа дальше по комплексу развозит зелёный автобус, он включён в билет. Билеты лучше купить заранее онлайн, чтобы не тратить время на месте.', tag:'Новый вход', facts:['Great Gate','Fayoum Road','шаттл включён'], ticketUrl:'https://egymonuments.com/en/locations/details/Pyramids', ticketLabel:'Билеты на пирамиды' },
+  { id:'khufu-pyramid', lat:29.9792, lng:31.1342, ...CAIRO, icon:'🔺', title:'Пирамида Хеопса (Хуфу)', address:'Great Pyramid of Khufu, Giza Plateau', mapQuery:'Great Pyramid of Khufu, Giza Plateau, Egypt', desc:'Самая большая из пирамид Гизы и то самое единственное сохранившееся чудо древнего мира. Именно её обычно представляют, когда говорят “египетские пирамиды”.', note:'Снаружи она поражает масштабом, а внутри — совсем другой опыт: тесный, жаркий и с крутыми проходами. Вход внутрь обычно покупается отдельно и подходит не всем. Если хочется просто сильного первого впечатления, даже обход снаружи уже даёт вау-эффект.', tag:'Главная пирамида', facts:['самая большая','чудо света','вход внутрь отдельно'], ticketUrl:'https://egymonuments.com/en/locations/details/Pyramids', ticketLabel:'Билеты на плато' },
+  { id:'khafre-pyramid', lat:29.9761, lng:31.1307, ...CAIRO, icon:'🔺', title:'Пирамида Хефрена (Хафры)', address:'Pyramid of Khafre, Giza Plateau', mapQuery:'Pyramid of Khafre, Giza Plateau, Egypt', desc:'Часто кажется самой высокой, потому что стоит чуть выше на плато. Её легко узнать по остаткам гладкой облицовки у вершины.', note:'Это самая “кинематографичная” пирамида для многих ракурсов: на фото она нередко выглядит даже мощнее Хеопса. С ней традиционно связывают и Сфинкса, и большую часть торжественного ансамбля плато.', tag:'Лучший силуэт', facts:['выше по плато','есть облицовка','рядом со Сфинксом'], ticketUrl:'https://egymonuments.com/en/locations/details/Pyramids', ticketLabel:'Билеты на плато' },
+  { id:'menkaure-pyramid', lat:29.9723, lng:31.1270, ...CAIRO, icon:'🔺', title:'Пирамида Микерина (Менкаура)', address:'Pyramid of Menkaure, Giza Plateau', mapQuery:'Pyramid of Menkaure, Giza Plateau, Egypt', desc:'Самая маленькая из трёх главных пирамид Гизы, но вживую она совсем не кажется маленькой. У неё более спокойная зона и обычно чуть меньше суеты.', note:'Нижняя часть когда-то была облицована красным асуанским гранитом — это одна из деталей, за которые её любят. Если хочется не только “главную открытку”, но и почувствовать объём комплекса, сюда точно стоит доехать на шаттле.', tag:'Третья пирамида', facts:['спокойнее','красный гранит','меньше людей'], ticketUrl:'https://egymonuments.com/en/locations/details/Pyramids', ticketLabel:'Билеты на плато' },
+  { id:'sphinx', lat:29.9753, lng:31.1376, ...CAIRO, icon:'🦁', title:'Сфинкс', address:'Great Sphinx of Giza, Giza Plateau', mapQuery:'Great Sphinx of Giza, Giza Plateau, Egypt', desc:'Легендарная фигура рядом с пирамидами. Лучше смотреть не “по пути”, а как отдельную часть истории плато.', note:'Если времени мало, минимум: одна из пирамид вблизи + Сфинкс. А если идёте спокойно, логично пройти плато по маршруту и использовать зелёный шаттл между удалёнными точками.', tag:'Рядом с пирамидами', facts:['Гиза','фото','история'], ticketUrl:'https://egymonuments.com/en/locations/details/Pyramids', ticketLabel:'Билеты на плато' },
+  { id:'giza-panorama', lat:29.9712, lng:31.1337, ...CAIRO, icon:'📸', title:'Panorama Point / вид на все пирамиды', address:'Panorama Point, Giza Plateau', mapQuery:'Panorama Point, Giza Plateau, Egypt', desc:'Точка, где хорошо видно всю тройку пирамид сразу. Именно отсюда часто получаются те самые широкие кадры, которые ждут от поездки в Гизу.', note:'Если не хотите много ходить по жаре, можно построить посещение вокруг главного входа, одной-двух пирамид, Сфинкса и этой панорамы. Зелёный автобус внутри комплекса сильно экономит силы.', tag:'Лучший вид', facts:['вид на все три','фото','шаттл'] , ticketUrl:'https://egymonuments.com/en/locations/details/Pyramids', ticketLabel:'Билеты на плато' },
+  { id:'grand-egyptian-museum', lat:29.9887, lng:31.1177, ...CAIRO, icon:'🏺', title:'Grand Egyptian Museum', address:'Grand Egyptian Museum, Cairo-Alexandria Desert Road, Giza', mapQuery:'Grand Egyptian Museum, Giza, Egypt', desc:'Огромный ультрасовременный музей рядом с пирамидами, в который реально стоит идти не “на часик”, а с запасом времени. Это один из самых сильных музеев всей поездки.', note:'На GEM лучше закладывать минимум 3 часа, а если хочется пройти всё осмысленно — ещё больше или идти с гидом. Музей удобно проходить по маршруту залов по порядку, но без объяснений часть масштаба легко упустить. Последняя покупка билетов обычно до 17:00, а по средам и субботам — до 20:00.', tag:'Музей', facts:['3+ часа','официальный билет','ультрасовременно'], ticketUrl:'https://visit-gem.com/', ticketLabel:'Билеты в GEM' },
   { id:'khan-el-khalili', lat:30.0477, lng:31.2622, ...CAIRO, icon:'🏪', title:'Хан-эль-Халили', address:'Khan el-Khalili, El-Gamaleya, Cairo', desc:'Исторический базар: специи, медь, кожа, сувениры и обязательный торг.', tag:'Шоппинг', facts:['базар','торг','вечером'] },
   { id:'saladin-citadel', lat:30.0286, lng:31.2598, ...CAIRO, icon:'🏰', title:'Цитадель Саладина', address:'Salah al-Din Citadel, Al Abageyah, Cairo', desc:'Крепость, мечеть Мухаммеда Али и панорамный вид на Каир.', tag:'Панорама', facts:['вид','мечеть','история'] },
   { id:'muizz-street', lat:30.0597, lng:31.2421, ...CAIRO, icon:'🕌', title:'Улица Муиз', address:'Al Moez Ldin Allah Al Fatmi Street, Islamic Cairo', desc:'Пешеходная улица с исламской архитектурой, фонарями, лавками и вечерней атмосферой.', tag:'Вечером', facts:['старый Каир','прогулка','архитектура'] }
+  ,
+  { id:'sharm-naama-bay', lat:27.9158, lng:34.3299, ...SHARM, icon:'🌴', title:'Naama Bay', address:'Naama Bay, Sharm El Sheikh', desc:'Главный прогулочный район Шарма: пляжи, рестораны, магазины и привычная курортная жизнь.', note:'Удобная база, если хочется выйти из отеля и оказаться в живом туристическом районе, а не только на закрытой территории.', tag:'Центр курорта', facts:['вечером','кафе','прогулка'] },
+  { id:'sharm-airport', lat:27.9773, lng:34.3946, ...SHARM, icon:'✈️', title:'Аэропорт Шарм-эль-Шейха SSH', address:'Sharm El Sheikh International Airport (SSH), Sharm El Sheikh', desc:'Главный аэропорт курорта на юге Синая. До большинства туристических зон обычно 15–30 минут.', note:'Такси и трансферы есть прямо у выхода, но цену лучше знать заранее. SIM тоже удобнее купить сразу по прилёте, если нужна связь без сюрпризов.', tag:'Аэропорт', facts:['15–30 мин','SIM по прилёту','трансфер'] },
+  { id:'ras-mohammed', lat:27.7263, lng:34.2580, ...SHARM, icon:'🐠', title:'Ras Mohammed', address:'Ras Mohammed National Park, South Sinai', desc:'Одна из самых сильных морских точек Египта: сюда едут за рифами, снорклингом и дайвингом.', note:'Если хочется увидеть, за что Шарм так любят любители моря, это одна из главных точек.', tag:'Море', facts:['рифы','дайвинг','снорклинг'] },
+  { id:'sharm-old-market', lat:27.8618, lng:34.2974, ...SHARM, icon:'🕌', title:'Old Market и мечеть Аль-Сахаба', address:'Old Market, Sharm El Sheikh', desc:'Старый рынок Шарма с вечерней жизнью, сувенирами, сладостями и красивой подсветкой мечети.', note:'Хорошее место на вечер, если хочется не только отельного формата, но и немного местной атмосферы.', tag:'Вечером', facts:['рынок','мечеть','торг'] },
+  { id:'soho-square', lat:27.9617, lng:34.3961, ...SHARM, icon:'✨', title:'SOHO Square', address:'SOHO Square, Sharm El Sheikh', desc:'Аккуратная вечерняя зона с ресторанами, магазинами и более “глянцевым” курортным вайбом.', tag:'Вечером', facts:['фото','кафе','прогулка'] },
+  { id:'alex-center', lat:31.2001, lng:29.9187, ...ALEXANDRIA, icon:'🌊', title:'Александрия — центр', address:'Downtown Alexandria, Alexandria', desc:'Средиземноморский Египет с набережной, ветром, плотным городом и совсем другим ритмом по сравнению с Каиром.', tag:'Точка старта', facts:['море','прогулка','город'] },
+  { id:'bibliotheca', lat:31.2089, lng:29.9092, ...ALEXANDRIA, icon:'📚', title:'Bibliotheca Alexandrina', address:'Bibliotheca Alexandrina, Alexandria', desc:'Современная библиотека и культурный центр — один из новых символов Александрии.', note:'Даже если не идти внутрь надолго, само здание и пространство вокруг уже стоят визита.', tag:'Must see', facts:['архитектура','музейно','современно'] },
+  { id:'qaitbay', lat:31.2136, lng:29.8851, ...ALEXANDRIA, icon:'🏰', title:'Цитадель Кайт-Бей', address:'Citadel of Qaitbay, Alexandria', desc:'Крепость у моря на месте легендарного Александрийского маяка.', note:'Одна из самых фотогеничных точек города: история плюс море в одном кадре.', tag:'Море и история', facts:['вид','крепость','фото'] },
+  { id:'montazah', lat:31.2904, lng:30.0297, ...ALEXANDRIA, icon:'🌿', title:'Сады Монтаза', address:'Montaza Palace Gardens, Alexandria', desc:'Большой парк у моря с дворцовым прошлым и длинной прогулкой на свежем воздухе.', tag:'Прогулка', facts:['зелень','море','полдня'] },
+  { id:'catacombs', lat:31.1814, lng:29.8928, ...ALEXANDRIA, icon:'⚱️', title:'Катакомбы Ком-эш-Шукафа', address:'Catacombs of Kom El Shoqafa, Alexandria', desc:'Подземный некрополь, где смешались египетские, греческие и римские мотивы.', tag:'История', facts:['под землёй','античность','45 мин'] }
 ];
 
 let activeFilter = 'all';
@@ -603,6 +656,7 @@ const cardAddress = document.getElementById('place-card-address');
 const cardNote = document.getElementById('place-card-note');
 const copyAddressBtn = document.getElementById('place-copy-address');
 const cardFacts = document.getElementById('place-card-facts');
+const ticketLink = document.getElementById('place-ticket-link');
 const googleLink = document.getElementById('place-google-link');
 const appleLink = document.getElementById('place-apple-link');
 const cardClose = document.getElementById('place-card-close');
@@ -611,6 +665,7 @@ const audioBtn = document.getElementById('place-audio-btn');
 const locateBtn = document.getElementById('locate-btn');
 const fitBtn = document.getElementById('fit-btn');
 const locationStatus = document.getElementById('location-status');
+const layerSelect = document.getElementById('map-layer-select');
 
 function setBaseLayer(layerName) {
   const nextLayer = baseLayers[layerName];
@@ -618,9 +673,9 @@ function setBaseLayer(layerName) {
 
   map.removeLayer(activeBaseLayer);
   activeBaseLayer = nextLayer.addTo(map);
-  document.querySelectorAll('.map-layer-btn').forEach(button => {
-    button.classList.toggle('active', button.dataset.layer === layerName);
-  });
+  activeBaseLayerName = layerName;
+  if (layerSelect) layerSelect.value = layerName;
+  localStorage.setItem(MAP_LAYER_STORAGE_KEY, layerName);
 }
 
 function makeIcon(place) {
@@ -640,11 +695,13 @@ function makeIcon(place) {
 }
 
 function mapsUrl(place) {
-  return `https://www.google.com/maps/search/?api=1&query=${place.lat},${place.lng}`;
+  const query = place.mapQuery || `${place.lat},${place.lng}`;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 }
 
 function appleMapsUrl(place) {
-  return `https://maps.apple.com/?q=${encodeURIComponent(place.title)}&ll=${place.lat},${place.lng}`;
+  const query = place.mapQuery || place.title;
+  return `https://maps.apple.com/?q=${encodeURIComponent(query)}&ll=${place.lat},${place.lng}`;
 }
 
 function filteredPlaces() {
@@ -696,6 +753,14 @@ function renderCard(place) {
   cardFacts.innerHTML = place.facts.map(fact => `<span>${fact}</span>`).join('');
   googleLink.href = mapsUrl(place);
   appleLink.href = appleMapsUrl(place);
+  if (place.ticketUrl) {
+    ticketLink.href = place.ticketUrl;
+    ticketLink.textContent = place.ticketLabel || 'Купить билет';
+    ticketLink.hidden = false;
+  } else {
+    ticketLink.hidden = true;
+    ticketLink.removeAttribute('href');
+  }
 
   if (place.image) {
     cardImage.innerHTML = `<img src="${place.image}" alt="${place.title}">`;
@@ -829,9 +894,10 @@ document.querySelectorAll('.filter-btn').forEach(button => {
   button.addEventListener('click', () => setFilter(button.dataset.city));
 });
 
-document.querySelectorAll('.map-layer-btn').forEach(button => {
-  button.addEventListener('click', () => setBaseLayer(button.dataset.layer));
-});
+if (layerSelect) {
+  layerSelect.value = activeBaseLayerName;
+  layerSelect.addEventListener('change', () => setBaseLayer(layerSelect.value));
+}
 
 cardClose.addEventListener('click', () => {
   activePlaceId = null;

@@ -241,7 +241,6 @@
     <li><a href="map.html">Карта</a></li>
     <li><a href="tips.html">Советы</a></li>
     <li><a href="feedback.html">Обратная связь</a></li>
-    <li class="nav-private"><a href="private.html">🔐 Наш план</a></li>
   </ul>
 </nav>
 
@@ -316,6 +315,9 @@
             <li><strong>“Друг, лучший магазин”</strong> — ведут туда, где получают комиссию</li>
             <li><strong>“Сегодня закрыто”</strong> — пытаются свернуть тебя в другую лавку или экскурсию</li>
             <li><strong>Такси без цены</strong> — итоговая сумма почти всегда окажется неприятной</li>
+            <li><strong>“Вода в такси”</strong> — дают бутылку даже в комфорт-классе, а в конце просят доплатить за неё</li>
+            <li><strong>“Аэропортовый въезд”</strong> — в поездке в/из аэропорта в конце внезапно докидывают парковку или въезд, хотя заранее это не обсуждали</li>
+            <li><strong>“Помогли — плати”</strong> — подсказали, донесли, показали, сфоткали, а потом догоняют за бакшишем; дети тоже так делают</li>
           </ul>
         </div>
       </div>
@@ -327,6 +329,8 @@
             <li>Не останавливаться, если тебе уже что-то навязывают</li>
             <li>Сумму при передаче денег произносить вслух</li>
             <li>В такси, на верблюдах, на лодках цену фиксировать заранее</li>
+            <li>Если едете в аэропорт или из аэропорта — сразу спросить, всё ли включено: въезд, парковка, багаж, вода</li>
+            <li>Любую “помощь” считать платной по умолчанию, если заранее не сказали обратное</li>
             <li>Если что-то напрягает — просто уходить, это работает</li>
           </ul>
         </div>
@@ -388,7 +392,7 @@
             <td>Постельное бельё хлопок</td>
             <td><strong>$15–30</strong> / комплект</td>
             <td>Senzo Mall, базары</td>
-            <td>Egyptian cotton — мирового класса, везут домой все</td>
+            <td>Egyptian cotton — мирового класса. В Senzo удобно брать без торга, особенно если попали на скидки</td>
           </tr>
           <tr>
             <td>Специи (зира, куркума, карри)</td>
@@ -474,6 +478,28 @@
       </div>
     </div>
 
+    <div class="tip-box mb-3">
+      <strong>🛂 Если едете между городами автобусом или на машине.</strong> На трассах бывают обычные проверки: транспорт могут остановить, попросить показать паспорт и задать простые вопросы вроде “куда едете”, “откуда” и “в каком отеле остановитесь”. Это стандартная история, просто держите паспорт под рукой и отвечайте спокойно.
+    </div>
+
+    <div class="tip-box mb-3">
+      <strong>🚌 Двухэтажные автобусы — очень удачный вариант.</strong> При покупке они обычно помечаются как <strong>DD</strong>. Если есть выбор мест, особенно приятно брать окно спереди на втором этаже: обзор пустыни и дороги там реально топовый.
+    </div>
+
+    <div class="card mb-3" style="border:1px solid rgba(212,175,55,0.24);">
+      <div class="card-body" style="padding:1.5rem 1.7rem;">
+        <div class="tips-section-badge">В дорогу</div>
+        <h3 style="margin-bottom:0.6rem;">🚌 Каир → Хургада</h3>
+        <p style="font-size:0.95rem;color:var(--text-lt);margin-bottom:0.9rem;">
+          Аудио, которое удобно включить в автобусе по дороге из Каира в Хургаду: можно слушать фоном в пути или заранее скачать, чтобы всё работало без интернета.
+        </p>
+        <div style="display:flex;flex-wrap:wrap;gap:0.8rem;align-items:center;">
+          <audio controls preload="metadata" src="audio/cairo-hurghada.mp3" style="flex:1 1 320px;min-width:260px;"></audio>
+          <a class="radio-link" href="audio/cairo-hurghada.mp3" download style="white-space:nowrap;">Скачать MP3</a>
+        </div>
+      </div>
+    </div>
+
     <!-- WHAT TO TAKE -->
     <div class="section-title mt-4" id="tips-pack">
       <h2>🎒 Что взять с собой</h2>
@@ -490,7 +516,9 @@
             <li><input type="checkbox" id="pack_card" disabled><label for="pack_card">💳 Иностранная карта или запасной способ оплаты, если есть</label></li>
             <li><input type="checkbox" id="pack_ins" disabled><label for="pack_ins">📄 Страховка распечатана</label></li>
             <li><input type="checkbox" id="pack_ticket" disabled><label for="pack_ticket">✈️ Билеты и брони в телефоне и офлайн</label></li>
+            <li><input type="checkbox" id="pack_pen" disabled><label for="pack_pen">🖊️ Ручка — чтобы заполнять миграционные бумажки на прилёте и вылете без суеты</label></li>
           </ul>
+          <div class="tip-box" style="margin-top:0.75rem;">Ручка — мелочь, но очень удобная. В Египет бумажку для нерезидентов часто дают ещё в самолёте и потом её сдаёшь при покупке визы. Обратно такую же бумажку обычно дают уже в аэропорту после регистрации, и её нужно отдать на паспортном контроле. Конечно, ручку можно у кого-то попросить, но со своей намного спокойнее.</div>
         </div>
       </div>
       <div class="card">
@@ -713,16 +741,14 @@
         <div class="card-body">
           <h4>🚌 Автобусы, поезда, перелёты</h4>
           <ul style="padding-left:1.2rem; font-size:0.92rem; margin-top:0.5rem; line-height:2;">
-            <li><strong><a href="https://go-bus.com" target="_blank" rel="noopener noreferrer">GoBus</a></strong> — автобусы по Египту</li>
-            <li><strong><a href="https://12go.asia" target="_blank" rel="noopener noreferrer">12Go.asia</a></strong> — билеты на автобусы онлайн</li>
+            <li><strong><a href="https://go-bus.com/en" target="_blank" rel="noopener noreferrer">GoBus</a></strong> — автобусы по Египту, удобнее открыть сразу английскую версию. У них часто свои фирменные остановки и залы ожидания, поэтому поездка ощущается собраннее, чем случайный уличный автобус</li>
             <li><strong><a href="https://www.enr.gov.eg/En/" target="_blank" rel="noopener noreferrer">Egyptian National Railways</a></strong> — официальный сайт железных дорог Египта</li>
             <li><strong><a href="https://enr.gov.eg/ticketing/public/login.jsf" target="_blank" rel="noopener noreferrer">ENR ticketing</a></strong> — официальная онлайн-покупка билетов на поезд</li>
             <li><strong><a href="https://www.bookaway.com/routes/egypt" target="_blank" rel="noopener noreferrer">Bookaway</a></strong> — поезда, автобусы и трансферы, часто удобнее для туристов</li>
-            <li><strong><a href="https://12go.asia/en" target="_blank" rel="noopener noreferrer">12Go</a></strong> — поезда и междугородний транспорт, удобно сравнивать варианты</li>
             <li><strong><a href="https://www.aviasales.ru" target="_blank" rel="noopener noreferrer">Aviasales</a></strong> — внутренние перелёты по Египту</li>
             <li><strong>Uber</strong> — где доступен, обычно удобнее уличного такси</li>
           </ul>
-          <div class="tip-box" style="margin-top:0.75rem;">По поездам сначала проверяйте официальный ENR, но если сайт неудобен или не принимает оплату, проще смотреть 12Go или Bookaway. За удобство там может быть комиссия.</div>
+          <div class="tip-box" style="margin-top:0.75rem;">По поездам сначала проверяйте официальный ENR, но если сайт неудобен или не принимает оплату, проще смотреть Bookaway. За удобство там может быть комиссия. Если выбираете автобус, обращайте внимание на пометку <strong>DD</strong> — это двухэтажный автобус, и место у окна спереди на втором этаже обычно самое приятное в дороге.</div>
         </div>
       </div>
       <div class="card">
@@ -755,6 +781,16 @@
       </div>
       <div class="card">
         <div class="card-body">
+          <h4>🎟️ Билеты в пирамиды и GEM</h4>
+          <ul style="padding-left:1.2rem; font-size:0.92rem; margin-top:0.5rem; line-height:2;">
+            <li><strong><a href="https://egymonuments.com/en/locations/details/Pyramids" target="_blank" rel="noopener noreferrer">Пирамиды Гизы — официальный билет</a></strong> — лучше брать заранее, чтобы не терять время на месте</li>
+            <li><strong><a href="https://visit-gem.com/" target="_blank" rel="noopener noreferrer">Grand Egyptian Museum — официальный билет</a></strong> — это единственный официальный сайт продажи билетов в GEM</li>
+          </ul>
+          <div class="tip-box" style="margin-top:0.75rem;">GEM реально требует 3+ часа, а если хочется не просто “пробежать”, а понять экспозицию, лучше закладывать ещё больше или идти с гидом. Последняя покупка билетов обычно до 17:00, а по средам и субботам — до 20:00.</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
           <h4>🆘 Экстренные контакты</h4>
           <ul style="padding-left:1.2rem; font-size:0.92rem; margin-top:0.5rem; line-height:2;">
             <li>Полиция Египта: <strong>122</strong></li>
@@ -773,6 +809,7 @@
             <li>Красное море часто тёплое и подходит для купания большую часть года</li>
             <li>Розетки: европейский тип F (как в РФ)</li>
             <li>Часовой пояс: UTC+2 (−1 ч от Москвы)</li>
+            <li><strong><a href="https://ru.wikipedia.org/wiki/%D0%9A%D0%BE%D1%80%D0%B0%D0%BB%D0%BB" target="_blank" rel="noopener noreferrer">Кораллы — коротко и понятно</a></strong> — если хочется быстро освежить в голове, что именно вы смотрите в Красном море</li>
           </ul>
         </div>
       </div>
@@ -788,6 +825,7 @@
 <footer class="footer">
   <p><strong>Египет 2026</strong> · семейный гид по первой поездке</p>
   <p style="margin-top:0.3rem;">Разработка <a href="https://all-bot.ru" target="_blank" rel="noopener noreferrer">All-bot.ru</a></p>
+  <p><button class="support-footer-btn" type="button" data-support-trigger>Угостить кофе ☕</button></p>
   <p style="margin-top:0.3rem;"><a href="feedback.html">Поделиться советом</a> · <a href="index.html">На главную</a></p>
 </footer>
 
