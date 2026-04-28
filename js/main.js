@@ -82,6 +82,10 @@ function formatSupportAmountForUrl(amount) {
   return Number.isInteger(amount) ? String(amount) : amount.toFixed(2);
 }
 
+function buildSupportPaymentUrl(amount) {
+  return `${SUPPORT_PAYMENT_BASE_URL}?amount=${encodeURIComponent(formatSupportAmountForUrl(amount))}`;
+}
+
 function initSupportModal() {
   const triggers = document.querySelectorAll('[data-support-trigger]');
   if (!triggers.length || document.getElementById('support-overlay')) return;
@@ -193,9 +197,7 @@ function initSupportModal() {
   payBtn.addEventListener('click', () => {
     const amount = readCurrentAmount();
     if (!amount) return;
-    const url = new URL(SUPPORT_PAYMENT_BASE_URL);
-    url.searchParams.set('amount', formatSupportAmountForUrl(amount));
-    window.location.href = url.toString();
+    window.location.href = buildSupportPaymentUrl(amount);
   });
   closeBtn.addEventListener('click', close);
   overlay.addEventListener('click', event => {

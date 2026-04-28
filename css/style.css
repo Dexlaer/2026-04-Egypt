@@ -1010,6 +1010,19 @@ tr.is-paid .budget-amount { text-decoration: line-through; }
 }
 .footer a { color: var(--gold); }
 .footer strong { color: rgba(255,255,255,0.85); }
+.footer-legal {
+  max-width: 780px;
+  margin: 0.45rem auto 0;
+  color: rgba(255,255,255,0.46);
+  font-size: 0.78rem;
+  line-height: 1.7;
+}
+.footer-legal a {
+  color: rgba(240,208,96,0.88);
+  text-decoration: underline;
+  text-decoration-color: rgba(240,208,96,0.35);
+  text-underline-offset: 3px;
+}
 
 .support-footer-btn {
   margin-top: 0.55rem;
