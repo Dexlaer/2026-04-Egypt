@@ -72,13 +72,8 @@ function initInstallGuideModal() {
   overlay.id = 'install-overlay';
   overlay.setAttribute('aria-hidden', 'true');
   overlay.innerHTML = `
-    <div class="install-modal" role="dialog" aria-modal="true" aria-labelledby="install-title">
+    <div class="install-modal" role="dialog" aria-modal="true" aria-label="Как добавить сайт на экран телефона">
       <button class="install-close" id="install-close" type="button" aria-label="Закрыть">×</button>
-      <div class="install-head">
-        <p class="install-kicker">Быстрый доступ</p>
-        <h3 id="install-title">Добавить на экран телефона</h3>
-        <p>Это просто ярлык сайта, чтобы Egypt Guide открывался быстрее.</p>
-      </div>
       <div class="install-tabs" role="tablist" aria-label="Выбрать устройство">
         <button class="install-tab active" type="button" data-install-platform="iphone" role="tab" aria-selected="true">iPhone</button>
         <button class="install-tab" type="button" data-install-platform="android" role="tab" aria-selected="false">Android</button>
