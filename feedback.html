@@ -47,6 +47,35 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
+    .feedback-consent {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      margin: 1rem 0;
+      color: var(--text-lt);
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+    .feedback-consent input {
+      width: 1.05rem;
+      height: 1.05rem;
+      margin-top: 0.18rem;
+      flex: 0 0 auto;
+      accent-color: var(--gold);
+    }
+    .feedback-consent a {
+      color: var(--navy);
+      font-weight: 800;
+      text-decoration: underline;
+      text-decoration-color: rgba(212,175,55,0.55);
+      text-underline-offset: 3px;
+    }
+    .feedback-message {
+      min-height: 1.3rem;
+      margin: 0 0 0.85rem;
+      color: #9a5220;
+      font-size: 0.9rem;
+    }
   </style>
 </head>
 <body>
@@ -73,14 +102,11 @@
 <section class="section">
   <div class="container">
     <div class="feedback-wrap">
-      <!-- FORM — действие Formspree, нужно заменить YOUR_FORM_ID на реальный -->
       <div class="card">
         <div class="card-body" style="padding:2rem;">
           <p class="simple-feedback-note">Можно написать в свободной форме: что понравилось, где быть осторожнее, куда точно стоит сходить или что лучше не повторять. Без анкеты — просто полезный совет.</p>
 
-          <form id="feedback-form"
-                action="https://formspree.io/f/YOUR_FORM_ID"
-                method="POST">
+          <form id="feedback-form" novalidate>
 
             <!-- Tip text -->
             <div class="form-group">
@@ -90,17 +116,14 @@
                         rows="8" required></textarea>
             </div>
 
-            <!-- Contact (optional) -->
-            <div class="form-group">
-              <label class="form-label" for="fb_contact">Имя или контакт (необязательно)</label>
-              <input class="form-input" type="text" id="fb_contact" name="contact"
-                     placeholder="Можно оставить имя, Telegram или email">
-            </div>
+            <label class="feedback-consent" for="fb_consent">
+              <input type="checkbox" id="fb_consent" required>
+              <span>Я согласен(на) с обработкой персональных данных по <a href="https://all-bot.ru/privacy" target="_blank" rel="noopener noreferrer">политике конфиденциальности</a></span>
+            </label>
 
-            <input type="hidden" name="_subject" value="Новая рекомендация по Египту 🇪🇬">
-            <input type="hidden" name="_next" value="">
+            <p class="feedback-message" id="feedback-message" aria-live="polite"></p>
 
-            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:0.85rem;font-size:1rem;">
+            <button type="submit" class="btn btn-primary" id="feedback-submit" style="width:100%;justify-content:center;padding:0.85rem;font-size:1rem;">
               Отправить совет
             </button>
           </form>
@@ -130,33 +153,61 @@
 <!-- MUSIC PLAYER -->
 <script src="js/main.js"></script>
 <script>
-// Form submit — show success if Formspree ID not set
-const form = document.getElementById('feedback-form');
-form.addEventListener('submit', async e => {
-  const action = form.action;
-  if (action.includes('YOUR_FORM_ID')) {
-    // Demo mode (no real ID) — just show success
-    e.preventDefault();
-    form.style.display = 'none';
-    document.getElementById('success-box').style.display = 'block';
+const FEEDBACK_API_URL = 'https://all-bot.ru/api/feedback';
+const FEEDBACK_POLICY_VERSION = '2026-04-29';
+
+document.getElementById('feedback-form').addEventListener('submit', async e => {
+  e.preventDefault();
+
+  const form = e.currentTarget;
+  const textarea = document.getElementById('fb_tip');
+  const consent = document.getElementById('fb_consent');
+  const messageEl = document.getElementById('feedback-message');
+  const submitBtn = document.getElementById('feedback-submit');
+  const message = textarea.value.trim();
+
+  messageEl.textContent = '';
+
+  if (!message) {
+    messageEl.textContent = 'Напишите совет перед отправкой.';
+    textarea.focus();
     return;
   }
-  // Real Formspree submit — let it proceed normally, then show success
-  e.preventDefault();
+
+  if (!consent.checked) {
+    messageEl.textContent = 'Сначала отметьте согласие на обработку персональных данных.';
+    consent.focus();
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Отправляем...';
+
   try {
-    const resp = await fetch(action, {
+    const resp = await fetch(FEEDBACK_API_URL, {
       method: 'POST',
-      body: new FormData(form),
-      headers: { Accept: 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        appId: 'egypt-guide',
+        message,
+        contact: null,
+        consentGiven: true,
+        policyVersion: FEEDBACK_POLICY_VERSION
+      })
     });
-    if (resp.ok) {
+
+    const data = await resp.json().catch(() => null);
+    if (resp.ok && data && data.ok) {
       form.style.display = 'none';
       document.getElementById('success-box').style.display = 'block';
     } else {
-      alert('Ошибка отправки. Попробуйте ещё раз.');
+      messageEl.textContent = 'Не получилось отправить совет. Попробуйте позже или напишите на info@all-bot.ru.';
     }
   } catch {
-    alert('Нет соединения. Попробуйте позже.');
+    messageEl.textContent = 'Не получилось отправить совет. Попробуйте позже или напишите на info@all-bot.ru.';
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Отправить совет';
   }
 });
 </script>

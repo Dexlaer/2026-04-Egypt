@@ -592,16 +592,6 @@ function toggleMusic() {
   }
 }
 
-// ── Feedback form ─────────────────────────
-function initFeedbackForm() {
-  const form = document.getElementById('feedback-form');
-  if (!form) return;
-  form.addEventListener('submit', () => {
-    // Formspree handles the submission, we just set a flag
-    localStorage.setItem('feedback_sent', Date.now());
-  });
-}
-
 // ── Live Egypt data ──────────────────────
 function weatherCodeToRu(code) {
   const map = {
