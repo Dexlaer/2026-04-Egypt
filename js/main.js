@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCurrencyCalculator();
   initEgyptTimeWidget();
   initSupportModal();
+  initInstallGuideModal();
 
   const toggle = document.querySelector('.nav-toggle');
   const links  = document.querySelector('.nav-links');
@@ -208,6 +209,80 @@ function initSupportModal() {
   });
 
   setSelectedAmount(500);
+}
+
+// ── Add to home screen modal ──────────────
+function initInstallGuideModal() {
+  const triggers = document.querySelectorAll('[data-install-trigger]');
+  if (!triggers.length || document.getElementById('install-overlay')) return;
+
+  const overlay = document.createElement('div');
+  overlay.className = 'install-overlay';
+  overlay.id = 'install-overlay';
+  overlay.setAttribute('aria-hidden', 'true');
+  overlay.innerHTML = `
+    <div class="install-modal" role="dialog" aria-modal="true" aria-labelledby="install-title">
+      <button class="install-close" id="install-close" type="button" aria-label="Закрыть">×</button>
+      <div class="install-head">
+        <p class="install-kicker">Быстрый доступ</p>
+        <h3 id="install-title">Добавить на экран телефона</h3>
+        <p>Это просто ярлык сайта, чтобы Egypt Guide открывался быстрее.</p>
+      </div>
+      <div class="install-tabs" role="tablist" aria-label="Выбрать устройство">
+        <button class="install-tab active" type="button" data-install-platform="iphone" role="tab" aria-selected="true">iPhone</button>
+        <button class="install-tab" type="button" data-install-platform="android" role="tab" aria-selected="false">Android</button>
+      </div>
+      <figure class="install-card">
+        <img id="install-guide-img" src="images/install-iphone.jpg" alt="Как добавить Egypt Guide на экран iPhone">
+      </figure>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  const closeBtn = overlay.querySelector('#install-close');
+  const guideImg = overlay.querySelector('#install-guide-img');
+  const tabs = overlay.querySelectorAll('.install-tab');
+  const platformImages = {
+    iphone: {
+      src: 'images/install-iphone.jpg',
+      alt: 'Как добавить Egypt Guide на экран iPhone'
+    },
+    android: {
+      src: 'images/install-android.jpg',
+      alt: 'Как добавить Egypt Guide на экран Android'
+    }
+  };
+
+  const setPlatform = platform => {
+    const next = platformImages[platform] || platformImages.iphone;
+    guideImg.src = next.src;
+    guideImg.alt = next.alt;
+    tabs.forEach(tab => {
+      const active = tab.dataset.installPlatform === platform;
+      tab.classList.toggle('active', active);
+      tab.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+  };
+  const open = () => {
+    setPlatform('iphone');
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden', 'false');
+    setTimeout(() => closeBtn.focus(), 0);
+  };
+  const close = () => {
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+  };
+
+  tabs.forEach(tab => tab.addEventListener('click', () => setPlatform(tab.dataset.installPlatform)));
+  triggers.forEach(trigger => trigger.addEventListener('click', open));
+  closeBtn.addEventListener('click', close);
+  overlay.addEventListener('click', event => {
+    if (event.target === overlay) close();
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && overlay.classList.contains('open')) close();
+  });
 }
 
 // ── Egypt Time Widget ─────────────────────
